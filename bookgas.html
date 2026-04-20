@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="header.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/brands.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
+
+</head>
+
+<style>
+    .bookgas {
+        margin-top: 100px;
+    }
+    .footer {
+        margin-top: 100px;
+    }
+</style>
+
+<body>
+
+
+
+
+    <nav>
+        <div class="container nav__container">
+
+            <a href="index.html" class="logo">
+                <h4>Fuel.Finder</h4>
+            </a>
+
+            <ul class="nav__menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="bookgas.html">Book Gas</a></li>
+                <li><a href="Feedback.html">Feedback</a></li>
+                <li class="settingbtn"><a href="settings.html">Settings</a></li>
+            </ul>
+
+            <!-- Buttons -->
+            <button id="open-menu-btn">☰</button>
+            <button id="close-menu-btn">✖</button>
+
+        </div>
+    </nav>
+
+    <!-----------------------End of navbar------------------>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <section class="bookgas container">
+
+        <!-- LEFT -->
+        <div class="left">
+
+            <h2>Book Cylinder Delivery</h2>
+            <p>Schedule your LPG refill with real-time tracking.</p>
+
+            <!-- Agency -->
+            <div class="card">
+                <h4 class="selectagency">Select Agency</h4>
+                <div class="agency">
+                    <div class="agency-box active">Indane</div>
+                    <div class="agency-box">HP</div>
+                    <div class="agency-box">Bharat</div>
+                </div>
+            </div>
+
+            <!-- Inputs -->
+            <div class="card">
+                <input type="text" placeholder="Consumer Number">
+                <input type="text" placeholder="Mobile Number">
+                <textarea placeholder="Delivery Address"></textarea>
+            </div>
+
+            <button id="bookBtn" class="btn-primary">Book Now</button>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="right">
+
+            <!-- STEP PROGRESS -->
+            <div class="progress">
+                <div class="step active">Order Placed</div>
+                <div class="step">Processing</div>
+                <div class="step">Out for Delivery</div>
+            </div>
+
+            <!-- PRICE -->
+            <div class="price-box">
+                <p>Current LPG Price</p>
+                <h3 id="price">₹900</h3>
+            </div>
+
+            <!-- MAP -->
+            <div class="map">
+                <iframe src="https://maps.google.com/maps?q=petrol%20pump&t=&z=13&ie=UTF8&iwloc=&output=embed">
+                </iframe>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <footer class="footer">
+        <div class="container footer__container">
+
+            <!-- Logo & About -->
+            <div class="footer__box">
+                <h3>Fuel Finder</h3>
+                <p>Find nearby fuel stations, book gas instantly, and track delivery in real-time with ease.</p>
+            </div>
+
+            <!-- Links -->
+            <div class="footer__box">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Book Gas</a></li>
+                    <li><a href="#">Services</a></li>
+                </ul>
+            </div>
+
+            <!-- Support -->
+            <div class="footer__box">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <!-- Social -->
+            <div class="footer__box">
+                <h4>Follow Us</h4>
+                <div class="socials">
+                    <a href="#">🌐</a>
+                    <a href="#">📘</a>
+                    <a href="#">📸</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer__bottom">
+            <p>© 2026 Fuel Finder | All Rights Reserved</p>
+        </div>
+    </footer>
+
+
+
+
+
+    <script>
+        // Agency Selection
+        const agencyBoxes = document.querySelectorAll('.agency-box');
+        agencyBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                agencyBoxes.forEach(b => b.classList.remove('active'));
+                box.classList.add('active');
+            });
+        });
+
+
+
+        // Agency select
+        document.querySelectorAll(".agency-box").forEach(box => {
+            box.onclick = () => {
+                document.querySelectorAll(".agency-box").forEach(b => b.classList.remove("active"));
+                box.classList.add("active");
+            };
+        });
+
+        // Booking click
+        const steps = document.querySelectorAll(".step");
+        const popup = document.getElementById("popup");
+
+        document.getElementById("bookBtn").onclick = () => {
+
+            let i = 0;
+
+            let interval = setInterval(() => {
+                if (i < steps.length) {
+                    steps[i].classList.add("active");
+                    i++;
+                } else {
+                    clearInterval(interval);
+
+                    // show popup
+                    popup.style.display = "block";
+
+                    setTimeout(() => {
+                        popup.style.display = "none";
+                    }, 3000);
+                }
+            }, 1000);
+        };
+
+        // Live price update
+        setInterval(() => {
+            let price = 880 + Math.floor(Math.random() * 50);
+            document.getElementById("price").innerText = "₹" + price;
+        }, 3000);
+    </script>
+</body>
+
+</html>
