@@ -250,48 +250,71 @@ nav {
 /*-----------------------End of Navbar------------------*/
 /* Hero Section */
 .heroo-section {
+    height: 100vh;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 4rem;
-    padding: 80px 0;
-    margin-top: 50px;
+
+    background-image: url(juice-HwjIQyTyG_s-unsplash.jpg.jpeg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    padding: 0 5%;
+    box-sizing: border-box;
+    position: relative;
+    margin-top: 40px;
 }
 
 /* Content */
 .content {
     flex: 1;
+    z-index: 2;
     animation: fadeLeft 1s ease;
 }
 
+/* 🔥 TEXT ANIMATION + HOVER */
 .content h1 {
     font-size: 3rem;
-    color: var(--color-primary);
-    margin-bottom: 1rem;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    transition: 0.4s;
 }
 
+.content h1:hover {
+    color: #f71635;
+    letter-spacing: 2px;
+}
+
+/* 🔥 PARAGRAPH SPACING + HOVER */
 .content p {
     font-size: 1.1rem;
-    color: var(--color-text);
-    margin-bottom: 2rem;
-    line-height: 1.7;
+    color: #f1f1f1;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;   /* <-- space fix */
+    transition: 0.3s;
 }
 
-/* Button */
+.content p:hover {
+    color: #fff0f5;
+}
+
+/* 🔥 BUTTON */
 .btn-container button {
-    padding: 1rem 2rem;
+    padding: 1rem 2.2rem;
     background: linear-gradient(135deg,#fff0f5 , #f71635);
     color: #fff;
-    border-radius: 8px;
-    font-weight: 600;
+    border-radius: 10px;
     cursor: pointer;
-    transition: 0.3s ease;
+    font-weight: 600;
+    transition: 0.4s;
 }
 
-/* Button Hover */
+/* Button Hover Animation */
 .btn-container button:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px) scale(1.08);
+    box-shadow: 0 15px 35px rgba(247, 22, 53, 0.4);
 }
 
 /* Image */
@@ -304,24 +327,24 @@ nav {
 
 .image-container img {
     width: 100%;
-    max-width: 480px;
+    max-width: 450px;
     border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-    transition: 0.4s ease;
+    transition: 0.5s ease;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4);
 }
 
-/* Image Hover */
+/* 🔥 IMAGE HOVER EFFECT */
 .image-container img:hover {
-    transform: scale(1.05) rotate(1deg);
+    transform: scale(1.08) rotate(2deg);
+    box-shadow: 0 25px 60px rgba(247, 22, 53, 0.5);
 }
 
-/* Animations */
+/* 🔥 ANIMATIONS */
 @keyframes fadeLeft {
     from {
         opacity: 0;
-        transform: translateX(-60px);
+        transform: translateX(-80px);
     }
-
     to {
         opacity: 1;
         transform: translateX(0);
@@ -331,15 +354,15 @@ nav {
 @keyframes fadeRight {
     from {
         opacity: 0;
-        transform: translateX(60px);
+        transform: translateX(80px);
     }
-
     to {
         opacity: 1;
         transform: translateX(0);
     }
 }
 
+/* 📱 Responsive */
 @media (max-width: 768px) {
     .heroo-section {
         flex-direction: column;
@@ -352,9 +375,11 @@ nav {
     }
 
     .image-container img {
-        max-width: 320px;
+        max-width: 300px;
     }
 }
+
+
 
 .fueltypes {
     text-align: center;
