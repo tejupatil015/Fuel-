@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="header.css">
+    <link rel="stylesheet" href="example.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
@@ -408,7 +408,7 @@
 
 
 
- <section class="reviews-section">
+    <section class="reviews-section">
         <div class="reviews-header">
             <h1>COMMUNITY REVIEWS</h1>
             <p>See what others are saying about fuel stations</p>
@@ -518,10 +518,10 @@
     </footer>
 
 
-   <script src="header.js"></script>
+    <script src="header.js"></script>
     <script>
         const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs"; 
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs";
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let map;
         let userMarker;
@@ -951,201 +951,201 @@
 
 
         const menu = document.querySelector(".nav__menu");
-const openBtn = document.getElementById("open-menu-btn");
-const closeBtn = document.getElementById("close-menu-btn");
-const setting = document.getElementById("settingbtn")
+        const openBtn = document.getElementById("open-menu-btn");
+        const closeBtn = document.getElementById("close-menu-btn");
+        const setting = document.getElementById("settingbtn")
 
-openBtn.onclick = () => {
-    menu.classList.add("show");
-    openBtn.style.display = "none";
-    closeBtn.style.display = "block";
-
-
-};
-
-closeBtn.onclick = () => {
-    menu.classList.remove("show");
-    openBtn.style.display = "block";
-    closeBtn.style.display = "none";
-};
-
-const elements = document.querySelectorAll(".fade-up");
-
-window.addEventListener("scroll", () => {
-    elements.forEach(el => {
-        const position = el.getBoundingClientRect().top;
-        const screenHeight = window.innerHeight;
-
-        if (position < screenHeight - 100) {
-            el.classList.add("show");
-        }
-    });
-});
-
-const fuelButtons = document.querySelectorAll(".fuel-btn button");
-
-fuelButtons.forEach(button => {
-    button.addEventListener("click", () => {
-
-        // remove active from all
-        fuelButtons.forEach(btn => btn.classList.remove("active"));
-
-        // add active to clicked
-        button.classList.add("active");
-
-    });
-});
-
-// Agency select
-document.querySelectorAll(".agency-box").forEach(box => {
-    box.onclick = () => {
-        document.querySelectorAll(".agency-box").forEach(b => b.classList.remove("active"));
-        box.classList.add("active");
-    };
-});
-
-// Booking click
-const steps = document.querySelectorAll(".step");
-const popup = document.getElementById("popup");
-
-document.getElementById("bookBtn").onclick = () => {
-
-    let i = 0;
-
-    let interval = setInterval(() => {
-        if (i < steps.length) {
-            steps[i].classList.add("active");
-            i++;
-        } else {
-            clearInterval(interval);
-
-            // show popup
-            popup.style.display = "block";
-
-            setTimeout(() => {
-                popup.style.display = "none";
-            }, 3000);
-        }
-    }, 1000);
-};
-
-// Live price update
-setInterval(() => {
-    let price = 880 + Math.floor(Math.random() * 50);
-    document.getElementById("price").innerText = "₹" + price;
-}, 3000);
+        openBtn.onclick = () => {
+            menu.classList.add("show");
+            openBtn.style.display = "none";
+            closeBtn.style.display = "block";
 
 
+        };
 
-let selectedRating = 0;
+        closeBtn.onclick = () => {
+            menu.classList.remove("show");
+            openBtn.style.display = "block";
+            closeBtn.style.display = "none";
+        };
 
-// STAR CLICK
-const stars = document.querySelectorAll("#stars span");
-stars.forEach(star => {
-    star.onclick = () => {
-        selectedRating = star.dataset.value;
+        const elements = document.querySelectorAll(".fade-up");
 
-        stars.forEach(s => s.classList.remove("active"));
-        for (let i = 0; i < selectedRating; i++) {
-            stars[i].classList.add("active");
-        }
-    };
-});
+        window.addEventListener("scroll", () => {
+            elements.forEach(el => {
+                const position = el.getBoundingClientRect().top;
+                const screenHeight = window.innerHeight;
 
-const btn = document.getElementById("submitFeedback");
-const list = document.getElementById("feedbackList");
+                if (position < screenHeight - 100) {
+                    el.classList.add("show");
+                }
+            });
+        });
 
-// LOAD
-function loadFeedback() {
-    list.innerHTML = "";
-    const data = JSON.parse(localStorage.getItem("feedbacks")) || [];
+        const fuelButtons = document.querySelectorAll(".fuel-btn button");
 
-    data.forEach(fb => {
-        const div = document.createElement("div");
-        div.classList.add("feedback-card");
+        fuelButtons.forEach(button => {
+            button.addEventListener("click", () => {
 
-        // avatar first letter
-        const letter = fb.name.charAt(0).toUpperCase();
+                // remove active from all
+                fuelButtons.forEach(btn => btn.classList.remove("active"));
 
-        // stars
-        let starsHTML = "★".repeat(fb.rating);
+                // add active to clicked
+                button.classList.add("active");
 
-        div.innerHTML = `
+            });
+        });
+
+        // Agency select
+        document.querySelectorAll(".agency-box").forEach(box => {
+            box.onclick = () => {
+                document.querySelectorAll(".agency-box").forEach(b => b.classList.remove("active"));
+                box.classList.add("active");
+            };
+        });
+
+        // Booking click
+        const steps = document.querySelectorAll(".step");
+        const popup = document.getElementById("popup");
+
+        document.getElementById("bookBtn").onclick = () => {
+
+            let i = 0;
+
+            let interval = setInterval(() => {
+                if (i < steps.length) {
+                    steps[i].classList.add("active");
+                    i++;
+                } else {
+                    clearInterval(interval);
+
+                    // show popup
+                    popup.style.display = "block";
+
+                    setTimeout(() => {
+                        popup.style.display = "none";
+                    }, 3000);
+                }
+            }, 1000);
+        };
+
+        // Live price update
+        setInterval(() => {
+            let price = 880 + Math.floor(Math.random() * 50);
+            document.getElementById("price").innerText = "₹" + price;
+        }, 3000);
+
+
+
+        let selectedRating = 0;
+
+        // STAR CLICK
+        const stars = document.querySelectorAll("#stars span");
+        stars.forEach(star => {
+            star.onclick = () => {
+                selectedRating = star.dataset.value;
+
+                stars.forEach(s => s.classList.remove("active"));
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add("active");
+                }
+            };
+        });
+
+        const btn = document.getElementById("submitFeedback");
+        const list = document.getElementById("feedbackList");
+
+        // LOAD
+        function loadFeedback() {
+            list.innerHTML = "";
+            const data = JSON.parse(localStorage.getItem("feedbacks")) || [];
+
+            data.forEach(fb => {
+                const div = document.createElement("div");
+                div.classList.add("feedback-card");
+
+                // avatar first letter
+                const letter = fb.name.charAt(0).toUpperCase();
+
+                // stars
+                let starsHTML = "★".repeat(fb.rating);
+
+                div.innerHTML = `
             <div class="avatar">${letter}</div>
             <h4>${fb.name}</h4>
             <div class="rating">${starsHTML}</div>
             <p>${fb.message}</p>
         `;
 
-        list.appendChild(div);
-    });
-}
+                list.appendChild(div);
+            });
+        }
 
-// ADD
-btn.onclick = () => {
-    const name = document.getElementById("name").value;
-    const message = document.getElementById("message").value;
+        // ADD
+        btn.onclick = () => {
+            const name = document.getElementById("name").value;
+            const message = document.getElementById("message").value;
 
-    if (!name || !message || selectedRating == 0) {
-        return alert("Fill all fields + rating");
-    }
+            if (!name || !message || selectedRating == 0) {
+                return alert("Fill all fields + rating");
+            }
 
-    const data = JSON.parse(localStorage.getItem("feedbacks")) || [];
+            const data = JSON.parse(localStorage.getItem("feedbacks")) || [];
 
-    data.push({ name, message, rating: selectedRating });
+            data.push({ name, message, rating: selectedRating });
 
-    localStorage.setItem("feedbacks", JSON.stringify(data));
+            localStorage.setItem("feedbacks", JSON.stringify(data));
 
-    loadFeedback();
+            loadFeedback();
 
-    // reset
-    document.getElementById("name").value = "";
-    document.getElementById("message").value = "";
-    selectedRating = 0;
-    stars.forEach(s => s.classList.remove("active"));
-};
+            // reset
+            document.getElementById("name").value = "";
+            document.getElementById("message").value = "";
+            selectedRating = 0;
+            stars.forEach(s => s.classList.remove("active"));
+        };
 
-// DEMO DATA
-if (!localStorage.getItem("feedbacks")) {
-    const demo = [
-        { name: "Rahul", message: "Amazing service!", rating: 5 },
-        { name: "Priya", message: "Very easy to use 👍", rating: 4 },
-        { name: "Amit", message: "Loved tracking feature!", rating: 5 },
-        { name: "Sneha", message: "Fast delivery 🚀", rating: 4 },
-        { name: "Rohit", message: "Clean UI design", rating: 5 }
-    ];
-    localStorage.setItem("feedbacks", JSON.stringify(demo));
-}
+        // DEMO DATA
+        if (!localStorage.getItem("feedbacks")) {
+            const demo = [
+                { name: "Rahul", message: "Amazing service!", rating: 5 },
+                { name: "Priya", message: "Very easy to use 👍", rating: 4 },
+                { name: "Amit", message: "Loved tracking feature!", rating: 5 },
+                { name: "Sneha", message: "Fast delivery 🚀", rating: 4 },
+                { name: "Rohit", message: "Clean UI design", rating: 5 }
+            ];
+            localStorage.setItem("feedbacks", JSON.stringify(demo));
+        }
 
-// INIT
-loadFeedback();
-
-
-// reviwe
+        // INIT
+        loadFeedback();
 
 
-const form = document.getElementById("feedbackForm");
-const wrapper = document.querySelector(".swiper-wrapper");
+        // reviwe
 
-form.addEventListener("submit", function (e) {
-    e.preventDefault();
 
-    const name = document.getElementById("name").value;
-    const rating = document.getElementById("rating").value;
-    const message = document.getElementById("message").value;
+        const form = document.getElementById("feedbackForm");
+        const wrapper = document.querySelector(".swiper-wrapper");
 
-    addSlide(name, rating, message);
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
 
-    form.reset();
-});
+            const name = document.getElementById("name").value;
+            const rating = document.getElementById("rating").value;
+            const message = document.getElementById("message").value;
 
-function addSlide(name, rating, message) {
-    const slide = document.createElement("article");
-    slide.classList.add("testimonial", "swiper-slide");
+            addSlide(name, rating, message);
 
-    let stars = "⭐".repeat(rating);
+            form.reset();
+        });
 
-    slide.innerHTML = `
+        function addSlide(name, rating, message) {
+            const slide = document.createElement("article");
+            slide.classList.add("testimonial", "swiper-slide");
+
+            let stars = "⭐".repeat(rating);
+
+            slide.innerHTML = `
         <div class="testimonial__info">
             <h5>${name}</h5>
             <small>${stars}</small>
@@ -1155,40 +1155,40 @@ function addSlide(name, rating, message) {
         </div>
     `;
 
-    wrapper.prepend(slide);
+            wrapper.prepend(slide);
 
-    // Swiper refresh
-    if (typeof swiper !== "undefined") {
-        swiper.update();
-    }
-}
-
-
+            // Swiper refresh
+            if (typeof swiper !== "undefined") {
+                swiper.update();
+            }
+        }
 
 
-function showContent(type, event) {
-    // Update active menu item
-    document.querySelectorAll('.menu-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    if (event && event.target) {
-        event.target.closest('.menu-item').classList.add('active');
-    }
 
-    const contentArea = document.getElementById('contentArea');
-    if (!contentArea) return;
 
-    // Get user data from localStorage or use defaults
-    const userData = JSON.parse(localStorage.getItem('userData')) || {
-        mobile: '+91 98765 43210',
-        email: 'user@example.com',
-        name: 'John Doe',
-        profilePic: null
-    };
+        function showContent(type, event) {
+            // Update active menu item
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            if (event && event.target) {
+                event.target.closest('.menu-item').classList.add('active');
+            }
 
-    switch (type) {
-        case 'info':
-            contentArea.innerHTML = `
+            const contentArea = document.getElementById('contentArea');
+            if (!contentArea) return;
+
+            // Get user data from localStorage or use defaults
+            const userData = JSON.parse(localStorage.getItem('userData')) || {
+                mobile: '+91 98765 43210',
+                email: 'user@example.com',
+                name: 'John Doe',
+                profilePic: null
+            };
+
+            switch (type) {
+                case 'info':
+                    contentArea.innerHTML = `
                         <div class="info-section">
                             <h3>Your Info</h3>
                             <div class="info-card">
@@ -1207,10 +1207,10 @@ function showContent(type, event) {
                             </div>
                         </div>
                     `;
-            break;
+                    break;
 
-        case 'notifications':
-            contentArea.innerHTML = `
+                case 'notifications':
+                    contentArea.innerHTML = `
                         <div class="notifications-section">
                             <h3>Notifications</h3>
                             <div class="notification-list">
@@ -1241,10 +1241,10 @@ function showContent(type, event) {
                             </div>
                         </div>
                     `;
-            break;
+                    break;
 
-        case 'privacy':
-            contentArea.innerHTML = `
+                case 'privacy':
+                    contentArea.innerHTML = `
                         <div class="privacy-section">
                             <h3>Privacy & Security</h3>
                             <div class="settings-list">
@@ -1281,10 +1281,10 @@ function showContent(type, event) {
                             </div>
                         </div>
                     `;
-            break;
+                    break;
 
-        case 'about':
-            contentArea.innerHTML = `
+                case 'about':
+                    contentArea.innerHTML = `
                         <div class="about-section">
                             <h3>About FuelFinder</h3>
                             <div class="about-content">
@@ -1315,10 +1315,10 @@ function showContent(type, event) {
                             </div>
                         </div>
                     `;
-            break;
+                    break;
 
-        case 'help':
-            contentArea.innerHTML = `
+                case 'help':
+                    contentArea.innerHTML = `
                         <div class="help-section">
                             <h3>Help & Feedback</h3>
                             <div class="help-content">
@@ -1346,25 +1346,293 @@ function showContent(type, event) {
                             </div>
                         </div>
                     `;
-            break;
+                    break;
 
-        case 'signout':
-            signOut();
-            break;
+                case 'signout':
+                    signOut();
+                    break;
+            }
+
+        }
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            const overlay = document.getElementById('overlay');
+
+            panel.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        if (localStorage.getItem("loggedIn") !== "true") {
+            window.location.href = "login.html";
+        }
+        /* ================== GAS BOOKING ================== */
+
+        let selectedProvider = "HP Gas";
+        let selectedCylinder = "14.2 kg Regular";
+        let selectedPayment = "Online Payment";
+
+        /* ===== PROVIDER SELECT ===== */
+        document.querySelectorAll(".provider-option").forEach(option => {
+            option.addEventListener("click", () => {
+
+                document.querySelectorAll(".provider-option")
+                    .forEach(o => o.classList.remove("selected"));
+
+                option.classList.add("selected");
+
+                const type = option.dataset.provider;
+
+                if (type === "hp") selectedProvider = "HP Gas";
+                if (type === "bharat") selectedProvider = "Bharat Gas";
+                if (type === "indian") selectedProvider = "Indian Gas";
+            });
+        });
+
+        /* ===== CYLINDER SELECT ===== */
+        document.querySelectorAll(".cylinder-option").forEach(option => {
+            option.addEventListener("click", () => {
+
+                document.querySelectorAll(".cylinder-option")
+                    .forEach(o => o.classList.remove("selected"));
+
+                option.classList.add("selected");
+
+                const weight = option.dataset.type;
+
+                if (weight === "14.2") selectedCylinder = "14.2 kg Regular";
+                if (weight === "5") selectedCylinder = "5 kg Compact";
+                if (weight === "19") selectedCylinder = "19 kg Commercial";
+            });
+        });
+
+        /* ===== PAYMENT SELECT ===== */
+        document.querySelectorAll(".payment-option").forEach(option => {
+            option.addEventListener("click", () => {
+
+                document.querySelectorAll(".payment-option")
+                    .forEach(o => o.classList.remove("selected"));
+
+                option.classList.add("selected");
+
+                const type = option.dataset.payment;
+
+                selectedPayment = type === "online"
+                    ? "Online Payment"
+                    : "Cash on Delivery";
+            });
+        });
+
+        /* ===== NEXT STEP ===== */
+        function nextStep() {
+
+            const steps = document.querySelectorAll(".step-content");
+            const indicators = document.querySelectorAll(".step-indicator");
+
+            let current = [...steps].findIndex(s => s.classList.contains("active"));
+
+            if (current < steps.length - 1) {
+
+                steps[current].classList.remove("active");
+                indicators[current].classList.remove("active");
+
+                steps[current + 1].classList.add("active");
+                indicators[current + 1].classList.add("active");
+            }
+
+            /* ===== AUTO SUMMARY ===== */
+            if (current === 1) {
+
+                const name = document.getElementById("fullName").value;
+                const mobile = document.getElementById("mobileNumber").value;
+                const consumer = document.getElementById("consumerId").value;
+                const address = document.getElementById("address").value;
+                const date = document.getElementById("deliveryDate").value;
+
+                if (!name || !mobile || !consumer || !address || !date) {
+                    alert("❌ Please fill all details");
+                    return;
+                }
+
+                document.getElementById("summaryProvider").innerText = selectedProvider;
+                document.getElementById("summaryName").innerText = name;
+                document.getElementById("summaryMobile").innerText = mobile;
+                document.getElementById("summaryConsumer").innerText = consumer;
+                document.getElementById("summaryCylinder").innerText = selectedCylinder;
+                document.getElementById("summaryDate").innerText = date;
+                document.getElementById("summaryAddress").innerText = address;
+                document.getElementById("summaryPayment").innerText = selectedPayment;
+            }
+        }
+
+        /* ===== CONFIRM BOOKING ===== */
+        function confirmBooking() {
+
+            const successBox = document.getElementById("bookingSuccess");
+            const step3 = document.getElementById("step3");
+
+            step3.style.display = "none";
+            successBox.style.display = "block";
+
+            /* ===== GENERATE ORDER ID ===== */
+            const ref = "#FUEL" + Math.floor(Math.random() * 1000000);
+            document.getElementById("bookingRef").innerText = ref;
+
+            /* ===== SAVE DATA (LOCAL STORAGE) ===== */
+            const bookingData = {
+                provider: selectedProvider,
+                name: document.getElementById("summaryName").innerText,
+                mobile: document.getElementById("summaryMobile").innerText,
+                consumer: document.getElementById("summaryConsumer").innerText,
+                cylinder: selectedCylinder,
+                date: document.getElementById("summaryDate").innerText,
+                address: document.getElementById("summaryAddress").innerText,
+                payment: selectedPayment,
+                ref: ref
+            };
+
+            let allBookings = JSON.parse(localStorage.getItem("gasBookings")) || [];
+            allBookings.push(bookingData);
+
+            localStorage.setItem("gasBookings", JSON.stringify(allBookings));
+        }
+
+        /* ===== OPTIONAL: LOAD PREVIOUS BOOKINGS ===== */
+        function loadBookings() {
+            const data = JSON.parse(localStorage.getItem("gasBookings")) || [];
+            console.log("Previous bookings:", data);
+        }
+
+
+
+
+
+
+
+
+
+
+
+/* ================= REVIEW SECTION ================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    let selectedRating = 0;
+    let mockReviews = [];
+
+    /* ⭐ STAR RATING */
+    document.querySelectorAll('.star-rating .star').forEach(star => {
+
+        star.addEventListener('click', () => {
+            selectedRating = parseInt(star.dataset.rating);
+
+            const hiddenInput = document.getElementById('selectedRating');
+            if (hiddenInput) hiddenInput.value = selectedRating;
+
+            updateStars();
+        });
+
+        star.addEventListener('mouseenter', () => {
+            highlightStars(parseInt(star.dataset.rating));
+        });
+
+    });
+
+    const starBox = document.getElementById('starRating');
+    if (starBox) {
+        starBox.addEventListener('mouseleave', updateStars);
     }
 
-}
-function toggleSettings() {
-    const panel = document.getElementById('settingsPanel');
-    const overlay = document.getElementById('overlay');
+    function updateStars() {
+        document.querySelectorAll('.star-rating .star').forEach(star => {
+            const rating = parseInt(star.dataset.rating);
+            star.classList.toggle('active', rating <= selectedRating);
+        });
+    }
 
-    panel.classList.toggle('active');
-    overlay.classList.toggle('active');
-}
+    function highlightStars(rating) {
+        document.querySelectorAll('.star-rating .star').forEach(star => {
+            const starRating = parseInt(star.dataset.rating);
+            star.style.color = starRating <= rating ? '#FFD600' : '#555';
+        });
+    }
 
-if (localStorage.getItem("loggedIn") !== "true") {
-    window.location.href = "login.html";
-}
+    /* 🧾 RENDER REVIEWS */
+    function renderReviews() {
+        const feed = document.getElementById('reviewsFeed');
+        if (!feed) return;
+
+        feed.innerHTML = mockReviews.map(review => {
+
+            const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+
+            return `
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-avatar" style="background:${review.color}">
+                            ${review.initial}
+                        </div>
+                        <div class="reviewer-info">
+                            <div class="reviewer-name">${review.name}</div>
+                            <div class="review-meta">
+                                <span class="review-stars">${stars}</span>
+                                <span class="fuel-badge">${review.fuel.toUpperCase()}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="review-text">${review.text}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /* 📩 SUBMIT REVIEW */
+    window.submitReview = function (e) {
+        e.preventDefault();
+
+        const rating = parseInt(document.getElementById('selectedRating').value);
+        const fuelType = document.getElementById('reviewFuelType').value;
+        const text = document.getElementById('reviewText').value;
+
+        if (!rating || !fuelType || !text) {
+            alert("Fill all fields + rating");
+            return;
+        }
+
+        const colors = {
+            petrol: '#FF6B00',
+            diesel: '#4A90D9',
+            cng: '#00C853',
+            lpg: '#FF5722',
+            ev: '#00FFD1',
+            gas: '#FFD600'
+        };
+
+        const newReview = {
+            id: Date.now(),
+            name: "You",
+            initial: "Y",
+            color: colors[fuelType],
+            rating,
+            fuel: fuelType,
+            text
+        };
+
+        mockReviews.unshift(newReview);
+        renderReviews();
+
+        document.getElementById('reviewForm').reset();
+        selectedRating = 0;
+        document.getElementById('selectedRating').value = 0;
+        updateStars();
+    };
+
+    /* 🚀 INIT */
+    renderReviews();
+
+});
+
+
 
 
     </script>
