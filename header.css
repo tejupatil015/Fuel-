@@ -1187,191 +1187,113 @@ button:hover,
     }
 }
 
-/* 🔥 SECTION SPACING */
-.fueltypes {
-    text-align: center;
-    margin-top: 60px;
+/* ===== GLOBAL ===== */
+body {
+    background: #0a0a0f;
+    color: white;
+    font-family: 'Montserrat', sans-serif;
 }
 
-.fueltypes h2 {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    background: linear-gradient(90deg, #ff4d6d, #f71635);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* ===== MAP GRID ===== */
+.map-section {
+    display: none;
+    grid-template-columns: 1fr 2fr;
+    gap: 25px;
+    padding: 30px;
 }
-
-.fueltypes p {
-    color: var(--color-text-light);
-    margin-bottom: 25px;
-}
-
-/* 🔥 BUTTON GRID */
-.fuel-btn {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
-}
-
-/* 🔥 BUTTON STYLE */
-.fuel-btn button {
-    padding: 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    background: var(--color-glass);
-    color: var(--color-text);
-    cursor: pointer;
-    font-weight: 500;
-    transition: var(--transition);
-    backdrop-filter: blur(10px);
-}
-
-/* 🔥 HOVER EFFECT */
-.fuel-btn button:hover {
-    transform: translateY(-5px) scale(1.05);
-    background: var(--color-primary);
-    box-shadow: var(--shadow);
-}
-
-/* 🔥 ACTIVE BUTTON */
-.fuel-btn button.active {
-    background: var(--color-primary);
-    box-shadow: var(--shadow);
-}
-
+/* ===== PANEL ===== */
 .station-info-panel {
-    background: var(--color-glass-strong);
+    background: linear-gradient(145deg, #111, #1a1a1a);
     padding: 20px;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    backdrop-filter: blur(12px);
-    box-shadow: var(--shadow);
-    height: 500px;
-    overflow-y: auto;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(247,22,53,0.2);
 }
 
-.station-info-title {
-    font-size: 1.5rem;
+/* TITLE */
+.station-title {
+    color: #f71635;
+    font-size: 22px;
     margin-bottom: 20px;
-    color: var(--color-primary-light);
+    font-weight: bold;
 }
 
-/* ROWS */
-.station-info-row {
+/* ===== CARD ===== */
+.station-item {
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: 0.3s;
+    border-left: 4px solid #f71635;
+}
+
+/* HOVER EFFECT 🔥 */
+.station-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px #f71635;
+}
+
+/* TOP ROW */
+.row.top {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border-color);
+    align-items: center;
 }
 
-.station-info-row span {
-    color: var(--color-text-light);
+/* STATION NAME */
+.row.top h3 {
+    font-size: 16px;
+    font-weight: 600;
 }
 
-.main {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 20px;
-    margin: 40px auto;
-    width: var(--container-width-lg);
+/* PRICE 🔥 */
+.price {
+    color: #f71635;
+    font-size: 18px;
+    font-weight: bold;
 }
 
-/* LEFT PANEL */
-.panel {
-    background: var(--color-glass);
-    border-radius: 16px;
-    padding: 20px;
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-color);
-    height: 500px;
-    overflow-y: auto;
+/* ADDRESS */
+.address {
+    font-size: 13px;
+    color: #bbb;
+    margin: 6px 0;
 }
 
-/* SCROLLBAR */
-.panel::-webkit-scrollbar {
-    width: 5px;
-}
-.panel::-webkit-scrollbar-thumb {
-    background: var(--color-primary);
-}
-
-/* CARD */
-.card {
-    background: var(--color-bg3);
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    transition: var(--transition);
-    border: 1px solid var(--border-color);
-}
-
-.card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow);
+/* INFO ROW */
+.row.info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #ddd;
+    margin-top: 5px;
 }
 
 /* BUTTONS */
-.card button {
+.actions {
     margin-top: 10px;
-    margin-right: 6px;
-    padding: 6px 12px;
-    border-radius: 6px;
+}
+
+.actions button {
+    background: #f71635;
     border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: white;
     cursor: pointer;
-    font-size: 0.85rem;
+    transition: 0.3s;
 }
 
-.btn-map {
-    background: var(--color-primary);
-    color: white;
+.actions button:hover {
+    background: #ff4d6d;
 }
-
-.btn-route {
-    background: black;
-    color: white;
-}
+/* ===== MAP ===== */
 #map {
-    width: 100%;
-    height: 500px;
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow);
-}
-@media (max-width: 1024px) {
-    .fuel-btn {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    .main {
-        grid-template-columns: 1fr;
-    }
-
-    #map {
-        height: 350px;
-    }
+    height: 450px;
+    border-radius: 15px;
 }
 
-@media (max-width: 600px) {
-    .fuel-btn {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .fueltypes h2 {
-        font-size: 1.5rem;
-    }
-
-    .panel {
-        height: auto;
-    }
-}
-.map-section {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 20px;
-    margin: 40px auto;
-    width: var(--container-width-lg);
-}
+/* ===== MOBILE ===== */
 @media (max-width: 768px) {
     .map-section {
         grid-template-columns: 1fr;
@@ -1380,103 +1302,361 @@ button:hover,
     #map {
         height: 300px;
     }
-
-    .station-info-panel {
-        height: auto;
-    }
 }
 
-/* GRID CONTAINER */
-.cards-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-    margin-top: 20px;
-}
-.station-card {
-    background: linear-gradient(145deg, #1f1f2a, #16161d);
-    border-radius: 16px;
-    padding: 18px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== BOOKING SECTION ===== */
+.booking-section {
+    padding: 80px 20px;
+    background: linear-gradient(135deg, #0a0a0f, #12121a);
+    min-height: 100vh;
 }
 
-/* Glow effect */
-.station-card::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(247,22,53,0.15), transparent 60%);
-    transform: rotate(25deg);
+/* HEADER */
+.section-title {
+    text-align: center;
+    font-size: 3rem;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 2px;
 }
 
-/* Hover */
-.station-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 15px 40px rgba(247,22,53,0.3);
+.section-subtitle {
+    text-align: center;
+    color: #aaa;
+    margin-bottom: 40px;
 }
 
-/* Title */
-.station-card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 8px;
-    color: var(--color-primary-light);
-}
-
-/* Address */
-.station-card p {
-    font-size: 0.9rem;
-    color: var(--color-text-light);
-    margin-bottom: 10px;
-}
-.meta {
+/* ===== STEPS ===== */
+.booking-steps {
     display: flex;
-    justify-content: space-between;
-    margin-top: 8px;
-    font-size: 0.85rem;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
 }
 
-.meta span {
-    background: rgba(255,255,255,0.05);
-    padding: 6px 10px;
-    border-radius: 6px;
+.step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #888;
 }
-.station-card button {
-    margin-top: 12px;
-    margin-right: 8px;
-    padding: 7px 12px;
-    border-radius: 8px;
-    border: none;
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-indicator.active {
+    color: #FFD700;
+}
+
+.step-indicator.active .step-number {
+    background: #FFD700;
+    color: #000;
+}
+
+.step-divider {
+    width: 50px;
+    height: 2px;
+    background: #444;
+}
+
+/* ===== CARD ===== */
+.booking-card {
+    max-width: 900px;
+    margin: auto;
+    padding: 40px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
+}
+
+/* ===== STEP CONTENT ===== */
+.step-content {
+    display: none;
+    animation: fadeUp 0.5s ease;
+}
+
+.step-content.active {
+    display: block;
+}
+
+/* ===== PROVIDER GRID ===== */
+.provider-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.provider-option {
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
     cursor: pointer;
-    font-size: 0.85rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid transparent;
     transition: 0.3s;
 }
 
-/* View Map */
-.station-card button:first-child {
-    background: var(--color-primary);
-    color: white;
+.provider-option:hover {
+    transform: translateY(-5px);
+    border-color: #FFD700;
 }
 
-/* Route */
-.station-card button:last-child {
-    background: transparent;
-    border: 1px solid var(--color-primary);
-    color: var(--color-primary);
+.provider-option.selected {
+    border: 2px solid #FFD700;
+    box-shadow: 0 0 20px #FFD70055;
 }
 
-/* Hover */
-.station-card button:hover {
+.provider-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.provider-name {
+    color: #fff;
+}
+
+/* ===== FORM ===== */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-label {
+    color: #ccc;
+    font-size: 14px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #444;
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    transition: 0.3s;
+}
+
+.form-input:focus {
+    border-color: #FFD700;
+    box-shadow: 0 0 10px #FFD70055;
+}
+
+/* ===== CYLINDER ===== */
+.cylinder-options {
+    display: flex;
+    gap: 15px;
+}
+
+.cylinder-option {
+    flex: 1;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #444;
+    transition: 0.3s;
+}
+
+.cylinder-option.selected {
+    border: 2px solid #FFD700;
+    background: rgba(255,215,0,0.1);
+}
+
+/* ===== PAYMENT ===== */
+.payment-options {
+    display: flex;
+    gap: 15px;
+}
+
+.payment-option {
+    flex: 1;
+    padding: 15px;
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid #444;
+    cursor: pointer;
+}
+
+.payment-option.selected {
+    border: 2px solid #FFD700;
+    background: rgba(255,215,0,0.1);
+}
+
+/* ===== BUTTON ===== */
+.btn-book {
+    width: 100%;
+    padding: 15px;
+    border-radius: 30px;
+    border: none;
+    background: linear-gradient(90deg, #FFD700, #ffb300);
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-book:hover {
     transform: scale(1.05);
+    box-shadow: 0 0 20px #FFD700;
 }
+
+/* ===== SUMMARY ===== */
+.summary-card {
+    background: rgba(0,0,0,0.4);
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.summary-label {
+    color: #aaa;
+}
+
+.summary-value {
+    color: #fff;
+}
+
+/* ===== SUCCESS ===== */
+.booking-success {
+    display: none;
+    text-align: center;
+    animation: pop 0.5s ease;
+}
+
+.success-icon {
+    font-size: 50px;
+    color: #00ff88;
+    margin-bottom: 15px;
+    animation: bounce 0.6s;
+}
+
+.success-title {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.success-message {
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.booking-ref {
+    color: #FFD700;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.success-actions button {
+    margin: 10px;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeUp {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+
+@keyframes pop {
+    from {transform:scale(0.7); opacity:0;}
+    to {transform:scale(1); opacity:1;}
+}
+
+@keyframes bounce {
+    0% {transform:scale(0);}
+    60% {transform:scale(1.2);}
+    100% {transform:scale(1);}
+}
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-    .cards-container {
+    .form-grid {
         grid-template-columns: 1fr;
     }
+
+    .cylinder-options,
+    .payment-options {
+        flex-direction: column;
+    }
+
+    .booking-card {
+        padding: 20px;
+    }
 }
+.payment-details {
+    transition: all 0.3s ease;
+}
+
+.payment-details.hide {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.payment-details.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
+
+
+
+

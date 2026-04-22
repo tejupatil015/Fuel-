@@ -491,4 +491,63 @@ document.querySelectorAll(".fuel-btn button").forEach(btn => {
     });
 });
 
+function nextStep() {
+    const steps = document.querySelectorAll(".step-content");
+    const indicators = document.querySelectorAll(".step-indicator");
 
+    let current = [...steps].findIndex(s => s.classList.contains("active"));
+
+    if (current < steps.length - 1) {
+        steps[current].classList.remove("active");
+        indicators[current].classList.remove("active");
+
+        steps[current + 1].classList.add("active");
+        indicators[current + 1].classList.add("active");
+    }
+
+    // Fill summary automatically
+    if (current === 1) {
+        document.getElementById("summaryName").innerText = fullName.value;
+        document.getElementById("summaryMobile").innerText = mobileNumber.value;
+        document.getElementById("summaryConsumer").innerText = consumerId.value;
+        document.getElementById("summaryAddress").innerText = address.value;
+        document.getElementById("summaryDate").innerText = deliveryDate.value;
+    }
+}
+
+function confirmBooking() {
+    document.getElementById("step3").style.display = "none";
+    document.getElementById("bookingSuccess").style.display = "block";
+
+    document.getElementById("bookingRef").innerText =
+        "#FUEL" + Math.floor(Math.random() * 1000000);
+}
+
+const paymentOptions = document.querySelectorAll(".payment-option");
+const onlineDetails = document.getElementById("onlinePaymentDetails");
+
+paymentOptions.forEach(option => {
+    option.addEventListener("click", () => {
+
+        // active class handle
+        paymentOptions.forEach(o => o.classList.remove("selected"));
+        option.classList.add("selected");
+
+        const type = option.getAttribute("data-payment");
+
+        // 🔥 HE TULA VICHARLALA CODE ITHE TAKAYCHA
+        if (type === "online") {
+            onlineDetails.classList.remove("hide");
+            onlineDetails.classList.add("show");
+            onlineDetails.style.display = "block";
+        } else {
+            onlineDetails.classList.remove("show");
+            onlineDetails.classList.add("hide");
+
+            setTimeout(() => {
+                onlineDetails.style.display = "none";
+            }, 300);
+        }
+
+    });
+});

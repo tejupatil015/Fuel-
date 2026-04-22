@@ -106,66 +106,202 @@
     </div>
     <!--                              gasbooking                             -->
 
-    <section class="bookgas container">
 
-        <!-- LEFT -->
-        <div class="left">
 
-            <h2 class="bookcylinder">Book Cylinder Delivery</h2>
-            <p>Schedule your LPG refill with real-time tracking.</p>
 
-            <!-- Agency -->
-            <div class="card">
-                <h4 class="selectagency">Select Agency</h4>
-                <div class="agency">
-                    <div class="agency-box active">Indane</div>
-                    <div class="agency-box">HP</div>
-                    <div class="agency-box">Bharat</div>
+
+
+    <!-- Section 5: Gas Cylinder Booking -->
+    <section class="booking-section" id="booking-section">
+        <div class="section-header">
+            <h2 class="section-title">Book Gas Cylinder</h2>
+            <p class="section-subtitle">Quick and easy home delivery</p>
+        </div>
+        <div class="booking-container">
+            <div class="booking-steps">
+                <div class="step-indicator active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span>Select Provider</span>
+                </div>
+                <div class="step-divider"></div>
+                <div class="step-indicator" data-step="2">
+                    <span class="step-number">2</span>
+                    <span>Enter Details</span>
+                </div>
+                <div class="step-divider"></div>
+                <div class="step-indicator" data-step="3">
+                    <span class="step-number">3</span>
+                    <span>Confirm</span>
                 </div>
             </div>
+            <div class="booking-card">
+                <!-- Step 1: Provider Selection -->
+                <div class="step-content active" id="step1">
+                    <h3 style="font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; margin-bottom: 1.5rem;">Select
+                        Your Gas Provider</h3>
+                    <div class="provider-grid">
+                        <div class="provider-option selected" data-provider="hp">
+                            <div class="provider-logo" style="background: #E53935;">HP</div>
+                            <div class="provider-name">HP Gas</div>
+                        </div>
+                        <div class="provider-option" data-provider="bharat">
+                            <div class="provider-logo" style="background: #1976D2;">Bharat</div>
+                            <div class="provider-name">Bharat Gas</div>
+                        </div>
+                        <div class="provider-option" data-provider="indian">
+                            <div class="provider-logo" style="background: #FFC107; color: #000;">Indian</div>
+                            <div class="provider-name">Indian Gas</div>
+                        </div>
+                    </div>
+                    <button class="btn-book" style="margin-top: 2rem;" onclick="nextStep()">Continue</button>
+                </div>
 
-            <!-- Inputs -->
-            <div class="card">
-                <input type="text" placeholder="Consumer Number">
-                <input type="text" placeholder="Mobile Number">
-                <textarea placeholder="Delivery Address"></textarea>
-            </div>
+                <!-- Step 2: Details Form -->
+                <div class="step-content" id="step2">
+                    <h3 style="font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; margin-bottom: 1.5rem;">Enter
+                        Your Details</h3>
+                    <form id="bookingForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-input" id="fullName" placeholder="Enter your name"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mobile Number</label>
+                                <input type="tel" class="form-input" id="mobileNumber"
+                                    placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Consumer ID</label>
+                                <input type="text" class="form-input" id="consumerId"
+                                    placeholder="Enter your consumer ID" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Delivery Address</label>
+                                <input type="text" class="form-input" id="address"
+                                    placeholder="Enter complete delivery address" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Cylinder Type</label>
+                                <div class="cylinder-options">
+                                    <div class="cylinder-option selected" data-type="14.2">
+                                        <div class="cylinder-weight">14.2 kg</div>
+                                        <div class="cylinder-type">Regular</div>
+                                    </div>
+                                    <div class="cylinder-option" data-type="5">
+                                        <div class="cylinder-weight">5 kg</div>
+                                        <div class="cylinder-type">Compact</div>
+                                    </div>
+                                    <div class="cylinder-option" data-type="19">
+                                        <div class="cylinder-weight">19 kg</div>
+                                        <div class="cylinder-type">Commercial</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Preferred Delivery Date</label>
+                                <input type="date" class="form-input" id="deliveryDate" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Payment Method</label>
+                                <div class="payment-options">
+                                    <div class="payment-option selected" data-payment="online">
+                                        <div class="payment-icon">💳</div>
+                                        <div class="payment-name">Online Payment</div>
+                                    </div>
+                                    <div class="payment-option" data-payment="cod">
+                                        <div class="payment-icon">💵</div>
+                                        <div class="payment-name">Cash on Delivery</div>
+                                    </div>
+                                </div>
+                                <div class="payment-details" id="onlinePaymentDetails" style="display: block;">
+                                    <div class="payment-icons">
+                                        <div class="payment-icon-item">
+                                            <span class="icon">📱</span>
+                                            <span>UPI</span>
+                                        </div>
+                                        <div class="payment-icon-item">
+                                            <span class="icon">💳</span>
+                                            <span>Credit/Debit Card</span>
+                                        </div>
+                                        <div class="payment-icon-item">
+                                            <span class="icon">📱</span>
+                                            <span>Google Pay</span>
+                                        </div>
+                                        <div class="payment-icon-item">
+                                            <span class="icon">📱</span>
+                                            <span>PhonePe</span>
+                                        </div>
+                                        <div class="payment-icon-item">
+                                            <span class="icon">📱</span>
+                                            <span>Paytm</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-book" style="margin-top: 1.5rem;"
+                            onclick="nextStep()">Continue</button>
+                    </form>
+                </div>
 
-            <button id="bookBtn" class="btn-primary">Book Now</button>
+                <!-- Step 3: Confirmation -->
+                <div class="step-content" id="step3">
+                    <h3 style="font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; margin-bottom: 1.5rem;">Booking
+                        Summary</h3>
+                    <div class="summary-card">
+                        <div class="summary-title">Order Details</div>
+                        <div class="summary-row">
+                            <span class="summary-label">Provider</span>
+                            <span class="summary-value" id="summaryProvider">HP Gas</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Customer</span>
+                            <span class="summary-value" id="summaryName">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Mobile</span>
+                            <span class="summary-value" id="summaryMobile">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Consumer ID</span>
+                            <span class="summary-value" id="summaryConsumer">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Cylinder Type</span>
+                            <span class="summary-value" id="summaryCylinder">14.2 kg Regular</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Delivery Date</span>
+                            <span class="summary-value" id="summaryDate">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Delivery Address</span>
+                            <span class="summary-value" id="summaryAddress">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Payment Method</span>
+                            <span class="summary-value" id="summaryPayment">Online Payment</span>
+                        </div>
+                    </div>
+                    <button class="btn-book" onclick="confirmBooking()">Confirm Booking</button>
+                </div>
 
-        </div>
-
-        <!-- RIGHT -->
-        <div class="right">
-            <!-- STEP PROGRESS -->
-            <div class="progress">
-                <div class="step active">Order Placed</div>
-                <div class="step">Processing</div>
-                <div class="step">Out for Delivery</div>
-            </div>
-
-            <!-- PRICE -->
-            <div class="price-box">
-                <p>Current LPG Price</p>
-                <h3 id="price">₹900</h3>
-            </div>
-            <!-- MAP -->
-            <div class="map">
-                <iframe src="https://maps.google.com/maps?q=petrol%20pump&t=&z=13&ie=UTF8&iwloc=&output=embed">
-                </iframe>
+                <!-- Success State -->
+                <div class="booking-success" id="bookingSuccess">
+                    <div class="success-icon">✓</div>
+                    <h3 class="success-title">Booking Confirmed!</h3>
+                    <p class="success-message">Your gas cylinder will be delivered in 2-3 business days.</p>
+                    <div class="booking-ref" id="bookingRef">#FUEL000000</div>
+                    <div class="success-actions">
+                        <button class="btn-view-history" onclick="scrollToHistory()">View Booking History</button>
+                        <button class="btn-new-booking" onclick="resetBooking()">Book Another Cylinder</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-    <!-- SUCCESS POPUP -->
-    <div id="popup" class="popup">
-        <h3>✅ Booking Successful</h3>
-        <p>Your gas will be delivered soon.</p>
-    </div>
-    </section>
-
-
-
-
 
 
 
@@ -445,228 +581,111 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
 
+
     <script>
         const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs"; // 👈 replace here
 
-        // ───────── FETCH FUNCTION ─────────
-        async function supaFetch(table) {
-            const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
-                headers: {
-                    apikey: SUPABASE_KEY,
-                    Authorization: `Bearer ${SUPABASE_KEY}`
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let map;
+        let marker;
+
+        /* ===== BUTTON EVENTS ===== */
+        document.querySelector(".petrol-btn").onclick = () => start("petrol");
+        document.querySelector(".diesel-btn").onclick = () => start("diesel");
+        document.querySelector(".lpg-btn").onclick = () => start("lpg");
+        document.querySelector(".cng-btn").onclick = () => start("cng");
+        document.querySelector(".electric-btn").onclick = () => start("electric");
+
+        /* ===== MAIN START ===== */
+        function start(type) {
+
+            document.querySelector(".map-section").style.display = "grid";
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+
+                /* MAP INIT */
+                if (!map) {
+                    map = L.map('map').setView([lat, lng], 13);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+                        .addTo(map);
                 }
-            });
 
-            if (!res.ok) throw new Error(await res.text());
-            return res.json();
-        }
+                /* USER MARKER */
+                if (marker) map.removeLayer(marker);
 
-        // ───────── BUTTON EVENTS ─────────
-        document.querySelector(".petrol-btn").addEventListener("click", () => loadFuel("petrol"));
-        document.querySelector(".diesel-btn").addEventListener("click", () => loadFuel("diesel"));
-        document.querySelector(".lpg-btn").addEventListener("click", () => loadFuel("lpg"));
-        document.querySelector(".cng-btn").addEventListener("click", () => loadFuel("cng"));
-        document.querySelector(".electric-btn").addEventListener("click", () => loadFuel("electric"));
+                marker = L.marker([lat, lng]).addTo(map)
+                    .bindPopup("You are here")
+                    .openPopup();
 
-        // ───────── LOAD DATA ─────────
-        async function loadFuel(type) {
+                /* FETCH DATA */
+                const { data, error } = await client
+                    .from(type)
+                    .select("*");
 
-            const panel = document.getElementById("stationInfoPanel");
-            panel.innerHTML = "Loading...";
-
-            try {
-
-                const data = await supaFetch(type);
-                console.log("DATA FROM SUPABASE:", data);
-                if (!data || data.length === 0) {
-                    panel.innerHTML = "No data found";
+                if (error || !data.length) {
+                    document.getElementById("stationInfoPanel").innerHTML = "No data found";
                     return;
                 }
 
-                showCards(data.slice(0, 4));
-
-            } catch (err) {
-                panel.innerHTML = "Error: " + err.message;
-            }
-            const data = await supaFetch(type);
-
-            console.log("TABLE:", type);
-            console.log("DATA:", data);
-        }
-        function showCards(stations) {
-
-            const panel = document.getElementById("stationInfoPanel");
-
-            panel.innerHTML = `
-        <div class="station-info-title">Nearby Stations</div>
-
-        <div class="cards-container">
-            ${stations.map((s) => `
-                <div class="station-card">
-
-                    <h3>${s.Station || 'Unknown'}</h3>
-                    <p>📍 ${s.Address || 'No address'}</p>
-
-                    <div class="meta">
-                        <span>💰 ₹${s.Price || '—'}</span>
-                        <span>⭐ ${s.Rating || '—'}</span>
-                    </div>
-
-                    <div class="meta">
-                        <span>📍 ${s.Distance || '—'} km</span>
-                        <span>⏱ ${s["Travel Time"] || '—'} min</span>
-                    </div>
-
-                    <button onclick="viewOnMap(${s.latitude}, ${s.longitude})">
-                        View Map
-                    </button>
-
-                    <button onclick="route(${s.latitude}, ${s.longitude})">
-                        Route
-                    </button>
-
-                </div>
-            `).join("")}
-        </div>
-    `;
-        }
-
-
-        window.selectCard = function (index) {
-
-            const s = window._stations[index];
-            const panel = document.getElementById("stationInfoPanel");
-
-            panel.innerHTML = `
-        <div class="station-info-title">Station Details</div>
-
-        <div class="station-info-row"><span>Station:</span><strong>${s.Station || '—'}</strong></div>
-        <div class="station-info-row"><span>Address:</span><strong>${s.Address || '—'}</strong></div>
-        <div class="station-info-row"><span>Distance:</span><strong>${s.Distance || '—'} km</strong></div>
-        <div class="station-info-row"><span>Travel Time:</span><strong>${s["Travel Time"] || '—'} min</strong></div>
-        <div class="station-info-row"><span>Price:</span><strong>₹${s.Price || '—'}/L</strong></div>
-        <div class="station-info-row"><span>Rating:</span><strong>${s.Rating || '—'}</strong></div>
-
-        <button onclick="location.reload()">⬅ Back</button>
-    `;
-        }
-
-
-
-
-        function viewOnMap(lat, lng) {
-            map.setView([lat, lng], 15);
-
-            if (marker) map.removeLayer(marker);
-
-            marker = L.marker([lat, lng]).addTo(map)
-                .bindPopup("Selected Petrol Pump")
-                .openPopup();
-
-            // Scroll to map
-            document.getElementById("map").scrollIntoView({ behavior: "smooth" });
-        }
-
-
-
-        /* 🗺️ MAP */
-        const map = L.map('map').setView([20, 78], 5);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-            .addTo(map);
-
-        let marker;
-
-        /* 📍 GET LOCATION */
-        navigator.geolocation.getCurrentPosition((pos) => {
-            const lat = pos.coords.latitude;
-            const lng = pos.coords.longitude;
-
-            map.setView([lat, lng], 13);
-
-            L.marker([lat, lng]).addTo(map)
-                .bindPopup("You are here")
-                .openPopup();
-
-            loadData(lat, lng);
-        });
-
-        /* 📡 FETCH DATA */
-        async function fetchPumps() {
-            const { data } = await supabase
-                .from('petrol_pumps')
-                .select('*');
-
-            return data;
-        }
-
-        /* 📏 DISTANCE */
-        function distance(lat1, lon1, lat2, lon2) {
-            const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-
-            const a =
-                Math.sin(dLat / 2) ** 2 +
-                Math.cos(lat1 * Math.PI / 180) *
-                Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon / 2) ** 2;
-
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        }
-
-        /* 🔍 LOAD DATA */
-        async function loadData(lat, lng) {
-            const pumps = await fetchPumps();
-
-            const sorted = pumps.map(p => {
-                return {
-                    ...p,
-                    dist: distance(lat, lng, p.latitude, p.longitude)
-                }
-            }).sort((a, b) => a.dist - b.dist);
-
-            show(sorted.slice(0, 5));
-        }
-
-        /* 🧾 DISPLAY */
-        function show(pumps) {
-            const list = document.getElementById("list");
-            list.innerHTML = "";
-
-            pumps.forEach(p => {
-                list.innerHTML += `
-        <div class="card">
-            <h3>${p.name}</h3>
-            <p>${p.dist.toFixed(2)} km away</p>
-
-            <button class="btn btn-map"
-            onclick="view(${p.latitude},${p.longitude})">
-            View Map
-            </button>
-
-            <button class="btn btn-route"
-            onclick="route(${p.latitude},${p.longitude})">
-            Route
-            </button>
-        </div>
-        `;
+                showUI(data.slice(0, 4));
             });
         }
 
-        /* 📍 VIEW ON MAP */
-        function view(lat, lng) {
-            if (marker) map.removeLayer(marker);
+        /* ===== SHOW UI ===== */
+        function showUI(stations) {
+
+            const panel = document.getElementById("stationInfoPanel");
+
+            panel.innerHTML = `
+        <div class="station-title">Nearby Stations</div>
+
+        ${stations.map(s => `
+            <div class="station-item">
+
+                <div class="row top">
+                    <h3>${s.Station || '--'}</h3>
+                    <span class="price">₹${s.Price || '--'}</span>
+                </div>
+
+                <div class="address">
+                    📍 ${s.Address || '--'}
+                </div>
+
+                <div class="row info">
+                    <span>⭐ ${s.Rating || '--'}</span>
+                    <span>📍 ${s.Distance || '--'} km</span>
+                    <span>⏱ ${s["Travel Time"] || '--'} min</span>
+                </div>
+
+                <div class="actions">
+                    <button onclick="viewOnMap(${s.latitude}, ${s.longitude})">View</button>
+                    <button onclick="route(${s.latitude}, ${s.longitude})">Route</button>
+                </div>
+
+            </div>
+        `).join("")}
+    `;
+        }
+
+        /* ===== MAP VIEW ===== */
+        function viewOnMap(lat, lng) {
 
             map.setView([lat, lng], 15);
 
+            if (marker) map.removeLayer(marker);
+
             marker = L.marker([lat, lng]).addTo(map)
-                .bindPopup("Petrol Pump")
+                .bindPopup("Station")
                 .openPopup();
         }
 
-        /* 🧭 ROUTE */
+        /* ===== ROUTE ===== */
         function route(lat, lng) {
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
         }
