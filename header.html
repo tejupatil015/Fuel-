@@ -437,179 +437,26 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
 
-
     <script>
         const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs"; // 👈 replace here
 
+
+
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let map;
-        let marker;
-
-        /* ===== BUTTON EVENTS ===== */
-        document.querySelector(".petrol-btn").onclick = () => start("petrol");
-        document.querySelector(".diesel-btn").onclick = () => start("diesel");
-        document.querySelector(".lpg-btn").onclick = () => start("lpg");
-        document.querySelector(".cng-btn").onclick = () => start("cng");
-        document.querySelector(".electric-btn").onclick = () => start("electric");
-
-        /* ===== MAIN START ===== */
-        function start(type) {
-
-            document.querySelector(".map-section").style.display = "grid";
-
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-
-                const lat = pos.coords.latitude;
-                const lng = pos.coords.longitude;
-
-                /* MAP INIT */
-                if (!map) {
-                    map = L.map('map').setView([lat, lng], 13);
-
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-                        .addTo(map);
-                }
-
-                /* USER MARKER */
-                if (marker) map.removeLayer(marker);
-
-                marker = L.marker([lat, lng]).addTo(map)
-                    .bindPopup("You are here")
-                    .openPopup();
-
-                const { data, error } = await client
-                    .from(type)
-                    .select("*");
-
-                if (error || !data.length) {
-                    document.getElementById("stationInfoPanel").innerHTML = "No data found";
-                    return;
-                }
-
-                /* 🔥 FILTER WITHIN 30KM */
-                const nearby = data.filter(station => {
-                    const distance = getDistance(lat, lng, station.latitude, station.longitude);
-                    station.Distance = distance.toFixed(2); // update distance
-                    return distance <= 30;
-                });
-
-                /* SORT BY NEAREST */
-                nearby.sort((a, b) => a.Distance - b.Distance);
-
-                if (!nearby.length) {
-                    document.getElementById("stationInfoPanel").innerHTML = "No stations within 30km";
-                    return;
-                }
-
-                /* SHOW ONLY TOP 4 */
-                showUI(nearby.slice(0, 4));
-            });
-        }
-
-        /* ===== SHOW UI ===== */
-        function showUI(stations) {
-
-            const panel = document.getElementById("stationInfoPanel");
-
-            panel.innerHTML = `
-        <div class="station-title">Nearby Stations</div>
-
-        ${stations.map(s => `
-            <div class="station-item">
-
-                <div class="row top">
-                    <h3>${s.Station || '--'}</h3>
-                    <span class="price">₹${s.Price || '--'}</span>
-                </div>
-
-                <div class="address">
-                    📍 ${s.Address || '--'}
-                </div>
-
-                <div class="row info">
-                    <span>⭐ ${s.Rating || '--'}</span>
-                    <span>📍 ${s.Distance || '--'} km</span>
-                    <span>⏱ ${s["Travel Time"] || '--'} min</span>
-                </div>
-
-                <div class="actions">
-                    <button onclick="viewOnMap(${s.latitude}, ${s.longitude})">View</button>
-                    <button onclick="route(${s.latitude}, ${s.longitude})">Route</button>
-                </div>
-
-            </div>
-        `).join("")}
-    `;
-        }
-
-        /* ===== MAP VIEW ===== */
-        function viewOnMap(lat, lng) {
-
-            map.setView([lat, lng], 15);
-
-            if (marker) map.removeLayer(marker);
-
-            marker = L.marker([lat, lng]).addTo(map)
-                .bindPopup("Station")
-                .openPopup();
-        }
-
-        /* ===== ROUTE ===== */
-        function route(lat, lng) {
-            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
-        }
-        function getDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Earth radius in KM
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-
-            const a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1 * Math.PI / 180) *
-                Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon / 2) *
-                Math.sin(dLon / 2);
-
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-            return R * c;
-        }
-
-
-/* ===== complete petrol ===== */
-
-
-
-
+        let userMarker;
         let markers = [];
 
         /* ===== BUTTON EVENTS ===== */
         document.querySelector(".petrol-btn").onclick = () => start("petrol");
-        document.querySelector(".diesel-btn").onclick = () => start("diesel");
-        document.querySelector(".lpg-btn").onclick = () => start("lpg");
         document.querySelector(".cng-btn").onclick = () => start("cng");
-        document.querySelector(".electric-btn").onclick = () => start("electric");
-
-        /* ===== DISTANCE ===== */
-        function getDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371;
-
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-
-            const a =
-                Math.sin(dLat / 2) ** 2 +
-                Math.cos(lat1 * Math.PI / 180) *
-                Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon / 2) ** 2;
-
-            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-        }
+        document.querySelector(".diesel-btn").onclick = () => start("Diesel");
+        document.querySelector(".electric-btn").onclick = () => start("EV");
 
         /* ===== MAIN FUNCTION ===== */
-        function start(type) {
+        async function start(type) {
 
             document.querySelector(".map-section").style.display = "grid";
 
@@ -618,18 +465,21 @@
                 const userLat = pos.coords.latitude;
                 const userLng = pos.coords.longitude;
 
+
+
                 /* MAP INIT */
                 if (!map) {
-                    map = L.map('map').setView([userLat, userLng], 12);
+                    map = L.map('map').setView([userLat, userLng], 13);
 
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
                         .addTo(map);
                 }
 
                 /* USER MARKER */
-                if (marker) map.removeLayer(marker);
+                if (userMarker) map.removeLayer(userMarker);
 
-                marker = L.marker([userLat, userLng]).addTo(map)
+                userMarker = L.marker([userLat, userLng])
+                    .addTo(map)
                     .bindPopup("You are here")
                     .openPopup();
 
@@ -637,20 +487,18 @@
                 markers.forEach(m => map.removeLayer(m));
                 markers = [];
 
-                /* FETCH DATA FROM SUPABASE */
+                /* FETCH DATA */
                 const { data, error } = await client
-                    .from("Diesel")
+                    .from(type)   // 🔥 dynamic table name
                     .select("*");
 
-                if (error || !data.length) {
-                    document.getElementById("stationInfoPanel").innerHTML =
-                        "❌ No data found";
+                if (error || !data || data.length === 0) {
+                    document.getElementById("stationInfoPanel").innerHTML = "❌ No data found";
                     return;
                 }
 
-                /* PROCESS + DISTANCE */
+                /* PROCESS DATA */
                 const processed = data.map(s => {
-
                     const lat = parseFloat(s.latitude);
                     const lng = parseFloat(s.longitude);
 
@@ -669,8 +517,7 @@
                 const finalData = nearby.length ? nearby : processed;
 
                 if (!finalData.length) {
-                    document.getElementById("stationInfoPanel").innerHTML =
-                        "❌ No valid data";
+                    document.getElementById("stationInfoPanel").innerHTML = "❌ No valid data";
                     return;
                 }
 
@@ -704,9 +551,7 @@
 
                 <div class="row top">
                     <h3>${s.Station || '--'}</h3>
-                    <span class="price">
-                        ${type === "diesel" ? "Diesel Price" : "Petrol Price"}: ₹${s.Price || '--'}
-                    </span>
+                    <span class="price">₹${s.Price || '--'}</span>
                 </div>
 
                 <div class="address">
@@ -714,9 +559,9 @@
                 </div>
 
                 <div class="row info">
-                    <span>⭐ Rating: ${s.Rating || '--'}</span>
-                    <span>📍 Distance: ${s.dist.toFixed(1)} km</span>
-                    <span>⏱ Time: ${s["Travel Time"] || '--'} min</span>
+                    <span>⭐ ${s.Rating || '--'}</span>
+                    <span>📍 ${s.dist.toFixed(1)} km</span>
+                    <span>⏱ ${s["Travel Time"] || '--'} min</span>
                 </div>
 
                 <div class="actions">
@@ -731,13 +576,10 @@
 
         /* ===== VIEW ===== */
         function viewOnMap(lat, lng) {
-
             map.setView([lat, lng], 15);
 
-            if (marker) map.removeLayer(marker);
-
-            marker = L.marker([lat, lng]).addTo(map)
-                .bindPopup("Selected Station")
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup("Station")
                 .openPopup();
         }
 
@@ -746,10 +588,22 @@
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
         }
 
-/* ===== complete diesel ===== */
+        /* ===== DISTANCE ===== */
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+
+            const a =
+                Math.sin(dLat / 2) ** 2 +
+                Math.cos(lat1 * Math.PI / 180) *
+                Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) ** 2;
+
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+        }
     </script>
-
 </body>
 
 </html>
