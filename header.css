@@ -1385,3 +1385,98 @@ button:hover,
         height: auto;
     }
 }
+
+/* GRID CONTAINER */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-top: 20px;
+}
+.station-card {
+    background: linear-gradient(145deg, #1f1f2a, #16161d);
+    border-radius: 16px;
+    padding: 18px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Glow effect */
+.station-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(247,22,53,0.15), transparent 60%);
+    transform: rotate(25deg);
+}
+
+/* Hover */
+.station-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(247,22,53,0.3);
+}
+
+/* Title */
+.station-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    color: var(--color-primary-light);
+}
+
+/* Address */
+.station-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    margin-bottom: 10px;
+}
+.meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 0.85rem;
+}
+
+.meta span {
+    background: rgba(255,255,255,0.05);
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+.station-card button {
+    margin-top: 12px;
+    margin-right: 8px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.3s;
+}
+
+/* View Map */
+.station-card button:first-child {
+    background: var(--color-primary);
+    color: white;
+}
+
+/* Route */
+.station-card button:last-child {
+    background: transparent;
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* Hover */
+.station-card button:hover {
+    transform: scale(1.05);
+}
+@media (max-width: 768px) {
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+}

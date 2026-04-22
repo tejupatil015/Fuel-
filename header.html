@@ -498,41 +498,36 @@
 
             const panel = document.getElementById("stationInfoPanel");
 
-            window._stations = stations;
-
             panel.innerHTML = `
         <div class="station-info-title">Nearby Stations</div>
 
         <div class="cards-container">
-           ${stations.map((s, i) => `
-    <div class="station-card">
+            ${stations.map((s) => `
+                <div class="station-card">
 
-        <h3>${s.Station || 'Unknown'}</h3>
-        <p>📍 ${s.Address || 'No address'}</p>
+                    <h3>${s.Station || 'Unknown'}</h3>
+                    <p>📍 ${s.Address || 'No address'}</p>
 
-        <div class="meta">
-            <span>💰 ₹${s.Price || '—'}/L</span>
-            <span>⭐ ${s.Rating || '—'}</span>
-        </div>
+                    <div class="meta">
+                        <span>💰 ₹${s.Price || '—'}</span>
+                        <span>⭐ ${s.Rating || '—'}</span>
+                    </div>
 
-         <div class="meta">
-             <span>📍 ${s.Distance || '—'} km</span>
-             <span>⏱ ${s["Travel Time"] || '—'} min</span>
-         </div>
+                    <div class="meta">
+                        <span>📍 ${s.Distance || '—'} km</span>
+                        <span>⏱ ${s["Travel Time"] || '—'} min</span>
+                    </div>
 
-        <!-- 🔥 BUTTONS ADD HERE -->
-        <div style="margin-top:10px;">
-            <button onclick="viewOnMap(${s.latitude}, ${s.longitude})">
-                View on Map
-            </button>
+                    <button onclick="viewOnMap(${s.latitude}, ${s.longitude})">
+                        View Map
+                    </button>
 
-            <button onclick="route(${s.latitude}, ${s.longitude})">
-                Get Route
-            </button>
-        </div>
+                    <button onclick="route(${s.latitude}, ${s.longitude})">
+                        Route
+                    </button>
 
-    </div>
-`).join("")}
+                </div>
+            `).join("")}
         </div>
     `;
         }
