@@ -215,30 +215,6 @@
                                         <div class="payment-name">Cash on Delivery</div>
                                     </div>
                                 </div>
-                                <div class="payment-details" id="onlinePaymentDetails" style="display: block;">
-                                    <div class="payment-icons">
-                                        <div class="payment-icon-item">
-                                            <span class="icon">📱</span>
-                                            <span>UPI</span>
-                                        </div>
-                                        <div class="payment-icon-item">
-                                            <span class="icon">💳</span>
-                                            <span>Credit/Debit Card</span>
-                                        </div>
-                                        <div class="payment-icon-item">
-                                            <span class="icon">📱</span>
-                                            <span>Google Pay</span>
-                                        </div>
-                                        <div class="payment-icon-item">
-                                            <span class="icon">📱</span>
-                                            <span>PhonePe</span>
-                                        </div>
-                                        <div class="payment-icon-item">
-                                            <span class="icon">📱</span>
-                                            <span>Paytm</span>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <button type="button" class="btn-book" style="margin-top: 1.5rem;"
@@ -294,10 +270,7 @@
                     <h3 class="success-title">Booking Confirmed!</h3>
                     <p class="success-message">Your gas cylinder will be delivered in 2-3 business days.</p>
                     <div class="booking-ref" id="bookingRef">#FUEL000000</div>
-                    <div class="success-actions">
-                        <button class="btn-view-history" onclick="scrollToHistory()">View Booking History</button>
-                        <button class="btn-new-booking" onclick="resetBooking()">Book Another Cylinder</button>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -362,169 +335,52 @@
 
 
 
-    <section class="feedback-form">
-        <h2>Add Your Feedback</h2>
-
-        <form id="feedbackForm">
-            <input type="text" id="name" placeholder="Your Name" required>
-
-            <select id="rating" required>
-                <option value="">Rating</option>
-                <option value="5">⭐⭐⭐⭐⭐</option>
-                <option value="4">⭐⭐⭐⭐</option>
-                <option value="3">⭐⭐⭐</option>
-                <option value="2">⭐⭐</option>
-                <option value="1">⭐</option>
-            </select>
-
-            <textarea id="message" placeholder="Your Feedback..." required></textarea>
-
-            <button type="submit" class="submit">Submit Feedback</button>
-        </form>
-    </section>
 
 
 
 
-    <!--                   Feedback                                  -->
 
-
-    <section class="container testimonials__container swiper mySwiper">
-        <h2 class="feedback-title">What Our Users Say</h2>
-        <div class="swiper-wrapper">
-            <article class="testimonial swiper-slide">
-                <div class="avatar">
-                    <img src="pic-1.jpg">
+    <!-- Section 6: Reviews -->
+    <section class="reviews-section slide-up" id="reviews-section">
+        <div class="section-header">
+            <h2 class="section-title">Community Reviews</h2>
+            <p class="section-subtitle">See what others are saying about fuel stations</p>
+        </div>
+        <div class="reviews-container">
+            <div class="reviews-column slide-left">
+                <h3 class="column-header">Submit Your Review</h3>
+                <form class="review-form" id="reviewForm">
+                    <div class="star-rating" id="starRating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <input type="hidden" id="selectedRating" value="0">
+                    <select class="form-input" id="reviewFuelType">
+                        <option value="">Select Fuel Type</option>
+                        <option value="petrol">Petrol</option>
+                        <option value="diesel">Diesel</option>
+                        <option value="cng">CNG</option>
+                        <option value="lpg">LPG</option>
+                        <option value="ev">EV Charging</option>
+                        <option value="gas">Gas Cylinder</option>
+                    </select>
+                    <input type="text" class="form-input" id="reviewStation" placeholder="Station Name">
+                    <textarea class="form-input" id="reviewText" placeholder="Share your experience..."></textarea>
+                    <button type="submit" class="btn-submit-review">Submit Review</button>
+                </form>
+            </div>
+            <div class="reviews-column slide-right">
+                <h3 class="column-header">Recent Reviews</h3>
+                <div class="reviews-feed" id="reviewsFeed">
+                    <!-- Reviews will be dynamically inserted -->
                 </div>
-                <div class="testimonial__info">
-                    <h5>Roshan Patil</h5>
-
-                </div>
-                <div class="testimonial__body">
-                    <p>
-                        “The app makes it easy to compare fuel prices across different petrol pumps, helping users find
-                        the cheapest option and save money.”</p>
-                </div>
-            </article>
-            <article class="testimonial swiper-slide">
-                <div class="avatar">
-                    <img src="pic-2.jpeg">
-                </div>
-                <div class="testimonial__info">
-                    <h5>Gandharv Rajmane</h5>
-
-                </div>
-                <div class="testimonial__body">
-                    <p>Nearby petrol pumps are shown with accurate location and navigation support, which is very useful
-                        in unknown areas.”.</p>
-                </div>
-            </article>
-            <article class="testimonial swiper-slide">
-                <div class="avatar">
-                    <img src="pic-3.jpg">
-                </div>
-                <div class="testimonial__info">
-                    <h5>Riya Sawant</h5>
-                    <small>Business Man</small>
-                </div>
-                <div class="testimonial__body">
-                    <p>“Real-time updates for fuel availability (Petrol/Diesel/CNG) help avoid unnecessary trips to
-                        unavailable stations. .</p>
-                </div>
-            </article>
-            <article class="testimonial swiper-slide">
-                <div class="avatar">
-                    <img src="pic-1.jpg">
-                </div>
-                <div class="testimonial__info">
-                    <h5>Dhiraj Parihar</h5>
-
-                </div>
-                <div class="testimonial__body">
-                    <p>“The fuel usage and expense tracking dashboard helps users manage their monthly fuel budget
-                        effectively.”
-                    </p>
-                </div>
-            </article>
-            <article class="testimonial swiper-slide">
-                <div class="avatar">
-                    <img src="pic-2.jpeg">
-                </div>
-                <div class="testimonial__info">
-                    <h5>roshan Patil</h5>
-
-                </div>
-                <div class="testimonial__body">
-                    <p>“The app makes it easy to compare fuel prices across different petrol pumps, helping users find
-                        the cheapest option and save money.”</p>
-                </div>
-            </article>
-            <article class="testimonial swiper-slide">
-                <div class="avatar">
-                    <img src="pic-3.jpg">
-                </div>
-                <div class="testimonial__info">
-                    <h5>Mrunal Kamad</h5>
-                    <small>Backend devv</small>
-                </div>
-                <div class="testimonial__body">
-                    <p>“The app makes it easy to compare fuel prices across different petrol pumps, helping users find
-                        the cheapest option and save money.”</p>
-                </div>
-            </article>
-            <div class="swiper-pagination"></div>
+            </div>
         </div>
     </section>
 
-
-
-    <button onclick="toggleSettings()">⚙️</button>
-    <!-- Settings Panel -->
-
-    <div id="settingsPanel" class="settings-panel">
-        <div class="panel-header">
-            <h3>Settings</h3>
-            <button class="close-btn" onclick="toggleSettings()">✕</button>
-        </div>
-        <div class="panel-menu">
-            <div class="menu-item" data-type="info" onclick="showContent('info')">
-                <span class="menu-icon">👤</span>
-                <span class="menu-text">Your Info</span>
-            </div>
-            <div class="menu-item" data-type="notifications" onclick="showContent('notifications')">
-                <span class="menu-icon">🔔</span>
-                <span class="menu-text">Notifications</span>
-            </div>
-            <div class="menu-item" data-type="privacy" onclick="showContent('privacy')">
-                <span class="menu-icon">🔒</span>
-                <span class="menu-text">Privacy & Security</span>
-            </div>
-            <div class="menu-item" data-type="about" onclick="showContent('about')">
-                <span class="menu-icon">ℹ️</span>
-                <span class="menu-text">About</span>
-            </div>
-            <div class="menu-item" data-type="help" onclick="showContent('help')">
-                <span class="menu-icon">❓</span>
-                <span class="menu-text">Help & Feedback</span>
-            </div>
-            <div class="menu-item sign-out" onclick="logout()">
-                <span class="menu-icon">🚪</span>
-                <span class="menu-text">Sign Out</span>
-            </div>
-        </div>
-        <div class="panel-content">
-            <div id="contentArea">
-                <div class="content-header">
-                    <h2>⚙️ Settings</h2>
-                    <p>Manage your account preferences and explore app features</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-
-    <div id="overlay" onclick="toggleSettings()"></div>
-    </nav>
 
 
 
@@ -623,7 +479,6 @@
                     .bindPopup("You are here")
                     .openPopup();
 
-                /* FETCH DATA */
                 const { data, error } = await client
                     .from(type)
                     .select("*");
@@ -633,7 +488,23 @@
                     return;
                 }
 
-                showUI(data.slice(0, 4));
+                /* 🔥 FILTER WITHIN 30KM */
+                const nearby = data.filter(station => {
+                    const distance = getDistance(lat, lng, station.latitude, station.longitude);
+                    station.Distance = distance.toFixed(2); // update distance
+                    return distance <= 30;
+                });
+
+                /* SORT BY NEAREST */
+                nearby.sort((a, b) => a.Distance - b.Distance);
+
+                if (!nearby.length) {
+                    document.getElementById("stationInfoPanel").innerHTML = "No stations within 30km";
+                    return;
+                }
+
+                /* SHOW ONLY TOP 4 */
+                showUI(nearby.slice(0, 4));
             });
         }
 
@@ -689,7 +560,196 @@
         function route(lat, lng) {
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
         }
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth radius in KM
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) *
+                Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) *
+                Math.sin(dLon / 2);
+
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c;
+        }
+
+
+/* ===== complete petrol ===== */
+
+
+
+
+        let markers = [];
+
+        /* ===== BUTTON EVENTS ===== */
+        document.querySelector(".petrol-btn").onclick = () => start("petrol");
+        document.querySelector(".diesel-btn").onclick = () => start("diesel");
+        document.querySelector(".lpg-btn").onclick = () => start("lpg");
+        document.querySelector(".cng-btn").onclick = () => start("cng");
+        document.querySelector(".electric-btn").onclick = () => start("electric");
+
+        /* ===== DISTANCE ===== */
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+
+            const a =
+                Math.sin(dLat / 2) ** 2 +
+                Math.cos(lat1 * Math.PI / 180) *
+                Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) ** 2;
+
+            return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+        }
+
+        /* ===== MAIN FUNCTION ===== */
+        function start(type) {
+
+            document.querySelector(".map-section").style.display = "grid";
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+
+                const userLat = pos.coords.latitude;
+                const userLng = pos.coords.longitude;
+
+                /* MAP INIT */
+                if (!map) {
+                    map = L.map('map').setView([userLat, userLng], 12);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+                        .addTo(map);
+                }
+
+                /* USER MARKER */
+                if (marker) map.removeLayer(marker);
+
+                marker = L.marker([userLat, userLng]).addTo(map)
+                    .bindPopup("You are here")
+                    .openPopup();
+
+                /* REMOVE OLD MARKERS */
+                markers.forEach(m => map.removeLayer(m));
+                markers = [];
+
+                /* FETCH DATA FROM SUPABASE */
+                const { data, error } = await client
+                    .from("Diesel")
+                    .select("*");
+
+                if (error || !data.length) {
+                    document.getElementById("stationInfoPanel").innerHTML =
+                        "❌ No data found";
+                    return;
+                }
+
+                /* PROCESS + DISTANCE */
+                const processed = data.map(s => {
+
+                    const lat = parseFloat(s.latitude);
+                    const lng = parseFloat(s.longitude);
+
+                    if (isNaN(lat) || isNaN(lng)) return null;
+
+                    const dist = getDistance(userLat, userLng, lat, lng);
+
+                    return { ...s, latitude: lat, longitude: lng, dist };
+                }).filter(s => s !== null);
+
+                /* FILTER 30KM */
+                const nearby = processed
+                    .filter(s => s.dist <= 30)
+                    .sort((a, b) => a.dist - b.dist);
+
+                const finalData = nearby.length ? nearby : processed;
+
+                if (!finalData.length) {
+                    document.getElementById("stationInfoPanel").innerHTML =
+                        "❌ No valid data";
+                    return;
+                }
+
+                /* SHOW UI */
+                showUI(finalData.slice(0, 4), type);
+
+                /* ADD MARKERS */
+                finalData.slice(0, 4).forEach(s => {
+                    const m = L.marker([s.latitude, s.longitude])
+                        .addTo(map)
+                        .bindPopup(`${s.Station} (${s.dist.toFixed(1)} km)`);
+
+                    markers.push(m);
+                });
+
+            });
+        }
+
+        /* ===== UI ===== */
+        function showUI(stations, type) {
+
+            const panel = document.getElementById("stationInfoPanel");
+
+            panel.innerHTML = `
+        <div class="station-title">
+            Nearby ${type.toUpperCase()} Stations
+        </div>
+
+        ${stations.map(s => `
+            <div class="station-item">
+
+                <div class="row top">
+                    <h3>${s.Station || '--'}</h3>
+                    <span class="price">
+                        ${type === "diesel" ? "Diesel Price" : "Petrol Price"}: ₹${s.Price || '--'}
+                    </span>
+                </div>
+
+                <div class="address">
+                    📍 ${s.Address || '--'}
+                </div>
+
+                <div class="row info">
+                    <span>⭐ Rating: ${s.Rating || '--'}</span>
+                    <span>📍 Distance: ${s.dist.toFixed(1)} km</span>
+                    <span>⏱ Time: ${s["Travel Time"] || '--'} min</span>
+                </div>
+
+                <div class="actions">
+                    <button onclick="viewOnMap(${s.latitude}, ${s.longitude})">View</button>
+                    <button onclick="route(${s.latitude}, ${s.longitude})">Route</button>
+                </div>
+
+            </div>
+        `).join("")}
+    `;
+        }
+
+        /* ===== VIEW ===== */
+        function viewOnMap(lat, lng) {
+
+            map.setView([lat, lng], 15);
+
+            if (marker) map.removeLayer(marker);
+
+            marker = L.marker([lat, lng]).addTo(map)
+                .bindPopup("Selected Station")
+                .openPopup();
+        }
+
+        /* ===== ROUTE ===== */
+        function route(lat, lng) {
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
+        }
+
+/* ===== complete diesel ===== */
+
     </script>
+
 </body>
 
 </html>
