@@ -490,3 +490,5 @@ document.querySelectorAll(".fuel-btn button").forEach(btn => {
         this.classList.add("active");
     });
 });
+
+
