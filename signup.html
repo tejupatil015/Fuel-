@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sign In - FuelFinder</title>
+    <title>Sign Up - FuelFinder</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
@@ -168,10 +168,15 @@
 <body>
 
 <div class="signin-box">
-    <h2>Sign In</h2>
-    <p>Welcome back! Please sign in to continue</p>
+    <h2>Sign Up</h2>
+    <p>Create your account to get started</p>
 
-    <form id="loginForm">
+    <form id="signupForm">
+        <div class="input-group">
+            <input type="text" id="name" required>
+            <label>Name</label>
+        </div>
+
         <div class="input-group">
             <input type="email" id="email" required>
             <label>Email</label>
@@ -184,11 +189,11 @@
 
         <p id="errorMsg"></p>
 
-        <button type="submit">Sign In</button>
+        <button type="submit">Sign Up</button>
     </form>
 
     <div class="link">
-        <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+        <p>Already have an account? <a href="login.html">Sign In</a></p>
     </div>
 </div>
 
@@ -200,37 +205,43 @@ const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     const errorEl = document.getElementById("errorMsg");
 
     errorEl.style.display = "none";
 
-    if (!email || !password) {
+    if (!name || !email || !password) {
         errorEl.textContent = "Please fill in all fields";
         errorEl.style.display = "block";
         return;
     }
 
     try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
+        const { data, error } = await supabaseClient.auth.signUp({
             email,
-            password
+            password,
+            options: {
+                data: {
+                    name: name
+                }
+            }
         });
 
         if (error) {
-            errorEl.textContent = "Invalid email or password";
+            errorEl.textContent = "Error signing up: " + error.message;
             errorEl.style.display = "block";
             return;
         }
 
         // Success
-        alert("Sign in successful!");
-        // Redirect to header.html
-        window.location.href = "header.html";
+        alert("Sign up successful! Please check your email to confirm.");
+        // Redirect to login
+        window.location.href = "login.html";
 
     } catch (err) {
         errorEl.textContent = "An error occurred: " + err.message;
