@@ -104,6 +104,77 @@
         <div id="map"></div>
 
     </div>
+
+
+    <!-- EV BOOKING SLOTS SECTION -->
+    <section class="ev-booking-section" id="evBookingSection" style="display: none;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Book EV Charging Slot</h2>
+                <p class="section-subtitle">Select your preferred station, date and time slot</p>
+            </div>
+
+            <div class="ev-booking-container">
+                <!-- Step 1: Station Selected -->
+                <div class="selected-station-card" id="selectedStationCard">
+                    <div class="station-badge">Selected Station</div>
+                    <h3 id="evStationName">Tata Power EV Hub</h3>
+                    <div class="station-meta">
+                        <span id="evStationAddress">Near Mahalaxmi Temple, Kolhapur</span>
+                        <span id="evStationDist">• 2.3 km</span>
+                        <span id="evStationPrice">• ₹9.5/kWh</span>
+                    </div>
+                </div>
+
+                <!-- Step 2: Date Picker -->
+                <div class="booking-step">
+                    <h4>1. Select Date</h4>
+                    <div class="date-picker" id="datePicker"></div>
+                </div>
+
+                <!-- Step 3: Time Slots -->
+                <div class="booking-step">
+                    <h4>2. Select Time Slot</h4>
+                    <div class="slot-legend">
+                        <span>
+                            <div class="legend-box available"></div> Available
+                        </span>
+                        <span>
+                            <div class="legend-box booked"></div> Booked
+                        </span>
+                        <span>
+                            <div class="legend-box selected"></div> Selected
+                        </span>
+                    </div>
+                    <div class="slots-grid" id="slotsGrid">
+                        <!-- Slots rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Step 4: Confirm -->
+                <div class="booking-confirm">
+                    <div class="booking-summary" id="bookingSummary">
+                        <span>Select a slot to continue</span>
+                    </div>
+                    <button class="btn-book-slot" id="btnBookSlot" disabled onclick="confirmEVBooking()">
+                        Confirm Booking
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Success Modal -->
+    <div class="booking-modal" id="evBookingModal">
+        <div class="booking-modal-content">
+            <div class="success-icon">✓</div>
+            <h3>Slot Booked Successfully!</h3>
+            <p id="evBookingDetails"></p>
+            <div class="booking-ref" id="evBookingRef">#EV000000</div>
+            <button class="btn-close-modal" onclick="closeEVModal()">Done</button>
+        </div>
+    </div>
+    <div class="modal-overlay" id="modalOverlay" onclick="closeEVModal()"></div>
     <!--                              gasbooking                             -->
 
 
@@ -340,7 +411,7 @@
 
 
 
-    
+
 
 
 
@@ -585,6 +656,247 @@
                 Math.sin(dLon / 2) ** 2;
 
             return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+        }
+
+
+        let selectedEVStation = null;
+        let selectedDate = null;
+        let selectedSlot = null;
+        let currentEVData = [];
+
+        // Update your existing start function for EV
+        const originalStart = start;
+        start = async function (type) {
+            if (type === "EV") {
+                document.getElementById("evBookingSection").style.display = "none";
+            }
+            await originalStart(type);
+        }
+
+        // Update showUI to add "Book Slot" button for EV
+        function showUI(stations, type) {
+            const panel = document.getElementById("stationInfoPanel");
+            currentEVData = stations; // Store for booking
+
+            panel.innerHTML = `
+        <div class="station-title">
+            Nearby ${type.toUpperCase()} Stations
+        </div>
+        ${stations.map((s, idx) => `
+            <div class="station-item">
+                <div class="row top">
+                    <h3>${s.Station || '--'}</h3>
+                    <span class="price">₹${s.Price || '--'}/kWh</span>
+                </div>
+                <div class="address">📍 ${s.Address || '--'}</div>
+                <div class="row info">
+                    <span>⭐ ${s.Rating || '--'}</span>
+                    <span>📍 ${s.dist.toFixed(1)} km</span>
+                    <span>⏱ ${s["Travel Time"] || '--'} min</span>
+                </div>
+                <div class="actions">
+                    <button onclick="viewOnMap(${s.latitude}, ${s.longitude})">View</button>
+                    <button onclick="route(${s.latitude}, ${s.longitude})">Route</button>
+                </div>
+                ${type === 'EV' ? `<button class="btn-book-ev" onclick="openEVBooking(${idx})">⚡ Book Charging Slot</button>` : ''}
+            </div>
+        `).join("")}
+    `;
+        }
+
+        // Open EV Booking Panel
+        function openEVBooking(stationIndex) {
+            selectedEVStation = currentEVData[stationIndex];
+            selectedDate = null;
+            selectedSlot = null;
+
+            document.getElementById("evBookingSection").style.display = "block";
+            document.getElementById("evStationName").textContent = selectedEVStation.Station;
+            document.getElementById("evStationAddress").textContent = selectedEVStation.Address;
+            document.getElementById("evStationDist").textContent = `• ${selectedEVStation.dist.toFixed(1)} km`;
+            document.getElementById("evStationPrice").textContent = `• ₹${selectedEVStation.Price}/kWh`;
+
+            generateDatePicker();
+            document.getElementById("slotsGrid").innerHTML = '<p style="color:#666;text-align:center;grid-column:1/-1;">Select a date first</p>';
+            updateBookingSummary();
+
+            document.getElementById("evBookingSection").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Generate next 7 days
+        function generateDatePicker() {
+            const datePicker = document.getElementById("datePicker");
+            datePicker.innerHTML = '';
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() + i);
+
+                const day = date.toLocaleDateString('en-US', { weekday: 'short' });
+                const num = date.getDate();
+                const month = date.toLocaleDateString('en-US', { month: 'short' });
+                const dateStr = date.toISOString().split('T')[0];
+
+                const dateEl = document.createElement('div');
+                dateEl.className = 'date-item';
+                dateEl.dataset.date = dateStr;
+                dateEl.innerHTML = `
+            <div class="date-day">${day}</div>
+            <div class="date-num">${num}</div>
+            <div class="date-month">${month}</div>
+        `;
+                dateEl.onclick = () => selectDate(dateStr, dateEl);
+                datePicker.appendChild(dateEl);
+            }
+        }
+
+        // Select date and load slots
+        async function selectDate(dateStr, el) {
+            document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
+            el.classList.add('active');
+            selectedDate = dateStr;
+            selectedSlot = null;
+
+            await loadSlotsForDate(dateStr);
+            updateBookingSummary();
+        }
+
+        // Load slots from Supabase
+        async function loadSlotsForDate(dateStr) {
+            const slotsGrid = document.getElementById("slotsGrid");
+            slotsGrid.innerHTML = '<p style="color:#666;text-align:center;grid-column:1/-1;">Loading slots...</p>';
+
+            // Fetch latest booking data
+            const { data, error } = await client
+                .from('EV')
+                .select('booked_slots, slot_duration, total_slots')
+                .eq('id', selectedEVStation.id)
+                .single();
+
+            if (error) {
+                slotsGrid.innerHTML = '<p style="color:#ff5722;text-align:center;grid-column:1/-1;">Error loading slots</p>';
+                return;
+            }
+
+            const bookedSlots = data.booked_slots?.[dateStr] || [];
+            const duration = data.slot_duration || 30;
+            const totalSlots = data.total_slots || 12;
+
+            // Generate time slots from 6:00 to 22:00
+            slotsGrid.innerHTML = '';
+            for (let hour = 6; hour < 22; hour++) {
+                for (let min = 0; min < 60; min += duration) {
+                    const timeStr = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+                    const isBooked = bookedSlots.includes(timeStr);
+
+                    const slotEl = document.createElement('div');
+                    slotEl.className = `slot-item ${isBooked ? 'booked' : ''}`;
+                    slotEl.textContent = timeStr;
+                    slotEl.dataset.time = timeStr;
+
+                    if (!isBooked) {
+                        slotEl.onclick = () => selectSlot(timeStr, slotEl);
+                    }
+
+                    slotsGrid.appendChild(slotEl);
+                }
+            }
+        }
+
+        function selectSlot(timeStr, el) {
+            document.querySelectorAll('.slot-item.selected').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedSlot = timeStr;
+            updateBookingSummary();
+        }
+
+        function updateBookingSummary() {
+            const summary = document.getElementById("bookingSummary");
+            const btn = document.getElementById("btnBookSlot");
+
+            if (selectedDate && selectedSlot) {
+                summary.innerHTML = `<strong style="color:#00FFD1">${selectedEVStation.Station}</strong><br>
+                             ${selectedDate} at ${selectedSlot}`;
+                summary.classList.add('active');
+                btn.disabled = false;
+            } else {
+                summary.innerHTML = '<span>Select a slot to continue</span>';
+                summary.classList.remove('active');
+                btn.disabled = true;
+            }
+        }
+
+        async function confirmEVBooking() {
+            if (!selectedDate || !selectedSlot) return;
+
+            const btn = document.getElementById("btnBookSlot");
+            btn.disabled = true;
+            btn.textContent = "Booking...";
+
+            try {
+                // STEP 1: Get latest data
+                const { data: current, error: fetchError } = await client
+                    .from("EV")
+                    .select("booked_slots")
+                    .eq("id", selectedEVStation.id)
+                    .single();
+
+                if (fetchError) throw fetchError;
+
+                // STEP 2: Safe object
+                let bookedSlots = current?.booked_slots || {};
+
+                if (!bookedSlots[selectedDate]) {
+                    bookedSlots[selectedDate] = [];
+                }
+
+                // STEP 3: Already booked check
+                if (bookedSlots[selectedDate].includes(selectedSlot)) {
+                    alert("❌ Slot already booked, choose another");
+                    btn.disabled = false;
+                    btn.textContent = "Confirm Booking";
+                    return;
+                }
+
+                // STEP 4: Add slot
+                bookedSlots[selectedDate].push(selectedSlot);
+
+                // STEP 5: Update Supabase
+                const { error: updateError } = await client
+                    .from("EV")
+                    .update({
+                        booked_slots: bookedSlots
+                    })
+                    .eq("id", selectedEVStation.id);
+
+                if (updateError) throw updateError;
+
+                // STEP 6: SUCCESS UI
+                const ref = "#EV" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+                document.getElementById("evBookingRef").textContent = ref;
+                document.getElementById("evBookingDetails").innerHTML =
+                    `${selectedEVStation.Station}<br>${selectedDate} at ${selectedSlot}`;
+
+                document.getElementById("modalOverlay").classList.add("show");
+                document.getElementById("evBookingModal").classList.add("show");
+
+            } catch (err) {
+                console.error("Booking Error:", err);
+                alert("❌ Booking failed: " + err.message);
+            }
+
+            btn.disabled = false;
+            btn.textContent = "Confirm Booking";
+        }
+
+        function closeEVModal() {
+            document.getElementById("modalOverlay").classList.remove('show');
+            document.getElementById("evBookingModal").classList.remove('show');
+            document.getElementById("evBookingSection").style.display = "none";
+            selectedEVStation = null;
+            selectedDate = null;
+            selectedSlot = null;
         }
     </script>
     </script>

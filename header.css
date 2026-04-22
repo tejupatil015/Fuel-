@@ -1735,3 +1735,387 @@ body {
 
 
 
+/* EV Booking Section */
+.ev-booking-section {
+    margin: 3rem auto;
+    max-width: 1200px;
+    padding: 0 1rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.ev-booking-container {
+    background: #1A1A1A;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+.selected-station-card {
+    background: linear-gradient(135deg, #0A0A0A, #1A1A1A);
+    border: 1px solid #00FFD1;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.selected-station-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: #00FFD1;
+    box-shadow: 0 0 15px #00FFD1;
+}
+
+.station-badge {
+    display: inline-block;
+    background: rgba(0, 255, 209, 0.15);
+    color: #00FFD1;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.selected-station-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #fff;
+}
+
+.station-meta {
+    color: #aaa;
+    font-size: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.booking-step {
+    margin-bottom: 2rem;
+}
+
+.booking-step h4 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+/* Date Picker */
+.date-picker {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.date-picker::-webkit-scrollbar {
+    height: 4px;
+}
+
+.date-picker::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 10px;
+}
+
+.date-item {
+    min-width: 70px;
+    background: #0A0A0A;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 0.75rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.date-item:hover {
+    border-color: #00FFD1;
+    transform: translateY(-3px);
+}
+
+.date-item.active {
+    background: #00FFD1;
+    border-color: #00FFD1;
+    color: #000;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 255, 209, 0.3);
+}
+
+.date-day {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+.date-num {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0.25rem 0;
+}
+
+.date-month {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+/* Slots Grid */
+.slot-legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.slot-legend span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.legend-box {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+}
+
+.legend-box.available { background: #0A0A0A; border: 1px solid #333; }
+.legend-box.booked { background: #333; }
+.legend-box.selected { background: #00FFD1; }
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.75rem;
+}
+
+.slot-item {
+    background: #0A0A0A;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0.875rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.slot-item:hover:not(.booked) {
+    border-color: #00FFD1;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 255, 209, 0.2);
+}
+
+.slot-item.booked {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.slot-item.selected {
+    background: #00FFD1;
+    border-color: #00FFD1;
+    color: #000;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 255, 209, 0.4);
+}
+
+.booking-confirm {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #333;
+}
+
+.booking-summary {
+    background: #0A0A0A;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    color: #aaa;
+    font-size: 0.95rem;
+}
+
+.booking-summary.active {
+    color: #00FFD1;
+}
+
+.btn-book-slot {
+    width: 100%;
+    background: #00FFD1;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+    color: #000;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-book-slot:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.btn-book-slot:not(:disabled):hover {
+    background: #00e6bc;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 255, 209, 0.4);
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 998;
+    backdrop-filter: blur(5px);
+}
+
+.booking-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: #1A1A1A;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    z-index: 999;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.booking-modal.show {
+    display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-overlay.show {
+    display: block;
+}
+
+.success-icon {
+    width: 70px;
+    height: 70px;
+    background: #00FFD1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2rem;
+    color: #000;
+    animation: popIn 0.5s ease;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.booking-modal h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.booking-modal p {
+    color: #aaa;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.booking-ref {
+    background: #0A0A0A;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-family: monospace;
+    font-size: 1.1rem;
+    color: #00FFD1;
+    margin-bottom: 1.5rem;
+}
+
+.btn-close-modal {
+    background: #00FFD1;
+    border: none;
+    border-radius: 8px;
+    padding: 0.875rem 2rem;
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-close-modal:hover {
+    background: #00e6bc;
+    transform: translateY(-2px);
+}
+
+/* Book Slot Button in Station Card */
+.btn-book-ev {
+    background: #00FFD1;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    color: #000;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.btn-book-ev:hover {
+    background: #00e6bc;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 209, 0.3);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+   .ev-booking-container {
+        padding: 1.25rem;
+    }
+   .slots-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 0.5rem;
+    }
+   .slot-item {
+        padding: 0.75rem 0.25rem;
+        font-size: 0.85rem;
+    }
+   .date-item {
+        min-width: 60px;
+    }
+}
