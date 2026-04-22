@@ -261,43 +261,43 @@ function addSlide(name, rating, message) {
 
 
 
-        // ============================================
-        // SETTINGS PANEL FUNCTIONS
-        // ============================================
-        function toggleSettings() {
-            const panel = document.getElementById('settingsPanel');
-            const isOpening = !panel.classList.contains('active');
-            panel.classList.toggle('active');
+// ============================================
+// SETTINGS PANEL FUNCTIONS
+// ============================================
+function toggleSettings() {
+    const panel = document.getElementById('settingsPanel');
+    const isOpening = !panel.classList.contains('active');
+    panel.classList.toggle('active');
 
-            // Show default content when opening
-            if (isOpening) {
-                showContent('info');
-            }
-        }
+    // Show default content when opening
+    if (isOpening) {
+        showContent('info');
+    }
+}
 
-        function showContent(type, event) {
-            // Update active menu item
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            if (event && event.target) {
-                event.target.closest('.menu-item').classList.add('active');
-            }
+function showContent(type, event) {
+    // Update active menu item
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    if (event && event.target) {
+        event.target.closest('.menu-item').classList.add('active');
+    }
 
-            const contentArea = document.getElementById('contentArea');
-            if (!contentArea) return;
+    const contentArea = document.getElementById('contentArea');
+    if (!contentArea) return;
 
-            // Get user data from localStorage or use defaults
-            const userData = JSON.parse(localStorage.getItem('userData')) || {
-                mobile: '+91 98765 43210',
-                email: 'user@example.com',
-                name: 'John Doe',
-                profilePic: null
-            };
+    // Get user data from localStorage or use defaults
+    const userData = JSON.parse(localStorage.getItem('userData')) || {
+        mobile: '+91 98765 43210',
+        email: 'user@example.com',
+        name: 'John Doe',
+        profilePic: null
+    };
 
-            switch (type) {
-                case 'info':
-                    contentArea.innerHTML = `
+    switch (type) {
+        case 'info':
+            contentArea.innerHTML = `
                         <div class="info-section">
                             <h3>Your Info</h3>
                             <div class="info-card">
@@ -316,10 +316,10 @@ function addSlide(name, rating, message) {
                             </div>
                         </div>
                     `;
-                    break;
+            break;
 
-                case 'notifications':
-                    contentArea.innerHTML = `
+        case 'notifications':
+            contentArea.innerHTML = `
                         <div class="notifications-section">
                             <h3>Notifications</h3>
                             <div class="notification-list">
@@ -350,10 +350,10 @@ function addSlide(name, rating, message) {
                             </div>
                         </div>
                     `;
-                    break;
+            break;
 
-                case 'privacy':
-                    contentArea.innerHTML = `
+        case 'privacy':
+            contentArea.innerHTML = `
                         <div class="privacy-section">
                             <h3>Privacy & Security</h3>
                             <div class="settings-list">
@@ -390,10 +390,10 @@ function addSlide(name, rating, message) {
                             </div>
                         </div>
                     `;
-                    break;
+            break;
 
-                case 'about':
-                    contentArea.innerHTML = `
+        case 'about':
+            contentArea.innerHTML = `
                         <div class="about-section">
                             <h3>About FuelFinder</h3>
                             <div class="about-content">
@@ -424,10 +424,10 @@ function addSlide(name, rating, message) {
                             </div>
                         </div>
                     `;
-                    break;
+            break;
 
-                case 'help':
-                    contentArea.innerHTML = `
+        case 'help':
+            contentArea.innerHTML = `
                         <div class="help-section">
                             <h3>Help & Feedback</h3>
                             <div class="help-content">
@@ -455,15 +455,15 @@ function addSlide(name, rating, message) {
                             </div>
                         </div>
                     `;
-                    break;
+            break;
 
-                case 'signout':
-                    signOut();
-                    break;
-            }
+        case 'signout':
+            signOut();
+            break;
+    }
 
-        }
-    function toggleSettings() {
+}
+function toggleSettings() {
     const panel = document.getElementById('settingsPanel');
     const overlay = document.getElementById('overlay');
 
@@ -472,5 +472,21 @@ function addSlide(name, rating, message) {
 }
 
 if (localStorage.getItem("loggedIn") !== "true") {
-            window.location.href = "login.html";
-        }
+    window.location.href = "login.html";
+}
+
+
+
+
+
+
+
+
+
+
+document.querySelectorAll(".fuel-btn button").forEach(btn => {
+    btn.addEventListener("click", function () {
+        document.querySelectorAll(".fuel-btn button").forEach(b => b.classList.remove("active"));
+        this.classList.add("active");
+    });
+});

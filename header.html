@@ -21,6 +21,9 @@
         }
     </script>
 
+
+
+
 </head>
 
 <body>
@@ -69,16 +72,25 @@
         <p>Choose from a variety of fuel options to suit your vehicle's needs and preferences.</p>
 
         <div class="fuel-btn">
-            <button data-type="bordered-btn">Petrol</button>
-            <button data-type="bordered-btn">Diesel</button>
-            <button data-type="bordered-btn">LPG</button>
-            <button data-type="bordered-btn">CNG</button>
-            <button data-type="bordered-btn">Electric Charging</button>
+            <button data-type="bordered-btn" class="petrol-btn">Petrol</button>
+            <button data-type="bordered-btn" class="diesel-btn">Diesel</button>
+            <button data-type="bordered-btn" class="lpg-btn">LPG</button>
+            <button data-type="bordered-btn" class="cng-btn">CNG</button>
+            <button data-type="bordered-btn" class="electric-btn">Electric Charging</button>
         </div>
     </section>
 
 
-
+    <div class="station-info-panel" id="stationInfoPanel">
+        <div class="station-info-title">Nearest Station Details</div>
+        <div class="station-info-row"><span>Station:</span><strong></strong></div>
+        <div class="station-info-row"><span>Address:</span><strong> </strong></div>
+        <div class="station-info-row"><span>Distance:</span><strong> </strong></div>
+        <div class="station-info-row"><span>Travel Time:</span><strong> </strong></div>
+        <div class="station-info-row"><span>Price:</span><strong> </strong></div>
+        <div class="station-info-row"><span>Rating:</span><strong> </strong></div>
+        <div class="station-info-snippet"></div>
+    </div>
 
 
     <!--                              gasbooking                             -->
@@ -183,7 +195,7 @@
                 <span class="menu-icon">❓</span>
                 <span class="menu-text">Help & Feedback</span>
             </div>
-            
+
         </div>
         <div class="panel-content">
             <div id="contentArea">
@@ -249,7 +261,7 @@
             </article>
             <article class="testimonial swiper-slide">
                 <div class="avatar">
-                            <img src="pic-2.jpeg">
+                    <img src="pic-2.jpeg">
                 </div>
                 <div class="testimonial__info">
                     <h5>Gandharv Rajmane</h5>
@@ -423,23 +435,110 @@
 
 
     <script>
-        var swiper = new Swiper(".mySwiper", {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            //when window width is )= 600px
-            breakpoints: {
-                600: {
-                    slidesPerView: 2,
+        const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs"; // 👈 replace here
+
+        // ───────── FETCH FUNCTION ─────────
+        async function supaFetch(table) {
+            const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
+                headers: {
+                    apikey: SUPABASE_KEY,
+                    Authorization: `Bearer ${SUPABASE_KEY}`
                 }
+            });
+
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        }
+
+        // ───────── BUTTON EVENTS ─────────
+        document.querySelector(".petrol-btn").addEventListener("click", () => loadFuel("petrol"));
+        document.querySelector(".diesel-btn").addEventListener("click", () => loadFuel("diesel"));
+        document.querySelector(".lpg-btn").addEventListener("click", () => loadFuel("lpg"));
+        document.querySelector(".cng-btn").addEventListener("click", () => loadFuel("cng"));
+        document.querySelector(".electric-btn").addEventListener("click", () => loadFuel("electric"));
+
+        // ───────── LOAD DATA ─────────
+        async function loadFuel(type) {
+
+            const panel = document.getElementById("stationInfoPanel");
+            panel.innerHTML = "Loading...";
+
+            try {
+
+                const data = await supaFetch(type);
+                console.log("DATA FROM SUPABASE:", data);
+                if (!data || data.length === 0) {
+                    panel.innerHTML = "No data found";
+                    return;
+                }
+
+                showCards(data.slice(0, 4));
+
+            } catch (err) {
+                panel.innerHTML = "Error: " + err.message;
             }
-        });
+            const data = await supaFetch(type);
+
+            console.log("TABLE:", type);
+            console.log("DATA:", data);
+        }
+
+        // ───────── SHOW CARDS ─────────
+        function showCards(stations) {
+
+            const panel = document.getElementById("stationInfoPanel");
+
+            window._stations = stations;
+
+            panel.innerHTML = `
+        <div class="station-info-title">Nearby Stations</div>
+
+        <div class="cards-container">
+            ${stations.map((s, i) => `
+                <div class="station-card" onclick="selectCard(${i})">
+
+                    <h3>${s.Station || 'Unknown'}</h3>
+
+                    <p>📍 ${s.Address || 'No address'}</p>
+
+                    <div class="meta">
+                        <span>💰 ₹${s.Price || '—'}/L</span>
+                        <span>⭐ ${s.Rating || '—'}</span>
+                    </div>
+
+                    <div class="meta">
+                        <span>📍 ${s.Distance || '—'} km</span>
+                        <span>⏱ ${s["Travel Time"] || '—'} min</span>
+                    </div>
+
+                </div>
+            `).join("")}
+        </div>
+    `;
+        }
 
 
 
+
+        window.selectCard = function (index) {
+
+            const s = window._stations[index];
+            const panel = document.getElementById("stationInfoPanel");
+
+            panel.innerHTML = `
+        <div class="station-info-title">Station Details</div>
+
+        <div class="station-info-row"><span>Station:</span><strong>${s.Station || '—'}</strong></div>
+        <div class="station-info-row"><span>Address:</span><strong>${s.Address || '—'}</strong></div>
+        <div class="station-info-row"><span>Distance:</span><strong>${s.Distance || '—'} km</strong></div>
+        <div class="station-info-row"><span>Travel Time:</span><strong>${s["Travel Time"] || '—'} min</strong></div>
+        <div class="station-info-row"><span>Price:</span><strong>₹${s.Price || '—'}/L</strong></div>
+        <div class="station-info-row"><span>Rating:</span><strong>${s.Rating || '—'}</strong></div>
+
+        <button onclick="location.reload()">⬅ Back</button>
+    `;
+        }
     </script>
 </body>
 
