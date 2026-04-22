@@ -30,15 +30,6 @@ window.addEventListener("scroll", () => {
     });
 });
 
-
-
-
-
-
-
-
-
-
 const fuelButtons = document.querySelectorAll(".fuel-btn button");
 
 fuelButtons.forEach(button => {
@@ -52,14 +43,6 @@ fuelButtons.forEach(button => {
 
     });
 });
-
-
-
-
-
-
-
-
 
 // Agency select
 document.querySelectorAll(".agency-box").forEach(box => {
@@ -99,23 +82,6 @@ setInterval(() => {
     let price = 880 + Math.floor(Math.random() * 50);
     document.getElementById("price").innerText = "₹" + price;
 }, 3000);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -201,19 +167,6 @@ if (!localStorage.getItem("feedbacks")) {
 
 // INIT
 loadFeedback();
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // reviwe
@@ -553,56 +506,177 @@ paymentOptions.forEach(option => {
 });
 
 
-// Pre-loaded reviews
-const mockReviews = [
-    {
-        id: 1,
-        name: "Rajesh Kumar",
-        initial: "R",
-        color: "#FF6B00",
-        rating: 5,
-        fuel: "petrol",
-        text: "Best fuel station in Pune! The staff is incredibly helpful and they always maintain high quality fuel. Been a loyal customer for 3 years now.",
-        time: "2 hours ago"
-    },
-    {
-        id: 2,
-        name: "Priya Sharma",
-        initial: "P",
-        color: "#00FFD1",
-        rating: 4,
-        fuel: "ev",
-        text: "Tata Power EV Hub is amazing. Fast charging and clean facilities. Wish they had more slots though.",
-        time: "5 hours ago"
-    },
-    {
-        id: 3,
-        name: "Amit Patel",
-        initial: "A",
-        color: "#4A90D9",
-        rating: 5,
-        fuel: "diesel",
-        text: "Perfect for my commercial vehicle. Always get diesel at fair price and never face quality issues.",
-        time: "1 day ago"
-    },
-    {
-        id: 4,
-        name: "Sneha Joshi",
-        initial: "S",
-        color: "#00C853",
-        rating: 4,
-        fuel: "cng",
-        text: "CNG station near my house is great. Fast filling and saves money compared to petrol.",
-        time: "1 day ago"
-    },
-    {
-        id: 5,
-        name: "Vikram Singh",
-        initial: "V",
-        color: "#FFD600",
-        rating: 5,
-        fuel: "gas",
-        text: "HP Gas delivers within 24 hours every time. Their online booking system is super convenient!",
-        time: "2 days ago"
-    }
-];
+
+
+ // Mock data from your existing code
+        const mockReviews = [
+            {
+                id: 1,
+                name: "Rajesh Kumar",
+                initial: "R",
+                color: "#FF6B00",
+                rating: 5,
+                fuel: "petrol",
+                text: "Best fuel station in Pune! The staff is incredibly helpful and they always maintain high quality fuel. Been a loyal customer for 3 years now.",
+                time: "2 hours ago"
+            },
+            {
+                id: 2,
+                name: "Priya Sharma",
+                initial: "P",
+                color: "#00FFD1",
+                rating: 4,
+                fuel: "ev",
+                text: "Tata Power EV Hub is amazing. Fast charging and clean facilities. Wish they had more slots though.",
+                time: "5 hours ago"
+            },
+            {
+                id: 3,
+                name: "Amit Patel",
+                initial: "A",
+                color: "#4A90D9",
+                rating: 5,
+                fuel: "diesel",
+                text: "Perfect for my commercial vehicle. Always get diesel at fair price and never face quality issues.",
+                time: "1 day ago"
+            },
+            {
+                id: 4,
+                name: "Sneha Joshi",
+                initial: "S",
+                color: "#00C853",
+                rating: 4,
+                fuel: "cng",
+                text: "CNG station near my house is great. Fast filling and saves money compared to petrol.",
+                time: "1 day ago"
+            },
+            {
+                id: 5,
+                name: "Vikram Singh",
+                initial: "V",
+                color: "#FFD600",
+                rating: 5,
+                fuel: "gas",
+                text: "HP Gas delivers within 24 hours every time. Their online booking system is super convenient!",
+                time: "2 days ago"
+            }
+        ];
+
+        let selectedRating = 0;
+
+        // Star rating interaction
+        document.querySelectorAll('.star-rating .star').forEach(star => {
+            star.addEventListener('click', function () {
+                selectedRating = parseInt(this.dataset.rating);
+                document.getElementById('selectedRating').value = selectedRating;
+                updateStars();
+            });
+
+            star.addEventListener('mouseenter', function () {
+                const hoverRating = parseInt(this.dataset.rating);
+                highlightStars(hoverRating);
+            });
+        });
+
+        document.getElementById('starRating').addEventListener('mouseleave', function () {
+            updateStars();
+        });
+
+        function updateStars() {
+            document.querySelectorAll('.star-rating.star').forEach(star => {
+                const rating = parseInt(star.dataset.rating);
+                star.classList.toggle('active', rating <= selectedRating);
+            });
+        }
+
+        function highlightStars(rating) {
+            document.querySelectorAll('.star-rating.star').forEach(star => {
+                const starRating = parseInt(star.dataset.rating);
+                star.style.color = starRating <= rating ? '#FFD600' : '#333';
+            });
+        }
+
+        // Render reviews
+        function renderReviews() {
+            const feed = document.getElementById('reviewsFeed');
+            feed.innerHTML = mockReviews.map((review, index) => createReviewCard(review, index)).join('');
+
+            // Trigger stagger animation
+            setTimeout(() => {
+                document.querySelectorAll('.review-card').forEach((card, i) => {
+                    setTimeout(() => {
+                        card.classList.add('visible');
+                    }, i * 100);
+                });
+            }, 100);
+        }
+
+        function createReviewCard(review, index) {
+            const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+            return `
+                <div class="review-card" data-fuel="${review.fuel}">
+                    <div class="review-header">
+                        <div class="reviewer-avatar" style="background: ${review.color}">${review.initial}</div>
+                        <div class="reviewer-info">
+                            <div class="reviewer-name">${review.name}</div>
+                            <div class="review-meta">
+                                <span class="review-stars">${stars}</span>
+                                <span class="fuel-badge">${review.fuel.toUpperCase()}</span>
+                            </div>
+                        </div>
+                    <div class="review-text">${review.text}</div>
+                </div>
+            `;
+        }
+
+        // Submit review
+        function submitReview(e) {
+            e.preventDefault();
+
+            const rating = parseInt(document.getElementById('selectedRating').value);
+            const fuelType = document.getElementById('reviewFuelType').value;
+            const station = document.getElementById('reviewStation').value;
+            const text = document.getElementById('reviewText').value;
+
+            if (!rating || !fuelType || !text) {
+                alert('Please fill in all required fields and select a rating');
+                return;
+            }
+
+            const colors = {
+                petrol: '#FF6B00',
+                diesel: '#4A90D9',
+                cng: '#00C853',
+                lpg: '#FF5722',
+                ev: '#00FFD1',
+                gas: '#FFD600'
+            };
+
+            const newReview = {
+                id: Date.now(),
+                name: 'You',
+                initial: 'Y',
+                color: colors[fuelType],
+                rating: rating,
+                fuel: fuelType,
+                text: text,
+                time: 'Just now'
+            };
+
+            mockReviews.unshift(newReview);
+            renderReviews();
+
+            // Reset form
+            document.getElementById('reviewForm').reset();
+            selectedRating = 0;
+            document.getElementById('selectedRating').value = 0;
+            updateStars();
+
+            // Scroll to top of reviews
+            document.getElementById('reviewsFeed').scrollTop = 0;
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderReviews();
+        });

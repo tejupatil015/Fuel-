@@ -408,6 +408,60 @@
 
 
 
+ <section class="reviews-section">
+        <div class="reviews-header">
+            <h1>COMMUNITY REVIEWS</h1>
+            <p>See what others are saying about fuel stations</p>
+        </div>
+
+        <div class="reviews-container">
+            <!-- Submit Review Form -->
+            <div class="submit-review-card">
+                <h3>SUBMIT YOUR REVIEW</h3>
+                <form id="reviewForm" onsubmit="submitReview(event)">
+                    <div class="star-rating" id="starRating">
+                        <span class="star" data-rating="1">★</span>
+                        <span class="star" data-rating="2">★</span>
+                        <span class="star" data-rating="3">★</span>
+                        <span class="star" data-rating="4">★</span>
+                        <span class="star" data-rating="5">★</span>
+                    </div>
+                    <input type="hidden" id="selectedRating" value="0">
+
+                    <div class="form-group">
+                        <select class="form-input" id="reviewFuelType" required>
+                            <option value="">Select Fuel Type</option>
+                            <option value="petrol">Petrol</option>
+                            <option value="diesel">Diesel</option>
+                            <option value="cng">CNG</option>
+                            <option value="lpg">LPG</option>
+                            <option value="ev">EV Charging</option>
+                            <option value="gas">Gas</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="reviewStation" placeholder="Station Name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-input" id="reviewText" placeholder="Share your experience..."
+                            required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Submit Review</button>
+                </form>
+            </div>
+
+            <!-- Recent Reviews -->
+            <div class="recent-reviews">
+                <h3>RECENT REVIEWS</h3>
+                <div class="reviews-feed" id="reviewsFeed">
+                    <!-- Reviews will be rendered here by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
 
 
 
@@ -463,20 +517,12 @@
         </div>
     </footer>
 
-    <script src="header.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
-
-
+   <script src="header.js"></script>
     <script>
         const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs"; // 👈 replace here
-
-
-
-
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs"; 
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         let map;
         let userMarker;
         let markers = [];
@@ -898,8 +944,431 @@
             selectedDate = null;
             selectedSlot = null;
         }
+
+
+
+
+
+
+        const menu = document.querySelector(".nav__menu");
+const openBtn = document.getElementById("open-menu-btn");
+const closeBtn = document.getElementById("close-menu-btn");
+const setting = document.getElementById("settingbtn")
+
+openBtn.onclick = () => {
+    menu.classList.add("show");
+    openBtn.style.display = "none";
+    closeBtn.style.display = "block";
+
+
+};
+
+closeBtn.onclick = () => {
+    menu.classList.remove("show");
+    openBtn.style.display = "block";
+    closeBtn.style.display = "none";
+};
+
+const elements = document.querySelectorAll(".fade-up");
+
+window.addEventListener("scroll", () => {
+    elements.forEach(el => {
+        const position = el.getBoundingClientRect().top;
+        const screenHeight = window.innerHeight;
+
+        if (position < screenHeight - 100) {
+            el.classList.add("show");
+        }
+    });
+});
+
+const fuelButtons = document.querySelectorAll(".fuel-btn button");
+
+fuelButtons.forEach(button => {
+    button.addEventListener("click", () => {
+
+        // remove active from all
+        fuelButtons.forEach(btn => btn.classList.remove("active"));
+
+        // add active to clicked
+        button.classList.add("active");
+
+    });
+});
+
+// Agency select
+document.querySelectorAll(".agency-box").forEach(box => {
+    box.onclick = () => {
+        document.querySelectorAll(".agency-box").forEach(b => b.classList.remove("active"));
+        box.classList.add("active");
+    };
+});
+
+// Booking click
+const steps = document.querySelectorAll(".step");
+const popup = document.getElementById("popup");
+
+document.getElementById("bookBtn").onclick = () => {
+
+    let i = 0;
+
+    let interval = setInterval(() => {
+        if (i < steps.length) {
+            steps[i].classList.add("active");
+            i++;
+        } else {
+            clearInterval(interval);
+
+            // show popup
+            popup.style.display = "block";
+
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 3000);
+        }
+    }, 1000);
+};
+
+// Live price update
+setInterval(() => {
+    let price = 880 + Math.floor(Math.random() * 50);
+    document.getElementById("price").innerText = "₹" + price;
+}, 3000);
+
+
+
+let selectedRating = 0;
+
+// STAR CLICK
+const stars = document.querySelectorAll("#stars span");
+stars.forEach(star => {
+    star.onclick = () => {
+        selectedRating = star.dataset.value;
+
+        stars.forEach(s => s.classList.remove("active"));
+        for (let i = 0; i < selectedRating; i++) {
+            stars[i].classList.add("active");
+        }
+    };
+});
+
+const btn = document.getElementById("submitFeedback");
+const list = document.getElementById("feedbackList");
+
+// LOAD
+function loadFeedback() {
+    list.innerHTML = "";
+    const data = JSON.parse(localStorage.getItem("feedbacks")) || [];
+
+    data.forEach(fb => {
+        const div = document.createElement("div");
+        div.classList.add("feedback-card");
+
+        // avatar first letter
+        const letter = fb.name.charAt(0).toUpperCase();
+
+        // stars
+        let starsHTML = "★".repeat(fb.rating);
+
+        div.innerHTML = `
+            <div class="avatar">${letter}</div>
+            <h4>${fb.name}</h4>
+            <div class="rating">${starsHTML}</div>
+            <p>${fb.message}</p>
+        `;
+
+        list.appendChild(div);
+    });
+}
+
+// ADD
+btn.onclick = () => {
+    const name = document.getElementById("name").value;
+    const message = document.getElementById("message").value;
+
+    if (!name || !message || selectedRating == 0) {
+        return alert("Fill all fields + rating");
+    }
+
+    const data = JSON.parse(localStorage.getItem("feedbacks")) || [];
+
+    data.push({ name, message, rating: selectedRating });
+
+    localStorage.setItem("feedbacks", JSON.stringify(data));
+
+    loadFeedback();
+
+    // reset
+    document.getElementById("name").value = "";
+    document.getElementById("message").value = "";
+    selectedRating = 0;
+    stars.forEach(s => s.classList.remove("active"));
+};
+
+// DEMO DATA
+if (!localStorage.getItem("feedbacks")) {
+    const demo = [
+        { name: "Rahul", message: "Amazing service!", rating: 5 },
+        { name: "Priya", message: "Very easy to use 👍", rating: 4 },
+        { name: "Amit", message: "Loved tracking feature!", rating: 5 },
+        { name: "Sneha", message: "Fast delivery 🚀", rating: 4 },
+        { name: "Rohit", message: "Clean UI design", rating: 5 }
+    ];
+    localStorage.setItem("feedbacks", JSON.stringify(demo));
+}
+
+// INIT
+loadFeedback();
+
+
+// reviwe
+
+
+const form = document.getElementById("feedbackForm");
+const wrapper = document.querySelector(".swiper-wrapper");
+
+form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const rating = document.getElementById("rating").value;
+    const message = document.getElementById("message").value;
+
+    addSlide(name, rating, message);
+
+    form.reset();
+});
+
+function addSlide(name, rating, message) {
+    const slide = document.createElement("article");
+    slide.classList.add("testimonial", "swiper-slide");
+
+    let stars = "⭐".repeat(rating);
+
+    slide.innerHTML = `
+        <div class="testimonial__info">
+            <h5>${name}</h5>
+            <small>${stars}</small>
+        </div>
+        <div class="testimonial__body">
+            <p>${message}</p>
+        </div>
+    `;
+
+    wrapper.prepend(slide);
+
+    // Swiper refresh
+    if (typeof swiper !== "undefined") {
+        swiper.update();
+    }
+}
+
+
+
+
+function showContent(type, event) {
+    // Update active menu item
+    document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    if (event && event.target) {
+        event.target.closest('.menu-item').classList.add('active');
+    }
+
+    const contentArea = document.getElementById('contentArea');
+    if (!contentArea) return;
+
+    // Get user data from localStorage or use defaults
+    const userData = JSON.parse(localStorage.getItem('userData')) || {
+        mobile: '+91 98765 43210',
+        email: 'user@example.com',
+        name: 'John Doe',
+        profilePic: null
+    };
+
+    switch (type) {
+        case 'info':
+            contentArea.innerHTML = `
+                        <div class="info-section">
+                            <h3>Your Info</h3>
+                            <div class="info-card">
+                                <div class="info-item">
+                                    <span class="info-label">Full Name</span>
+                                    <span class="info-value">${userData.name || 'N/A'}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Email Address</span>
+                                    <span class="info-value">${userData.email || 'N/A'}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Mobile Number</span>
+                                    <span class="info-value">${userData.mobile || 'N/A'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            break;
+
+        case 'notifications':
+            contentArea.innerHTML = `
+                        <div class="notifications-section">
+                            <h3>Notifications</h3>
+                            <div class="notification-list">
+                                <div class="notification-item">
+                                    <div class="notification-icon">⛽</div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">Fuel Price Update</div>
+                                        <div class="notification-text">Petrol prices updated in your area</div>
+                                        <div class="notification-time">2 hours ago</div>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon">🔋</div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">EV Station Maintenance</div>
+                                        <div class="notification-text">Tata Power station will be closed for maintenance</div>
+                                        <div class="notification-time">1 day ago</div>
+                                    </div>
+                                </div>
+                                <div class="notification-item">
+                                    <div class="notification-icon">🎉</div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">New Feature Available</div>
+                                        <div class="notification-text">Try our new route optimization feature</div>
+                                        <div class="notification-time">3 days ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            break;
+
+        case 'privacy':
+            contentArea.innerHTML = `
+                        <div class="privacy-section">
+                            <h3>Privacy & Security</h3>
+                            <div class="settings-list">
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Location Services</div>
+                                        <div class="setting-description">Allow access to your location for better station recommendations</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Data Sharing</div>
+                                        <div class="setting-description">Share anonymous usage data to improve our service</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <div class="setting-title">Push Notifications</div>
+                                        <div class="setting-description">Receive notifications about fuel prices and station updates</div>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            break;
+
+        case 'about':
+            contentArea.innerHTML = `
+                        <div class="about-section">
+                            <h3>About FuelFinder</h3>
+                            <div class="about-content">
+                                <div class="app-info">
+                                    <div class="app-version">Version 2.1.0</div>
+                                    <div class="app-description">
+                                        FuelFinder helps you find the nearest fuel stations, compare prices, and book gas cylinders in Kolhapur and surrounding areas.
+                                    </div>
+                                </div>
+                                <div class="feature-list">
+                                    <div class="feature-item">
+                                        <span class="feature-icon">🗺️</span>
+                                        <span>Interactive Maps</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <span class="feature-icon">⛽</span>
+                                        <span>Real-time Fuel Prices</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <span class="feature-icon">🔋</span>
+                                        <span>EV Charging Stations</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <span class="feature-icon">📦</span>
+                                        <span>Gas Cylinder Booking</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            break;
+
+        case 'help':
+            contentArea.innerHTML = `
+                        <div class="help-section">
+                            <h3>Help & Feedback</h3>
+                            <div class="help-content">
+                                <div class="help-item">
+                                    <div class="help-icon">❓</div>
+                                    <div class="help-text">
+                                        <div class="help-title">How to find stations</div>
+                                        <div class="help-description">Use the map or station list to find fuel stations near you</div>
+                                    </div>
+                                </div>
+                                <div class="help-item">
+                                    <div class="help-icon">📞</div>
+                                    <div class="help-text">
+                                        <div class="help-title">Contact Support</div>
+                                        <div class="help-description">support@fuelfinder.com | +91 98765 43210</div>
+                                    </div>
+                                </div>
+                                <div class="help-item">
+                                    <div class="help-icon">💬</div>
+                                    <div class="help-text">
+                                        <div class="help-title">Chat with AI Assistant</div>
+                                        <div class="help-description">Click the chat icon in the bottom right corner</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            break;
+
+        case 'signout':
+            signOut();
+            break;
+    }
+
+}
+function toggleSettings() {
+    const panel = document.getElementById('settingsPanel');
+    const overlay = document.getElementById('overlay');
+
+    panel.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
+
+if (localStorage.getItem("loggedIn") !== "true") {
+    window.location.href = "login.html";
+}
+
+
     </script>
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 </body>
 
 </html>
