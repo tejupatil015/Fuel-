@@ -340,47 +340,7 @@
 
 
 
-    <!-- Section 6: Reviews -->
-    <section class="reviews-section slide-up" id="reviews-section">
-        <div class="section-header">
-            <h2 class="section-title">Community Reviews</h2>
-            <p class="section-subtitle">See what others are saying about fuel stations</p>
-        </div>
-        <div class="reviews-container">
-            <div class="reviews-column slide-left">
-                <h3 class="column-header">Submit Your Review</h3>
-                <form class="review-form" id="reviewForm">
-                    <div class="star-rating" id="starRating">
-                        <span class="star" data-rating="1">★</span>
-                        <span class="star" data-rating="2">★</span>
-                        <span class="star" data-rating="3">★</span>
-                        <span class="star" data-rating="4">★</span>
-                        <span class="star" data-rating="5">★</span>
-                    </div>
-                    <input type="hidden" id="selectedRating" value="0">
-                    <select class="form-input" id="reviewFuelType">
-                        <option value="">Select Fuel Type</option>
-                        <option value="petrol">Petrol</option>
-                        <option value="diesel">Diesel</option>
-                        <option value="cng">CNG</option>
-                        <option value="lpg">LPG</option>
-                        <option value="ev">EV Charging</option>
-                        <option value="gas">Gas Cylinder</option>
-                    </select>
-                    <input type="text" class="form-input" id="reviewStation" placeholder="Station Name">
-                    <textarea class="form-input" id="reviewText" placeholder="Share your experience..."></textarea>
-                    <button type="submit" class="btn-submit-review">Submit Review</button>
-                </form>
-            </div>
-            <div class="reviews-column slide-right">
-                <h3 class="column-header">Recent Reviews</h3>
-                <div class="reviews-feed" id="reviewsFeed">
-                    <!-- Reviews will be dynamically inserted -->
-                </div>
-            </div>
-        </div>
-    </section>
-
+    
 
 
 
@@ -443,6 +403,7 @@
 
 
 
+
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let map;
@@ -451,9 +412,10 @@
 
         /* ===== BUTTON EVENTS ===== */
         document.querySelector(".petrol-btn").onclick = () => start("petrol");
+        document.querySelector(".diesel-btn").onclick = () => start("Diesel"); // if table = Diesel
         document.querySelector(".cng-btn").onclick = () => start("cng");
-        document.querySelector(".diesel-btn").onclick = () => start("Diesel");
-        document.querySelector(".electric-btn").onclick = () => start("EV");
+        document.querySelector(".electric-btn").onclick = () => start("EV"); // if table = EV
+
 
         /* ===== MAIN FUNCTION ===== */
         async function start(type) {
@@ -464,8 +426,6 @@
 
                 const userLat = pos.coords.latitude;
                 const userLng = pos.coords.longitude;
-
-
 
                 /* MAP INIT */
                 if (!map) {
@@ -487,54 +447,74 @@
                 markers.forEach(m => map.removeLayer(m));
                 markers = [];
 
-                /* FETCH DATA */
+                /* ===== FETCH DATA ===== */
                 const { data, error } = await client
-                    .from(type)   // 🔥 dynamic table name
+                    .from(type)
                     .select("*");
 
-                if (error || !data || data.length === 0) {
-                    document.getElementById("stationInfoPanel").innerHTML = "❌ No data found";
+                /* 🔥 DEBUG LOG */
+                console.log("TABLE:", type);
+                console.log("DATA:", data);
+                console.log("ERROR:", error);
+
+                if (error) {
+                    document.getElementById("stationInfoPanel").innerHTML =
+                        "❌ Error: " + error.message;
                     return;
                 }
 
-                /* PROCESS DATA */
+                if (!data || data.length === 0) {
+                    document.getElementById("stationInfoPanel").innerHTML =
+                        "❌ No data found in table: " + type;
+                    return;
+                }
+
+                /* ===== PROCESS DATA ===== */
                 const processed = data.map(s => {
+
                     const lat = parseFloat(s.latitude);
                     const lng = parseFloat(s.longitude);
 
                     if (isNaN(lat) || isNaN(lng)) return null;
 
-                    const dist = getDistance(userLat, userLng, lat, lng);
+                    return {
+                        ...s,
+                        latitude: lat,
+                        longitude: lng,
+                        dist: getDistance(userLat, userLng, lat, lng)
+                    };
 
-                    return { ...s, latitude: lat, longitude: lng, dist };
-                }).filter(s => s !== null);
+                }).filter(Boolean);
 
-                /* FILTER 30KM */
+                if (!processed.length) {
+                    document.getElementById("stationInfoPanel").innerHTML =
+                        "❌ Invalid latitude/longitude data";
+                    return;
+                }
+
+                /* ===== FILTER 30KM ===== */
                 const nearby = processed
                     .filter(s => s.dist <= 30)
                     .sort((a, b) => a.dist - b.dist);
 
                 const finalData = nearby.length ? nearby : processed;
 
-                if (!finalData.length) {
-                    document.getElementById("stationInfoPanel").innerHTML = "❌ No valid data";
-                    return;
-                }
-
-                /* SHOW UI */
+                /* ===== SHOW UI ===== */
                 showUI(finalData.slice(0, 4), type);
 
-                /* ADD MARKERS */
+                /* ===== ADD MARKERS ===== */
                 finalData.slice(0, 4).forEach(s => {
+
                     const m = L.marker([s.latitude, s.longitude])
                         .addTo(map)
-                        .bindPopup(`${s.Station} (${s.dist.toFixed(1)} km)`);
+                        .bindPopup(`${s.Station || "Station"} (${s.dist.toFixed(1)} km)`);
 
                     markers.push(m);
                 });
 
             });
         }
+
 
         /* ===== UI ===== */
         function showUI(stations, type) {
@@ -574,6 +554,7 @@
     `;
         }
 
+
         /* ===== VIEW ===== */
         function viewOnMap(lat, lng) {
             map.setView([lat, lng], 15);
@@ -583,10 +564,12 @@
                 .openPopup();
         }
 
+
         /* ===== ROUTE ===== */
         function route(lat, lng) {
             window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
         }
+
 
         /* ===== DISTANCE ===== */
         function getDistance(lat1, lon1, lat2, lon2) {
@@ -603,6 +586,7 @@
 
             return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
         }
+    </script>
     </script>
 </body>
 

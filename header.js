@@ -551,3 +551,58 @@ paymentOptions.forEach(option => {
 
     });
 });
+
+
+// Pre-loaded reviews
+const mockReviews = [
+    {
+        id: 1,
+        name: "Rajesh Kumar",
+        initial: "R",
+        color: "#FF6B00",
+        rating: 5,
+        fuel: "petrol",
+        text: "Best fuel station in Pune! The staff is incredibly helpful and they always maintain high quality fuel. Been a loyal customer for 3 years now.",
+        time: "2 hours ago"
+    },
+    {
+        id: 2,
+        name: "Priya Sharma",
+        initial: "P",
+        color: "#00FFD1",
+        rating: 4,
+        fuel: "ev",
+        text: "Tata Power EV Hub is amazing. Fast charging and clean facilities. Wish they had more slots though.",
+        time: "5 hours ago"
+    },
+    {
+        id: 3,
+        name: "Amit Patel",
+        initial: "A",
+        color: "#4A90D9",
+        rating: 5,
+        fuel: "diesel",
+        text: "Perfect for my commercial vehicle. Always get diesel at fair price and never face quality issues.",
+        time: "1 day ago"
+    },
+    {
+        id: 4,
+        name: "Sneha Joshi",
+        initial: "S",
+        color: "#00C853",
+        rating: 4,
+        fuel: "cng",
+        text: "CNG station near my house is great. Fast filling and saves money compared to petrol.",
+        time: "1 day ago"
+    },
+    {
+        id: 5,
+        name: "Vikram Singh",
+        initial: "V",
+        color: "#FFD600",
+        rating: 5,
+        fuel: "gas",
+        text: "HP Gas delivers within 24 hours every time. Their online booking system is super convenient!",
+        time: "2 days ago"
+    }
+];

@@ -803,11 +803,6 @@ button:hover,
      box-shadow: 0 10px 30px rgba(255, 107, 0, 0.3);
  }
 
- .reviews-feed {
-     display: flex;
-     flex-direction: column;
-     gap: 1rem;
- }
 
  .review-card {
      background: var(--bg-glass);
