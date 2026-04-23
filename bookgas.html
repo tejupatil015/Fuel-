@@ -1,414 +1,485 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Gas Cylinder - FuelFinder</title>
-    <link rel="stylesheet" href="header.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+   :root {
+    --bg-primary: #0F0F0F;
+    --bg-secondary: #1A1A1A;
+    --bg-card: #1E1E1E;
+    --bg-hover: #242424;
+    --bg-input: #0A0A0A;
+    
+    --text-primary: #FFFFFF;
+    --text-secondary: #AAAAAA;
+    --text-muted: #666666;
+    
+    --accent-orange: #FF6B00;
+    --accent-cyan: #00FFD1;
+    --accent-blue: #4A90D9;
+    --accent-green: #00C853;
+    --accent-yellow: #FFD600;
+    --accent-red: #FF5722;
+    
+    --border: #333333;
+    --border-light: #444444;
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-glow-orange: 0 0 25px rgba(255, 107, 0, 0.4);
+    --shadow-glow-cyan: 0 0 25px rgba(0, 255, 209, 0.4);
+    --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .booking-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
+body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg-primary);
+    min-height: 100vh;
+    padding: 16px;
+    color: var(--text-primary);
+}
 
-        .booking-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+.booking-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+}
 
-        .booking-header h1 {
-            font-size: 2.5rem;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
+.booking-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-orange), var(--accent-cyan), var(--accent-blue));
+    border-radius: 20px 20px 0 0;
+}
 
-        .booking-header p {
-            color: #666;
-            font-size: 1.1rem;
-        }
+.booking-header { text-align: center; margin-bottom: 32px; }
 
-        /* Step Indicators */
-        .step-indicators {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            gap: 10px;
-        }
+.booking-header h1 {
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
 
-        .step-indicator {
-            flex: 1;
-            text-align: center;
-            position: relative;
-        }
+.booking-header p { 
+    color: var(--text-secondary); 
+    font-size: clamp(0.95rem, 3vw, 1.1rem); 
+}
 
-        .step-indicator.active .step-number {
-            background: #667eea;
-            color: white;
-        }
+.step-indicators {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 8px;
+    position: relative;
+}
 
-        .step-indicator.completed .step-number {
-            background: #4caf50;
-            color: white;
-        }
+.step-indicators::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 15%;
+    right: 15%;
+    height: 2px;
+    background: var(--border);
+    z-index: 0;
+}
 
-        .step-number {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            border-radius: 50%;
-            background: #e0e0e0;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #666;
-        }
+.step-indicator { 
+    flex: 1; 
+    text-align: center; 
+    position: relative; 
+    z-index: 1; 
+}
 
-        .step-label {
-            font-size: 0.9rem;
-            color: #666;
-        }
+.step-indicator.active .step-number {
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+    color: var(--bg-primary);
+    box-shadow: var(--shadow-glow-orange);
+    transform: scale(1.15);
+    border: 2px solid var(--accent-orange);
+}
 
-        /* Step Content */
-        .step-content {
-            display: none;
-        }
+.step-indicator.completed .step-number {
+    background: var(--accent-green);
+    color: var(--bg-primary);
+    box-shadow: 0 0 20px rgba(0, 200, 83, 0.5);
+    border: 2px solid var(--accent-green);
+}
 
-        .step-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
+.step-number {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+    transition: var(--transition);
+    font-size: 0.9rem;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+.step-label { 
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem); 
+    color: var(--text-secondary); 
+    font-weight: 500; 
+}
 
-        .form-section h3 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-        }
+.step-content { display: none; }
+.step-content.active { display: block; animation: fadeIn 0.4s ease; }
 
-        /* Provider Selection */
-        .provider-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(15px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
 
-        .provider-option {
-            padding: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.form-section h3 {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-        .provider-option:hover {
-            border-color: #667eea;
-            background: #f0f0f0;
-        }
+.form-section h3::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(180deg, var(--accent-orange), var(--accent-cyan));
+    border-radius: 2px;
+}
 
-        .provider-option.selected {
-            border-color: #667eea;
-            background: #f0f0ff;
-        }
+.provider-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+    margin-bottom: 20px; 
+}
 
-        .provider-logo {
-            width: 60px;
-            height: 60px;
-            line-height: 60px;
-            margin: 0 auto 10px;
-            border-radius: 50%;
-            color: white;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
+.provider-option {
+    padding: 20px 16px;
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--bg-secondary);
+    position: relative;
+    overflow: hidden;
+}
 
-        .provider-name {
-            font-weight: 600;
-            color: #333;
-        }
+.provider-option:active { transform: scale(0.98); }
 
-        /* Form Groups */
-        .form-group {
-            margin-bottom: 20px;
-        }
+.provider-option:hover { 
+    border-color: var(--accent-orange); 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(255, 107, 0, 0.2);
+}
 
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 600;
-        }
+.provider-option.selected {
+    border-color: var(--accent-orange);
+    background: rgba(255, 107, 0, 0.15);
+    box-shadow: var(--shadow-glow-orange);
+}
 
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
+.provider-logo {
+    width: 56px;
+    height: 56px;
+    line-height: 56px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    color: white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: var(--shadow-md);
+}
 
-        .form-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+.provider-name { 
+    font-weight: 600; 
+    color: var(--text-primary); 
+    font-size: 0.95rem; 
+}
 
-        /* Cylinder Options */
-        .cylinder-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+.form-grid { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 16px; 
+}
 
-        .cylinder-option {
-            padding: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.form-group { margin-bottom: 16px; }
+.form-group.full-width { grid-column: 1 / -1; }
 
-        .cylinder-option:hover {
-            border-color: #667eea;
-            background: #f0f0f0;
-        }
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.form-label span { color: var(--accent-red); }
 
-        .cylinder-option.selected {
-            border-color: #667eea;
-            background: #f0f0ff;
-        }
+.form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: var(--transition);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+}
 
-        .cylinder-weight {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 5px;
-        }
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.15);
+}
 
-        .cylinder-type {
-            color: #666;
-            font-size: 0.9rem;
-        }
+.form-input::placeholder { color: var(--text-muted); }
 
-        /* Payment Options */
-        .payment-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+.cylinder-grid { 
+    display: grid; 
+    grid-template-columns: 1fr; 
+    gap: 12px; 
+    margin-bottom: 16px; 
+}
 
-        .payment-option {
-            padding: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.cylinder-option {
+    padding: 20px 16px;
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--bg-secondary);
+}
 
-        .payment-option:hover {
-            border-color: #667eea;
-            background: #f0f0f0;
-        }
+.cylinder-option:active { transform: scale(0.98); }
+.cylinder-option:hover { border-color: var(--accent-cyan); }
 
-        .payment-option.selected {
-            border-color: #667eea;
-            background: #f0f0ff;
-        }
+.cylinder-option.selected {
+    border-color: var(--accent-cyan);
+    background: rgba(0, 255, 209, 0.15);
+    box-shadow: var(--shadow-glow-cyan);
+}
 
-        .payment-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
+.cylinder-weight {
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+}
 
-        .payment-name {
-            font-weight: 600;
-            color: #333;
-        }
+.cylinder-type { 
+    color: var(--text-secondary); 
+    font-size: 0.85rem; 
+    font-weight: 500; 
+}
 
-        /* Summary */
-        .summary-card {
-            background: #f9f9f9;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
+.payment-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 12px; 
+    margin-bottom: 16px; 
+}
 
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
+.payment-option {
+    padding: 20px 12px;
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--bg-secondary);
+}
 
-        .summary-row:last-child {
-            border-bottom: none;
-        }
+.payment-option:active { transform: scale(0.98); }
+.payment-option:hover { border-color: var(--accent-blue); }
 
-        .summary-label {
-            font-weight: 600;
-            color: #333;
-        }
+.payment-option.selected {
+    border-color: var(--accent-blue);
+    background: rgba(74, 144, 217, 0.15);
+    box-shadow: 0 0 20px rgba(74, 144, 217, 0.3);
+}
 
-        .summary-value {
-            color: #667eea;
-            font-weight: 600;
-        }
+.payment-icon { font-size: 2.2rem; margin-bottom: 8px; }
+.payment-name { font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
 
-        /* Buttons */
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 30px;
-        }
+.summary-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
 
-        .btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+}
 
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
+.summary-row:last-child { border-bottom: none; }
+.summary-label { 
+    font-weight: 600; 
+    color: var(--text-secondary); 
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.summary-value { 
+    color: var(--text-primary); 
+    font-weight: 600; 
+    text-align: right;
+    font-size: 0.9rem;
+    word-break: break-word;
+}
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
-        }
+.button-group { 
+    display: flex; 
+    flex-direction: column;
+    gap: 12px; 
+    margin-top: 24px; 
+}
 
-        .btn-secondary {
-            background: #e0e0e0;
-            color: #333;
-        }
+.btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: 'Outfit', sans-serif;
+}
 
-        .btn-secondary:hover {
-            background: #d0d0d0;
-        }
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-orange), var(--accent-red));
+    color: white;
+    box-shadow: var(--shadow-glow-orange);
+}
 
-        /* Success State */
-        .success-state {
-            text-align: center;
-            padding: 40px 20px;
-        }
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-        .success-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-        }
+.btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--border);
+}
 
-        .success-state h2 {
-            color: #4caf50;
-            margin-bottom: 15px;
-            font-size: 2rem;
-        }
+.btn-secondary:active { background: var(--bg-hover); }
 
-        .success-state p {
-            color: #666;
-            margin-bottom: 20px;
-        }
+.success-state { text-align: center; padding: 40px 16px; }
+.success-icon { font-size: 4rem; margin-bottom: 20px; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        .booking-ref {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-        }
+@keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
 
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
-        }
+.success-state h2 {
+    color: var(--accent-green);
+    margin-bottom: 12px;
+    font-size: clamp(1.8rem, 5vw, 2.2rem);
+    font-weight: 800;
+}
+.success-state p { color: var(--text-secondary); margin-bottom: 20px; font-size: 1rem; }
 
-        .error-message.show {
-            display: block;
-        }
+.booking-ref {
+    background: var(--bg-secondary);
+    border: 2px solid var(--accent-cyan);
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    box-shadow: var(--shadow-glow-cyan);
+}
 
-        @media (max-width: 600px) {
-            .booking-container {
-                padding: 20px;
-            }
+.error-message {
+    background: rgba(255, 87, 34, 0.1);
+    border: 1px solid var(--accent-red);
+    color: var(--accent-red);
+    padding: 14px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.error-message.show { display: block; animation: slideDown 0.3s ease; }
 
-            .booking-header h1 {
-                font-size: 1.8rem;
-            }
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-            .provider-grid,
-            .cylinder-grid,
-            .payment-grid {
-                grid-template-columns: 1fr;
-            }
+.loading { display: none; text-align: center; padding: 40px; }
+.loading.show { display: block; }
 
-            .button-group {
-                flex-direction: column;
-            }
-        }
+.spinner {
+    border: 4px solid var(--bg-secondary);
+    border-top: 4px solid var(--accent-orange);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .loading.show {
-            display: block;
-        }
+/* Tablet */
+@media (min-width: 640px) {
+    .booking-container { padding: 32px; }
+    .form-grid { grid-template-columns: 1fr 1fr; }
+    .cylinder-grid { grid-template-columns: 1fr 1fr 1fr; }
+    .button-group { flex-direction: row; }
+}
 
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
+/* Desktop */
+@media (min-width: 768px) {
+    .booking-container { padding: 48px; }
+    .provider-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
 </head>
+
 <body>
     <div class="booking-container">
         <div class="booking-header">
@@ -418,7 +489,6 @@
 
         <div class="error-message" id="errorMessage"></div>
 
-        <!-- Step Indicators -->
         <div class="step-indicators">
             <div class="step-indicator active" data-step="1">
                 <div class="step-number">1</div>
@@ -434,7 +504,7 @@
             </div>
         </div>
 
-        <!-- Step 1: Provider Selection -->
+        <!-- Step 1 -->
         <div class="step-content active" id="step1">
             <div class="form-section">
                 <h3>Select Your Gas Provider</h3>
@@ -457,43 +527,40 @@
                     </div>
                 </div>
                 <div class="button-group">
-                    <button class="btn btn-primary" onclick="nextStep(1)">Continue</button>
+                    <button class="btn btn-primary" id="step1Next">Continue</button>
                 </div>
             </div>
         </div>
 
-        <!-- Step 2: User Details -->
+        <!-- Step 2 -->
         <div class="step-content" id="step2">
             <div class="form-section">
                 <h3>Enter Your Details</h3>
-                <form id="detailsForm">
+                <div class="form-grid">
                     <div class="form-group">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" class="form-input" id="fullName" placeholder="Enter your name" required>
+                        <label class="form-label">Full Name <span>*</span></label>
+                        <input type="text" class="form-input" id="fullName" placeholder="Enter your name">
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" class="form-input" id="email" placeholder="Enter your email" required>
+                        <label class="form-label">Email Address <span>*</span></label>
+                        <input type="email" class="form-input" id="email" placeholder="Enter your email">
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">Mobile Number</label>
-                        <input type="tel" class="form-input" id="mobileNumber" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+                        <label class="form-label">Mobile Number <span>*</span></label>
+                        <input type="tel" class="form-input" id="mobileNumber" placeholder="10-digit mobile number"
+                            maxlength="10">
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">Consumer ID</label>
-                        <input type="text" class="form-input" id="consumerId" placeholder="Enter your consumer ID" required>
+                        <label class="form-label">Consumer ID <span>*</span></label>
+                        <input type="text" class="form-input" id="consumerId" placeholder="Enter your consumer ID">
                     </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Delivery Address</label>
-                        <input type="text" class="form-input" id="address" placeholder="Enter complete delivery address" required>
+                    <div class="form-group full-width">
+                        <label class="form-label">Delivery Address <span>*</span></label>
+                        <input type="text" class="form-input" id="address"
+                            placeholder="Enter complete delivery address">
                     </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Cylinder Type</label>
+                    <div class="form-group full-width">
+                        <label class="form-label">Cylinder Type <span>*</span></label>
                         <div class="cylinder-grid">
                             <div class="cylinder-option" data-type="14.2">
                                 <div class="cylinder-weight">14.2 kg</div>
@@ -509,14 +576,12 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">Preferred Delivery Date</label>
-                        <input type="date" class="form-input" id="deliveryDate" required>
+                        <label class="form-label">Preferred Delivery Date <span>*</span></label>
+                        <input type="date" class="form-input" id="deliveryDate">
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">Payment Method</label>
+                        <label class="form-label">Payment Method <span>*</span></label>
                         <div class="payment-grid">
                             <div class="payment-option" data-payment="online">
                                 <div class="payment-icon">💳</div>
@@ -528,66 +593,46 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="button-group">
-                        <button type="button" class="btn btn-secondary" onclick="previousStep()">Back</button>
-                        <button type="button" class="btn btn-primary" onclick="nextStep(2)">Continue</button>
-                    </div>
-                </form>
+                </div>
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" id="step2Back">Back</button>
+                    <button type="button" class="btn btn-primary" id="step2Next">Continue</button>
+                </div>
             </div>
         </div>
 
-        <!-- Step 3: Review & Confirm -->
+        <!-- Step 3 -->
         <div class="step-content" id="step3">
             <div class="form-section">
                 <h3>Review Your Booking</h3>
                 <div class="summary-card">
-                    <div class="summary-row">
-                        <span class="summary-label">Provider</span>
-                        <span class="summary-value" id="summaryProvider">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Full Name</span>
-                        <span class="summary-value" id="summaryName">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Email</span>
-                        <span class="summary-value" id="summaryEmail">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Mobile</span>
-                        <span class="summary-value" id="summaryMobile">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Consumer ID</span>
-                        <span class="summary-value" id="summaryConsumer">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Cylinder Type</span>
-                        <span class="summary-value" id="summaryCylinder">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Delivery Date</span>
-                        <span class="summary-value" id="summaryDate">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Delivery Address</span>
-                        <span class="summary-value" id="summaryAddress">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Payment Method</span>
-                        <span class="summary-value" id="summaryPayment">-</span>
-                    </div>
+                    <div class="summary-row"><span class="summary-label">Provider</span><span class="summary-value"
+                            id="summaryProvider">-</span></div>
+                    <div class="summary-row"><span class="summary-label">Full Name</span><span class="summary-value"
+                            id="summaryName">-</span></div>
+                    <div class="summary-row"><span class="summary-label">Email</span><span class="summary-value"
+                            id="summaryEmail">-</span></div>
+                    <div class="summary-row"><span class="summary-label">Mobile</span><span class="summary-value"
+                            id="summaryMobile">-</span></div>
+                    <div class="summary-row"><span class="summary-label">Consumer ID</span><span class="summary-value"
+                            id="summaryConsumer">-</span></div>
+                    <div class="summary-row"><span class="summary-label">Cylinder Type</span><span class="summary-value"
+                            id="summaryCylinder">-</span></div>
+                    <div class="summary-row"><span class="summary-label">Delivery Date</span><span class="summary-value"
+                            id="summaryDate">-</span></div>
+                    <div class="summary-row"><span class="summary-label">Delivery Address</span><span
+                            class="summary-value" id="summaryAddress">-</span></div>
+                    <div class="summary-row"><span class="summary-label">Payment Method</span><span
+                            class="summary-value" id="summaryPayment">-</span></div>
                 </div>
-
                 <div class="button-group">
-                    <button type="button" class="btn btn-secondary" onclick="previousStep()">Back</button>
-                    <button type="button" class="btn btn-primary" onclick="confirmBooking()">Confirm Booking</button>
+                    <button type="button" class="btn btn-secondary" id="step3Back">Back</button>
+                    <button type="button" class="btn btn-primary" id="confirmBtn">Confirm Booking</button>
                 </div>
             </div>
         </div>
 
-        <!-- Success State -->
+        <!-- Success -->
         <div class="step-content" id="successState">
             <div class="success-state">
                 <div class="success-icon">✓</div>
@@ -595,27 +640,24 @@
                 <p>Your gas cylinder will be delivered in 2-3 business days.</p>
                 <div class="booking-ref" id="bookingRef">#FUEL000000</div>
                 <div class="button-group">
-                    <button class="btn btn-primary" onclick="window.location.href='header.html'">Back to Home</button>
+                    <button class="btn btn-primary" onclick="location.reload()">Book Another</button>
                 </div>
             </div>
         </div>
 
-        <!-- Loading State -->
+        <!-- Loading -->
         <div class="loading" id="loadingState">
             <div class="spinner"></div>
             <p>Processing your booking...</p>
         </div>
     </div>
 
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
         const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // State Management
         let bookingData = {
             provider: null,
             fullName: null,
@@ -630,43 +672,53 @@
 
         let currentStep = 1;
 
-        // Provider Selection
-        document.querySelectorAll('.provider-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.provider-option').forEach(o => o.classList.remove('selected'));
-                this.classList.add('selected');
-                bookingData.provider = this.dataset.provider;
-            });
-        });
+        window.onload = function () {
+            setupListeners();
+            setMinDate();
+        };
 
-        // Cylinder Selection
-        document.querySelectorAll('.cylinder-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.cylinder-option').forEach(o => o.classList.remove('selected'));
-                this.classList.add('selected');
-                bookingData.cylinderType = this.dataset.type;
+        function setupListeners() {
+            document.querySelectorAll('.provider-option').forEach(el => {
+                el.onclick = function () {
+                    document.querySelectorAll('.provider-option').forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                    bookingData.provider = this.getAttribute('data-provider');
+                    hideError();
+                };
             });
-        });
 
-        // Payment Selection
-        document.querySelectorAll('.payment-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-                this.classList.add('selected');
-                bookingData.paymentMethod = this.dataset.payment;
+            document.querySelectorAll('.cylinder-option').forEach(el => {
+                el.onclick = function () {
+                    document.querySelectorAll('.cylinder-option').forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                    bookingData.cylinderType = this.getAttribute('data-type');
+                    hideError();
+                };
             });
-        });
 
-        // Next Step
+            document.querySelectorAll('.payment-option').forEach(el => {
+                el.onclick = function () {
+                    document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                    bookingData.paymentMethod = this.getAttribute('data-payment');
+                    hideError();
+                };
+            });
+
+            document.getElementById('step1Next').onclick = () => nextStep(1);
+            document.getElementById('step2Back').onclick = () => previousStep();
+            document.getElementById('step2Next').onclick = () => nextStep(2);
+            document.getElementById('step3Back').onclick = () => previousStep();
+            document.getElementById('confirmBtn').onclick = confirmBooking;
+        }
+
         function nextStep(step) {
-            // Validate current step
             if (step === 1) {
                 if (!bookingData.provider) {
                     showError("Please select a gas provider");
                     return;
                 }
             } else if (step === 2) {
-                // Validate form fields
                 const fullName = document.getElementById('fullName').value.trim();
                 const email = document.getElementById('email').value.trim();
                 const mobileNumber = document.getElementById('mobileNumber').value.trim();
@@ -674,70 +726,62 @@
                 const address = document.getElementById('address').value.trim();
                 const deliveryDate = document.getElementById('deliveryDate').value;
 
-                if (!fullName || !email || !mobileNumber || !consumerId || !address || !deliveryDate || !bookingData.cylinderType || !bookingData.paymentMethod) {
-                    showError("Please fill in all fields and make selections");
+                if (!fullName) { showError("Please enter your full name"); return; }
+                if (!email) { showError("Please enter your email"); return; }
+                if (!mobileNumber) { showError("Please enter mobile number"); return; }
+                if (mobileNumber.length !== 10 || !/^\d+$/.test(mobileNumber)) {
+                    showError("Please enter valid 10-digit mobile number");
                     return;
                 }
+                if (!consumerId) { showError("Please enter consumer ID"); return; }
+                if (!address) { showError("Please enter delivery address"); return; }
+                if (!deliveryDate) { showError("Please select delivery date"); return; }
+                if (!bookingData.cylinderType) { showError("Please select cylinder type"); return; }
+                if (!bookingData.paymentMethod) { showError("Please select payment method"); return; }
 
-                // Store data
                 bookingData.fullName = fullName;
                 bookingData.email = email;
                 bookingData.mobileNumber = mobileNumber;
                 bookingData.consumerId = consumerId;
                 bookingData.address = address;
                 bookingData.deliveryDate = deliveryDate;
-
-                // Update summary
                 updateSummary();
             }
 
             currentStep = step + 1;
             showStep(currentStep);
+            hideError();
         }
 
-        // Previous Step
         function previousStep() {
             currentStep--;
             showStep(currentStep);
         }
 
-        // Show Step
         function showStep(step) {
-            document.querySelectorAll('.step-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
             document.getElementById('step' + step).classList.add('active');
 
-            // Update indicators
-            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
-                const indicatorStep = index + 1;
-                if (indicatorStep < step) {
-                    indicator.classList.add('completed');
-                    indicator.classList.remove('active');
-                } else if (indicatorStep === step) {
-                    indicator.classList.add('active');
-                    indicator.classList.remove('completed');
+            document.querySelectorAll('.step-indicator').forEach((ind, i) => {
+                const s = i + 1;
+                if (s < step) {
+                    ind.classList.add('completed');
+                    ind.classList.remove('active');
+                } else if (s === step) {
+                    ind.classList.add('active');
+                    ind.classList.remove('completed');
                 } else {
-                    indicator.classList.remove('active', 'completed');
+                    ind.classList.remove('active', 'completed');
                 }
             });
-
             window.scrollTo(0, 0);
         }
 
-        // Update Summary
         function updateSummary() {
-            const providerMap = {
-                'hp': 'HP Gas',
-                'bharat': 'Bharat Gas',
-                'indane': 'Indane',
-                'indian': 'Indian Gas'
-            };
+            const provMap = { 'hp': 'HP Gas', 'bharat': 'Bharat Gas', 'indane': 'Indane', 'indian': 'Indian Gas' };
+            const payMap = { 'online': 'Online Payment', 'cod': 'Cash on Delivery' };
 
-            const paymentMap = {
-                'online': 'Online Payment',
-                'cod': 'Cash on Delivery'
-            };
-
-            document.getElementById('summaryProvider').textContent = providerMap[bookingData.provider] || '-';
+            document.getElementById('summaryProvider').textContent = provMap[bookingData.provider] || '-';
             document.getElementById('summaryName').textContent = bookingData.fullName;
             document.getElementById('summaryEmail').textContent = bookingData.email;
             document.getElementById('summaryMobile').textContent = bookingData.mobileNumber;
@@ -745,65 +789,57 @@
             document.getElementById('summaryCylinder').textContent = bookingData.cylinderType + ' kg';
             document.getElementById('summaryDate').textContent = bookingData.deliveryDate;
             document.getElementById('summaryAddress').textContent = bookingData.address;
-            document.getElementById('summaryPayment').textContent = paymentMap[bookingData.paymentMethod] || '-';
+            document.getElementById('summaryPayment').textContent = payMap[bookingData.paymentMethod] || '-';
         }
 
-        // Confirm Booking
         async function confirmBooking() {
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = true;
+            btn.textContent = 'Processing...';
             showLoading(true);
             hideError();
 
             try {
-                // Generate booking reference
-                const bookingRef = '#FUEL' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                const bookingRef = '#FUEL' + Date.now().toString().slice(-8).toUpperCase();
 
-                // Prepare data for Supabase
-                const bookingRecord = {
-                    booking_ref: bookingRef,
-                    provider: bookingData.provider,
-                    full_name: bookingData.fullName,
-                    email: bookingData.email,
-                    mobile_number: bookingData.mobileNumber,
-                    consumer_id: bookingData.consumerId,
-                    delivery_address: bookingData.address,
-                    cylinder_type: bookingData.cylinderType,
-                    delivery_date: bookingData.deliveryDate,
-                    payment_method: bookingData.paymentMethod,
-                    booking_date: new Date().toISOString(),
-                    status: 'confirmed'
-                };
-
-                // Insert into Supabase
-                const { data, error } = await supabase
+                const { data, error } = await client
                     .from('gas_bookings')
-                    .insert([bookingRecord]);
+                    .insert([{
+                        booking_ref: bookingRef,
+                        provider: bookingData.provider,
+                        full_name: bookingData.fullName,
+                        email: bookingData.email,
+                        mobile_number: bookingData.mobileNumber,
+                        consumer_id: bookingData.consumerId,
+                        delivery_address: bookingData.address,
+                        cylinder_type: bookingData.cylinderType,
+                        delivery_date: bookingData.deliveryDate,
+                        payment_method: bookingData.paymentMethod,
+                        status: 'confirmed'
+                    }])
+                    .select();
 
-                if (error) {
-                    console.error('Supabase Error:', error);
-                    throw new Error(error.message);
-                }
+                if (error) throw error;
 
-                console.log('Booking saved:', data);
-
-                // Show success
                 showLoading(false);
                 document.getElementById('bookingRef').textContent = bookingRef;
-                document.querySelectorAll('.step-content').forEach(content => content.classList.remove('active'));
+                document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
                 document.getElementById('successState').classList.add('active');
 
             } catch (err) {
                 showLoading(false);
                 console.error('Error:', err);
                 showError('Error processing booking: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = 'Confirm Booking';
             }
         }
 
-        // Helper Functions
-        function showError(message) {
-            const errorEl = document.getElementById('errorMessage');
-            errorEl.textContent = message;
-            errorEl.classList.add('show');
-            setTimeout(() => errorEl.classList.remove('show'), 5000);
+        function showError(msg) {
+            const el = document.getElementById('errorMessage');
+            el.textContent = msg;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 5000);
         }
 
         function hideError() {
@@ -811,17 +847,16 @@
         }
 
         function showLoading(show) {
-            const loadingEl = document.getElementById('loadingState');
-            if (show) {
-                loadingEl.classList.add('show');
-            } else {
-                loadingEl.classList.remove('show');
-            }
+            const el = document.getElementById('loadingState');
+            if (show) el.classList.add('show');
+            else el.classList.remove('show');
         }
 
-        // Set minimum date to today
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('deliveryDate').setAttribute('min', today);
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('deliveryDate').setAttribute('min', today);
+        }
     </script>
 </body>
+
 </html>
