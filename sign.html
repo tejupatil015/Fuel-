@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - FuelFinder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+        :root {
+            --bg-dark: #0D041B;
+            --bg-glass: rgba(255, 255, 255, 0.08);
+            --neon-cyan: #00F0FF;
+            --neon-purple: #B347FF;
+            --neon-pink: #FF2E97;
+            --text-white: #FFFFFF;
+            --text-gray: #B8BCC8;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body {
+            min-height: 100vh;
+            background: var(--bg-dark);
+            display: grid;
+            place-items: center;
+            padding: 1rem;
+        }
+       .login-wrapper { width: 100%; max-width: 480px; }
+       .logo-section { text-align: center; margin-bottom: 2rem; }
+       .logo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            border-radius: 20px;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+       .logo-section h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+       .login-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            padding: 2.5rem 2rem;
+        }
+       .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.5rem;
+            border-radius: 14px;
+        }
+       .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            color: var(--text-gray);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+       .tab-btn.active {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            color: #fff;
+        }
+       .form-content { display: none; }
+       .form-content.active { display: block; }
+       .input-group { position: relative; margin-bottom: 1.5rem; }
+       .input-field {
+            width: 100%;
+            padding: 16px 20px 16px 52px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: var(--text-white);
+            font-size: 15px;
+            outline: none;
+        }
+       .input-field:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 0 4px rgba(0, 240, 255, 0.1);
+        }
+       .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3rem;
+            opacity: 0.5;
+        }
+       .error-msg {
+            background: rgba(255, 46, 151, 0.15);
+            border: 1px solid rgba(255, 46, 151, 0.4);
+            color: #FFB4D9;
+            padding: 0.875rem;
+            border-radius: 12px;
+            text-align: center;
+            display: none;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+       .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+       .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    </style>
+</head>
+
+<body>
+    <div class="login-wrapper">
+        <div class="logo-section">
+            <div class="logo-icon">⛽</div>
+            <h1>FuelFinder</h1>
+        </div>
+
+        <div class="login-card">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
+                <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <div class="form-content active" id="signinForm">
+                <form id="loginForm">
+                    <div class="input-group">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="loginEmail" class="input-field" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="loginPassword" class="input-field" placeholder="Password" required>
+                    </div>
+                    <div class="error-msg" id="loginErrorMsg"></div>
+                    <button type="submit" class="submit-btn" id="loginBtn">Sign In</button>
+                </form>
+            </div>
+
+            <div class="form-content" id="signupForm">
+                <form id="signupFormElement">
+                    <div class="input-group">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="signupName" class="input-field" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">📧</span>
+                        <input type="email" id="signupEmail" class="input-field" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="signupPassword" class="input-field" placeholder="Password" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="confirmPassword" class="input-field" placeholder="Confirm Password" required>
+                    </div>
+                    <div class="error-msg" id="signupErrorMsg"></div>
+                    <button type="submit" class="submit-btn" id="signupBtn">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ✅ Supabase CDN - ही line सगळ्यात important आहे -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+
+    <script>
+        // ✅ Console मध्ये check कर Supabase load झालं का
+        console.log("Supabase loaded:", typeof window.supabase);
+
+        const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs";
+
+        // ✅ Supabase client create कर
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        console.log("Supabase client created:", supabaseClient);
+
+        // Tab Switch
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.form-content').forEach(form => form.classList.remove('active'));
+            if (tab === 'signin') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('signinForm').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('signupForm').classList.add('active');
+            }
+        }
+
+        // Sign In
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            console.log("Sign In button clicked!");
+
+            const email = document.getElementById("loginEmail").value.trim();
+            const password = document.getElementById("loginPassword").value;
+            const errorEl = document.getElementById("loginErrorMsg");
+            const btn = document.getElementById("loginBtn");
+
+            errorEl.style.display = "none";
+            btn.disabled = true;
+            btn.textContent = "Signing in...";
+
+            try {
+                console.log("Attempting login for:", email);
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                console.log("Login success:", data);
+                localStorage.setItem("loggedIn", "true");
+                localStorage.setItem("userEmail", email);
+                btn.textContent = "✓ Success!";
+                setTimeout(() => window.location.href = "header.html", 500);
+
+            } catch (err) {
+                console.error("Login error:", err);
+                showError("loginErrorMsg", err.message);
+                btn.disabled = false;
+                btn.textContent = "Sign In";
+            }
+        });
+
+        // Sign Up
+        document.getElementById("signupFormElement").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            console.log("Sign Up button clicked!");
+
+            const name = document.getElementById("signupName").value.trim();
+            const email = document.getElementById("signupEmail").value.trim();
+            const password = document.getElementById("signupPassword").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const btn = document.getElementById("signupBtn");
+
+            if (password!== confirmPassword) {
+                showError("signupErrorMsg", "Passwords do not match");
+                return;
+            }
+
+            if (password.length < 6) {
+                showError("signupErrorMsg", "Password must be at least 6 characters");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = "Creating account...";
+
+            try {
+                console.log("Attempting signup for:", email);
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: { data: { full_name: name } }
+                });
+
+                if (error) throw error;
+
+                console.log("Signup success:", data);
+                btn.textContent = "✓ Account created!";
+                showError("signupErrorMsg", "Account created! You can now Sign In.");
+
+                setTimeout(() => {
+                    switchTab('signin');
+                    document.getElementById("loginEmail").value = email;
+                }, 2000);
+
+            } catch (err) {
+                console.error("Signup error:", err);
+                showError("signupErrorMsg", err.message);
+                btn.disabled = false;
+                btn.textContent = "Create Account";
+            }
+        });
+
+        function showError(elementId, msg) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = msg;
+            errorEl.style.display = "block";
+        }
+    </script>
+</body>
+</html>

@@ -1,3 +1,21 @@
+function logout() {
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("userEmail");
+    localStorage.removeItem("rememberUser");
+    window.location.replace("sign.html");
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM ready");
+    const userName = localStorage.getItem("userName") || localStorage.getItem("userEmail");
+    const nameEl = document.getElementById('userName');
+    if (nameEl) {
+        nameEl.textContent = userName || "Guest";
+    }
+});
+
+
 const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs";
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1193,3 +1211,127 @@ window.addEventListener('load', function () {
 
 
 
+let currentStep = 1;
+
+let selectedProvider = null;
+let selectedCylinder = null;
+let selectedPayment = null;
+
+/* ================= STEP NAVIGATION ================= */
+
+function nextStep() {
+
+    if (currentStep === 1 && !selectedProvider) {
+        alert("Please select a provider");
+        return;
+    }
+
+    if (currentStep === 2) {
+
+        const form = document.getElementById("bookingForm");
+
+        if (!form.checkValidity() || !selectedCylinder || !selectedPayment) {
+            alert("Please fill all details");
+            return;
+        }
+
+        updateSummary();
+    }
+
+    document.getElementById(`step${currentStep}`).classList.remove("active");
+    document.querySelector(`.step-indicator[data-step="${currentStep}"]`).classList.remove("active");
+
+    currentStep++;
+
+    document.getElementById(`step${currentStep}`).classList.add("active");
+    document.querySelector(`.step-indicator[data-step="${currentStep}"]`).classList.add("active");
+}
+
+/* ================= PROVIDER SELECT ================= */
+
+document.querySelectorAll(".provider-option").forEach(option => {
+    option.addEventListener("click", () => {
+
+        document.querySelectorAll(".provider-option").forEach(o => o.classList.remove("selected"));
+
+        option.classList.add("selected");
+        selectedProvider = option.innerText.trim();
+    });
+});
+
+/* ================= CYLINDER SELECT ================= */
+
+document.querySelectorAll(".cylinder-option").forEach(option => {
+    option.addEventListener("click", () => {
+
+        document.querySelectorAll(".cylinder-option").forEach(o => o.classList.remove("selected"));
+
+        option.classList.add("selected");
+
+        const weight = option.querySelector(".cylinder-weight").innerText;
+        const type = option.querySelector(".cylinder-type").innerText;
+
+        selectedCylinder = `${weight} ${type}`;
+    });
+});
+
+/* ================= PAYMENT SELECT ================= */
+
+document.querySelectorAll(".payment-option").forEach(option => {
+    option.addEventListener("click", () => {
+
+        document.querySelectorAll(".payment-option").forEach(o => o.classList.remove("selected"));
+
+        option.classList.add("selected");
+
+        selectedPayment = option.innerText.trim();
+    });
+});
+
+/* ================= SUMMARY ================= */
+
+function updateSummary() {
+
+    document.getElementById("summaryProvider").innerText = selectedProvider;
+    document.getElementById("summaryName").innerText = document.getElementById("fullName").value;
+    document.getElementById("summaryMobile").innerText = document.getElementById("mobileNumber").value;
+    document.getElementById("summaryConsumer").innerText = document.getElementById("consumerId").value;
+    document.getElementById("summaryCylinder").innerText = selectedCylinder;
+    document.getElementById("summaryDate").innerText = document.getElementById("deliveryDate").value;
+    document.getElementById("summaryAddress").innerText = document.getElementById("address").value;
+    document.getElementById("summaryPayment").innerText = selectedPayment;
+}
+
+/* ================= CONFIRM BOOKING ================= */
+
+async function confirmBooking() {
+
+    const bookingData = {
+        provider: selectedProvider,
+        name: document.getElementById("fullName").value,
+        mobile: document.getElementById("mobileNumber").value,
+        consumer_id: document.getElementById("consumerId").value,
+        address: document.getElementById("address").value,
+        cylinder: selectedCylinder,
+        delivery_date: document.getElementById("deliveryDate").value,
+        payment: selectedPayment
+    };
+
+    /* 🔥 INSERT INTO SUPABASE */
+    const { data, error } = await supabase
+        .from("gas_bookings")   // 👈 table name
+        .insert([bookingData]);
+
+    if (error) {
+        console.error(error);
+        alert("Booking Failed ❌");
+        return;
+    }
+
+    /* SUCCESS UI */
+    document.getElementById("step3").style.display = "none";
+    document.getElementById("bookingSuccess").style.display = "block";
+
+    document.getElementById("bookingRef").innerText =
+        "#FUEL" + Math.floor(100000 + Math.random() * 900000);
+}

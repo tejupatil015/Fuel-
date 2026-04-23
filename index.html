@@ -2,16 +2,47 @@
 <html>
 <head>
   <title>Fuel Finder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      background: #0D041B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+    }
+   .loader {
+      text-align: center;
+    }
+   .spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(0, 240, 255, 0.2);
+      border-top: 4px solid #00F0FF;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
+  <div class="loader">
+    <div class="spinner"></div>
+    <p>Loading FuelFinder...</p>
+  </div>
 
-<script>
-  if (localStorage.getItem("loggedIn") === "true") {
-    window.location.href = "login.html";
-  } else {
-    window.location.href = "header.html";
-  }
-</script>
-
+  <script>
+    // नेहमी sign.html ला पाठव, तिथे login check होईल
+    setTimeout(() => {
+      window.location.replace("sign.html");
+    }, 800);
+  </script>
 </body>
 </html>
