@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Hub</title>
+    <style>
+        :root {
+            --bg-primary: #0D0F14;
+            --bg-secondary: #151823;
+            --bg-card: #1A1D29;
+            --bg-input: #0F1117;
+            --text-primary: #E8EAF0;
+            --text-secondary: #8B90A0;
+            --text-muted: #5A5F70;
+            --accent-orange: #FF9F43;
+            --accent-cyan: #00D9FF;
+            --accent-green: #00C853;
+            --accent-purple: #7B61FF;
+            --border: #2A2F3F;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .feedback-section {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .feedback-header {
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-header h1 {
+            font-size: clamp(2rem, 5vw, 2.75rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feedback-header p {
+            color: var(--text-secondary);
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        /* Main Grid */
+        .feedback-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Submit Feedback Card */
+        .submit-feedback-card {
+            background: linear-gradient(135deg, #1A1D29, #1F2330);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: slideInLeft 0.6s ease;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .submit-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .submit-header::before {
+            content: '✍️';
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B90A0' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Category Pills */
+        .category-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .category-pill {
+            padding: 0.5rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .category-pill:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 217, 255, 0.05);
+        }
+
+        .category-pill.active {
+            background: rgba(0, 217, 255, 0.15);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-cyan), #00B8E6);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            color: #000;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 217, 255, 0.4);
+        }
+
+        .btn-submit::before {
+            content: '🚀';
+            font-size: 1.1rem;
+        }
+
+        /* Community Feedback */
+        .community-feedback {
+            animation: slideInRight 0.6s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .community-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .community-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-orange);
+        }
+
+        .community-title::before {
+            content: '🌟';
+            font-size: 1.1rem;
+        }
+
+        .filter-select {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        /* Feedback Cards - SEPARATE */
+        .feedback-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .feedback-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-green);
+            border-radius: 18px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            animation: cardSlide 0.5s ease forwards;
+            opacity: 0;
+            position: relative;
+        }
+
+        @keyframes cardSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .feedback-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .feedback-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .feedback-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .feedback-card:hover {
+            border-color: var(--border-light);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-4px);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .category-tag {
+            background: rgba(0, 200, 83, 0.15);
+            color: var(--accent-green);
+            padding: 0.3rem 0.7rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 1px solid rgba(0, 200, 83, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .time-badge {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .card-message {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 0.93rem;
+            padding: 0.875rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border-left: 3px solid rgba(0, 200, 83, 0.4);
+            margin-bottom: 1rem;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+        }
+
+        .status-badge.resolved {
+            background: rgba(0, 200, 83, 0.15);
+            color: var(--accent-green);
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 159, 67, 0.15);
+            color: var(--accent-orange);
+        }
+
+        .status-badge::before {
+            content: '●';
+            font-size: 0.6rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .action-icon:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 217, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: var(--text-muted);
+            background: var(--bg-secondary);
+            border-radius: 18px;
+            border: 2px dashed var(--border);
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            body {
+                padding: 2rem;
+            }
+
+            .feedback-container {
+                grid-template-columns: 400px 1fr;
+                gap: 2rem;
+            }
+
+            .submit-feedback-card {
+                position: sticky;
+                top: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .feedback-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .submit-feedback-card {
+                padding: 1.25rem;
+                border-radius: 16px;
+            }
+
+            .feedback-card {
+                padding: 1.25rem;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+
+            .card-top {
+                flex-wrap: wrap;
+            }
+
+            .category-pills {
+                justify-content: center;
+            }
+
+            .community-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filter-select {
+                width: 100%;
+            }
+        }
+
+
+
+
+        /* ============================================
+   FEEDBACK SECTION
+   ============================================ */
+        :root {
+            --bg-primary: #0D0F14;
+            --bg-secondary: #151823;
+            --bg-card: #1A1D29;
+            --bg-input: #0F1117;
+            --text-primary: #E8EAF0;
+            --text-secondary: #8B90A0;
+            --text-muted: #5A5F70;
+            --accent-orange: #FF9F43;
+            --accent-cyan: #00D9FF;
+            --accent-green: #00C853;
+            --accent-purple: #7B61FF;
+            --border: #2A2F3F;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .feedback-section {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .feedback-header {
+            margin-bottom: 2.5rem;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-header h1 {
+            font-size: clamp(2rem, 5vw, 2.75rem);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .feedback-header p {
+            color: var(--text-secondary);
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        /* Main Grid */
+        .feedback-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Submit Feedback Card */
+        .submit-feedback-card {
+            background: linear-gradient(135deg, #1A1D29, #1F2330);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: slideInLeft 0.6s ease;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .submit-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .submit-header::before {
+            content: '✍️';
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        select.form-input {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B90A0' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Category Pills */
+        .category-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .category-pill {
+            padding: 0.5rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            user-select: none;
+        }
+
+        .category-pill:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 217, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .category-pill.active {
+            background: rgba(0, 217, 255, 0.15);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-cyan), #00B8E6);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            color: #000;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 217, 255, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-submit::before {
+            content: '🚀';
+            font-size: 1.1rem;
+        }
+
+        /* Community Feedback */
+        .community-feedback {
+            animation: slideInRight 0.6s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .community-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .community-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-orange);
+        }
+
+        .community-title::before {
+            content: '🌟';
+            font-size: 1.1rem;
+        }
+
+        .filter-select {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 3px rgba(255, 159, 67, 0.1);
+        }
+
+        /* Feedback Cards - SEPARATE */
+        .feedback-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .feedback-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-green);
+            border-radius: 18px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            animation: cardSlide 0.5s ease forwards;
+            opacity: 0;
+            position: relative;
+        }
+
+        @keyframes cardSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .feedback-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .feedback-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .feedback-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .feedback-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .feedback-card:hover {
+            border-color: var(--border-light);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            transform: translateY(-4px);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+        }
+
+        .feedback-card:hover.user-avatar {
+            transform: rotate(5deg) scale(1.05);
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .user-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .category-tag {
+            background: rgba(0, 200, 83, 0.15);
+            color: var(--accent-green);
+            padding: 0.3rem 0.7rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 1px solid rgba(0, 200, 83, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .time-badge {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .card-message {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 0.93rem;
+            padding: 0.875rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border-left: 3px solid rgba(0, 200, 83, 0.4);
+            margin-bottom: 1rem;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+        }
+
+        .status-badge.resolved {
+            background: rgba(0, 200, 83, 0.15);
+            color: var(--accent-green);
+        }
+
+        .status-badge.pending {
+            background: rgba(255, 159, 67, 0.15);
+            color: var(--accent-orange);
+        }
+
+        .status-badge::before {
+            content: '●';
+            font-size: 0.6rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .action-icon:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 217, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: var(--text-muted);
+            background: var(--bg-secondary);
+            border-radius: 18px;
+            border: 2px dashed var(--border);
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* ============================================
+   RESPONSIVE
+   ============================================ */
+        @media (min-width: 768px) {
+            body {
+                padding: 2rem;
+            }
+
+            .feedback-container {
+                grid-template-columns: 400px 1fr;
+                gap: 2rem;
+            }
+
+            .submit-feedback-card {
+                position: sticky;
+                top: 20px;
+                padding: 2rem;
+            }
+
+            .submit-header {
+                font-size: 1.3rem;
+            }
+
+            .community-title {
+                font-size: 1.4rem;
+            }
+
+            .feedback-card {
+                padding: 1.75rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .feedback-container {
+                grid-template-columns: 420px 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+
+            .feedback-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .submit-feedback-card {
+                padding: 1.25rem;
+                border-radius: 16px;
+            }
+
+            .submit-header {
+                font-size: 1.1rem;
+            }
+
+            .feedback-card {
+                padding: 1.25rem;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+
+            .card-top {
+                flex-wrap: wrap;
+            }
+
+            .category-pills {
+                justify-content: center;
+            }
+
+            .community-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .filter-select {
+                width: 100%;
+            }
+
+            .card-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section class="feedback-section">
+        <div class="feedback-header">
+            <h1>Feedback Hub</h1>
+            <p>Share your thoughts and help us improve. Read feedback from the community.</p>
+        </div>
+
+        <div class="feedback-container">
+            <!-- Submit Feedback -->
+            <div class="submit-feedback-card">
+                <div class="submit-header">Share Your Feedback</div>
+                <form id="feedbackForm">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <div class="category-pills">
+                            <div class="category-pill active" data-category="suggestion">Suggestion</div>
+                            <div class="category-pill" data-category="bug">Bug Report</div>
+                            <div class="category-pill" data-category="compliment">Compliment</div>
+                        </div>
+                        <input type="hidden" id="selectedCategory" value="suggestion">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Service Type</label>
+                        <select class="form-input" id="serviceType" required>
+                            <option value="">Select service...</option>
+                            <option value="ev-charging">EV Charging</option>
+                            <option value="petrol">Petrol Station</option>
+                            <option value="diesel">Diesel Station</option>
+                            <option value="cng">CNG Station</option>
+                            <option value="app">Mobile App</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Your Feedback</label>
+                        <textarea class="form-input" id="feedbackText" placeholder="Tell us what you think..."
+                            required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Send Feedback</button>
+                </form>
+            </div>
+
+            <!-- Community Feedback -->
+            <div class="community-feedback">
+                <div class="community-header">
+                    <div class="community-title">Community Feedback</div>
+                    <select class="filter-select" id="feedbackFilter">
+                        <option value="all">All Categories</option>
+                        <option value="suggestion">Suggestions</option>
+                        <option value="bug">Bug Reports</option>
+                        <option value="compliment">Compliments</option>
+                    </select>
+                </div>
+
+                <div class="feedback-feed" id="feedbackFeed"></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        window.addEventListener('load', function () {
+            let selectedCategory = 'suggestion';
+            let currentFilter = 'all';
+
+            let feedbackData = [
+                {
+                    id: 1,
+                    name: "Amit Desai",
+                    initial: "AD",
+                    color: "#FF9F43",
+                    category: "suggestion",
+                    service: "EV Charging",
+                    text: "Please add more fast chargers at Mumbai-Pune highway. Current ones are always busy during weekends. Maybe 4-5 more units would help reduce waiting time significantly.",
+                    time: "3 hours ago",
+                    status: "pending"
+                },
+                {
+                    id: 2,
+                    name: "Priya Menon",
+                    initial: "PM",
+                    color: "#00D9FF",
+                    category: "compliment",
+                    service: "Mobile App",
+                    text: "The new app update is fantastic! Real-time station status is super accurate now. Love the dark theme and the booking flow is much smoother. Keep it up team!",
+                    time: "1 day ago",
+                    status: "resolved"
+                },
+                {
+                    id: 3,
+                    name: "Rajesh Kumar",
+                    initial: "RK",
+                    color: "#7B61FF",
+                    category: "bug",
+                    service: "Petrol Station",
+                    text: "Payment gateway failed twice at HP Pump, Satara Road. Had to pay cash. Card machine shows error code 500. Please check the terminal.",
+                    time: "2 days ago",
+                    status: "pending"
+                },
+                {
+                    id: 4,
+                    name: "Sneha Patil",
+                    initial: "SP",
+                    color: "#00C853",
+                    category: "suggestion",
+                    service: "CNG Station",
+                    text: "Can we get a waiting area with seating at CNG stations? Sometimes queue is 30+ mins and standing is tiring especially for elderly people.",
+                    time: "4 days ago",
+                    status: "resolved"
+                }
+            ];
+
+            // Category Pills
+            document.querySelectorAll('.category-pill').forEach(pill => {
+                pill.addEventListener('click', function () {
+                    document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedCategory = this.getAttribute('data-category');
+                    document.getElementById('selectedCategory').value = selectedCategory;
+                });
+            });
+
+            // Filter
+            document.getElementById('feedbackFilter').addEventListener('change', function () {
+                currentFilter = this.value;
+                renderFeedback();
+            });
+
+            // Render Feedback
+            function renderFeedback() {
+                const feed = document.getElementById('feedbackFeed');
+                if (!feed) return;
+
+                let filteredData = [...feedbackData];
+                if (currentFilter !== 'all') {
+                    filteredData = filteredData.filter(f => f.category === currentFilter);
+                }
+
+                if (filteredData.length === 0) {
+                    feed.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📭</div>
+                            <p>No feedback found in this category</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                feed.innerHTML = filteredData.map((item, index) => `
+                    <div class="feedback-card" style="animation-delay: ${index * 0.1}s">
+                        <div class="card-top">
+                            <div class="user-avatar" style="background:${item.color}">
+                                ${item.initial}
+                            </div>
+                            <div class="user-details">
+                                <div class="user-name">${item.name}</div>
+                                <div class="user-meta">
+                                    <span class="category-tag">${item.category}</span>
+                                    <span class="time-badge">${item.time}</span>
+                                </div>
+                            </div>
+                        <div class="card-message">${item.text}</div>
+                        <div class="card-footer">
+                            <div class="status-badge ${item.status}">
+                                ${item.status === 'resolved' ? 'Resolved' : 'In Review'}
+                            </div>
+                            <div class="action-buttons">
+                                <button class="action-icon" onclick="likeFeedback(${item.id})">👍</button>
+                                <button class="action-icon" onclick="replyFeedback(${item.id})">💬</button>
+                                <button class="action-icon">📤</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Like Feedback
+            window.likeFeedback = function (id) {
+                console.log('Liked feedback:', id);
+                alert('Thanks for the support!');
+            };
+
+            // Reply Feedback
+            window.replyFeedback = function (id) {
+                console.log('Reply to feedback:', id);
+                alert('Reply feature coming soon!');
+            };
+
+            // Submit Form
+            document.getElementById('feedbackForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const service = document.getElementById('serviceType').value;
+                const text = document.getElementById('feedbackText').value.trim();
+
+                if (!service || !text) {
+                    alert("Please fill all fields");
+                    return;
+                }
+
+                const categoryColors = {
+                    suggestion: '#FF9F43',
+                    bug: '#FF6B6B',
+                    compliment: '#00D9FF'
+                };
+
+                const newFeedback = {
+                    id: Date.now(),
+                    name: "You",
+                    initial: "Y",
+                    color: categoryColors[selectedCategory],
+                    category: selectedCategory,
+                    service: service,
+                    text: text,
+                    time: "Just now",
+                    status: "pending"
+                };
+
+                feedbackData.unshift(newFeedback);
+                renderFeedback();
+
+                this.reset();
+                selectedCategory = 'suggestion';
+                document.getElementById('selectedCategory').value = 'suggestion';
+                document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+                document.querySelector('.category-pill[data-category="suggestion"]').classList.add('active');
+
+                alert("✅ Feedback submitted successfully!");
+            });
+
+            // Init
+            renderFeedback();
+        });
+    </script>
+</body>
+
+</html>

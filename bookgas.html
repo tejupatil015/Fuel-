@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Gas Cylinder - FuelFinder</title>
+    <link rel="stylesheet" href="header.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .booking-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .booking-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .booking-header h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .booking-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* Step Indicators */
+        .step-indicators {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            gap: 10px;
+        }
+
+        .step-indicator {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-indicator.active .step-number {
+            background: #667eea;
+            color: white;
+        }
+
+        .step-indicator.completed .step-number {
+            background: #4caf50;
+            color: white;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Step Content */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .form-section h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        /* Provider Selection */
+        .provider-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .provider-option {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .provider-option:hover {
+            border-color: #667eea;
+            background: #f0f0f0;
+        }
+
+        .provider-option.selected {
+            border-color: #667eea;
+            background: #f0f0ff;
+        }
+
+        .provider-logo {
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .provider-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Cylinder Options */
+        .cylinder-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .cylinder-option {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cylinder-option:hover {
+            border-color: #667eea;
+            background: #f0f0f0;
+        }
+
+        .cylinder-option.selected {
+            border-color: #667eea;
+            background: #f0f0ff;
+        }
+
+        .cylinder-weight {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .cylinder-type {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Payment Options */
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .payment-option {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover {
+            border-color: #667eea;
+            background: #f0f0f0;
+        }
+
+        .payment-option.selected {
+            border-color: #667eea;
+            background: #f0f0ff;
+        }
+
+        .payment-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .payment-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Summary */
+        .summary-card {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .summary-value {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        /* Success State */
+        .success-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .success-state h2 {
+            color: #4caf50;
+            margin-bottom: 15px;
+            font-size: 2rem;
+        }
+
+        .success-state p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .booking-ref {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .booking-container {
+                padding: 20px;
+            }
+
+            .booking-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .provider-grid,
+            .cylinder-grid,
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="booking-container">
+        <div class="booking-header">
+            <h1>Book Gas Cylinder</h1>
+            <p>Quick and easy home delivery</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <!-- Step Indicators -->
+        <div class="step-indicators">
+            <div class="step-indicator active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-label">Select Provider</div>
+            </div>
+            <div class="step-indicator" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-label">Your Details</div>
+            </div>
+            <div class="step-indicator" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-label">Review & Confirm</div>
+            </div>
+        </div>
+
+        <!-- Step 1: Provider Selection -->
+        <div class="step-content active" id="step1">
+            <div class="form-section">
+                <h3>Select Your Gas Provider</h3>
+                <div class="provider-grid">
+                    <div class="provider-option" data-provider="hp">
+                        <div class="provider-logo" style="background: #E53935;">HP</div>
+                        <div class="provider-name">HP Gas</div>
+                    </div>
+                    <div class="provider-option" data-provider="bharat">
+                        <div class="provider-logo" style="background: #1976D2;">BG</div>
+                        <div class="provider-name">Bharat Gas</div>
+                    </div>
+                    <div class="provider-option" data-provider="indane">
+                        <div class="provider-logo" style="background: #F57C00;">IN</div>
+                        <div class="provider-name">Indane</div>
+                    </div>
+                    <div class="provider-option" data-provider="indian">
+                        <div class="provider-logo" style="background: #FFC107; color: #000;">IG</div>
+                        <div class="provider-name">Indian Gas</div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="nextStep(1)">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: User Details -->
+        <div class="step-content" id="step2">
+            <div class="form-section">
+                <h3>Enter Your Details</h3>
+                <form id="detailsForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="fullName" placeholder="Enter your name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="email" placeholder="Enter your email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Mobile Number</label>
+                        <input type="tel" class="form-input" id="mobileNumber" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Consumer ID</label>
+                        <input type="text" class="form-input" id="consumerId" placeholder="Enter your consumer ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Delivery Address</label>
+                        <input type="text" class="form-input" id="address" placeholder="Enter complete delivery address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Cylinder Type</label>
+                        <div class="cylinder-grid">
+                            <div class="cylinder-option" data-type="14.2">
+                                <div class="cylinder-weight">14.2 kg</div>
+                                <div class="cylinder-type">Regular</div>
+                            </div>
+                            <div class="cylinder-option" data-type="5">
+                                <div class="cylinder-weight">5 kg</div>
+                                <div class="cylinder-type">Compact</div>
+                            </div>
+                            <div class="cylinder-option" data-type="19">
+                                <div class="cylinder-weight">19 kg</div>
+                                <div class="cylinder-type">Commercial</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Preferred Delivery Date</label>
+                        <input type="date" class="form-input" id="deliveryDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Payment Method</label>
+                        <div class="payment-grid">
+                            <div class="payment-option" data-payment="online">
+                                <div class="payment-icon">💳</div>
+                                <div class="payment-name">Online Payment</div>
+                            </div>
+                            <div class="payment-option" data-payment="cod">
+                                <div class="payment-icon">💵</div>
+                                <div class="payment-name">Cash on Delivery</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="previousStep()">Back</button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(2)">Continue</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Step 3: Review & Confirm -->
+        <div class="step-content" id="step3">
+            <div class="form-section">
+                <h3>Review Your Booking</h3>
+                <div class="summary-card">
+                    <div class="summary-row">
+                        <span class="summary-label">Provider</span>
+                        <span class="summary-value" id="summaryProvider">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Full Name</span>
+                        <span class="summary-value" id="summaryName">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Email</span>
+                        <span class="summary-value" id="summaryEmail">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Mobile</span>
+                        <span class="summary-value" id="summaryMobile">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Consumer ID</span>
+                        <span class="summary-value" id="summaryConsumer">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Cylinder Type</span>
+                        <span class="summary-value" id="summaryCylinder">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Delivery Date</span>
+                        <span class="summary-value" id="summaryDate">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Delivery Address</span>
+                        <span class="summary-value" id="summaryAddress">-</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Payment Method</span>
+                        <span class="summary-value" id="summaryPayment">-</span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" onclick="previousStep()">Back</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmBooking()">Confirm Booking</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success State -->
+        <div class="step-content" id="successState">
+            <div class="success-state">
+                <div class="success-icon">✓</div>
+                <h2>Booking Confirmed!</h2>
+                <p>Your gas cylinder will be delivered in 2-3 business days.</p>
+                <div class="booking-ref" id="bookingRef">#FUEL000000</div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="window.location.href='header.html'">Back to Home</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading" id="loadingState">
+            <div class="spinner"></div>
+            <p>Processing your booking...</p>
+        </div>
+    </div>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // State Management
+        let bookingData = {
+            provider: null,
+            fullName: null,
+            email: null,
+            mobileNumber: null,
+            consumerId: null,
+            address: null,
+            cylinderType: null,
+            deliveryDate: null,
+            paymentMethod: null
+        };
+
+        let currentStep = 1;
+
+        // Provider Selection
+        document.querySelectorAll('.provider-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.provider-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                bookingData.provider = this.dataset.provider;
+            });
+        });
+
+        // Cylinder Selection
+        document.querySelectorAll('.cylinder-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.cylinder-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                bookingData.cylinderType = this.dataset.type;
+            });
+        });
+
+        // Payment Selection
+        document.querySelectorAll('.payment-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                bookingData.paymentMethod = this.dataset.payment;
+            });
+        });
+
+        // Next Step
+        function nextStep(step) {
+            // Validate current step
+            if (step === 1) {
+                if (!bookingData.provider) {
+                    showError("Please select a gas provider");
+                    return;
+                }
+            } else if (step === 2) {
+                // Validate form fields
+                const fullName = document.getElementById('fullName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const mobileNumber = document.getElementById('mobileNumber').value.trim();
+                const consumerId = document.getElementById('consumerId').value.trim();
+                const address = document.getElementById('address').value.trim();
+                const deliveryDate = document.getElementById('deliveryDate').value;
+
+                if (!fullName || !email || !mobileNumber || !consumerId || !address || !deliveryDate || !bookingData.cylinderType || !bookingData.paymentMethod) {
+                    showError("Please fill in all fields and make selections");
+                    return;
+                }
+
+                // Store data
+                bookingData.fullName = fullName;
+                bookingData.email = email;
+                bookingData.mobileNumber = mobileNumber;
+                bookingData.consumerId = consumerId;
+                bookingData.address = address;
+                bookingData.deliveryDate = deliveryDate;
+
+                // Update summary
+                updateSummary();
+            }
+
+            currentStep = step + 1;
+            showStep(currentStep);
+        }
+
+        // Previous Step
+        function previousStep() {
+            currentStep--;
+            showStep(currentStep);
+        }
+
+        // Show Step
+        function showStep(step) {
+            document.querySelectorAll('.step-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+
+            // Update indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                const indicatorStep = index + 1;
+                if (indicatorStep < step) {
+                    indicator.classList.add('completed');
+                    indicator.classList.remove('active');
+                } else if (indicatorStep === step) {
+                    indicator.classList.add('active');
+                    indicator.classList.remove('completed');
+                } else {
+                    indicator.classList.remove('active', 'completed');
+                }
+            });
+
+            window.scrollTo(0, 0);
+        }
+
+        // Update Summary
+        function updateSummary() {
+            const providerMap = {
+                'hp': 'HP Gas',
+                'bharat': 'Bharat Gas',
+                'indane': 'Indane',
+                'indian': 'Indian Gas'
+            };
+
+            const paymentMap = {
+                'online': 'Online Payment',
+                'cod': 'Cash on Delivery'
+            };
+
+            document.getElementById('summaryProvider').textContent = providerMap[bookingData.provider] || '-';
+            document.getElementById('summaryName').textContent = bookingData.fullName;
+            document.getElementById('summaryEmail').textContent = bookingData.email;
+            document.getElementById('summaryMobile').textContent = bookingData.mobileNumber;
+            document.getElementById('summaryConsumer').textContent = bookingData.consumerId;
+            document.getElementById('summaryCylinder').textContent = bookingData.cylinderType + ' kg';
+            document.getElementById('summaryDate').textContent = bookingData.deliveryDate;
+            document.getElementById('summaryAddress').textContent = bookingData.address;
+            document.getElementById('summaryPayment').textContent = paymentMap[bookingData.paymentMethod] || '-';
+        }
+
+        // Confirm Booking
+        async function confirmBooking() {
+            showLoading(true);
+            hideError();
+
+            try {
+                // Generate booking reference
+                const bookingRef = '#FUEL' + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+                // Prepare data for Supabase
+                const bookingRecord = {
+                    booking_ref: bookingRef,
+                    provider: bookingData.provider,
+                    full_name: bookingData.fullName,
+                    email: bookingData.email,
+                    mobile_number: bookingData.mobileNumber,
+                    consumer_id: bookingData.consumerId,
+                    delivery_address: bookingData.address,
+                    cylinder_type: bookingData.cylinderType,
+                    delivery_date: bookingData.deliveryDate,
+                    payment_method: bookingData.paymentMethod,
+                    booking_date: new Date().toISOString(),
+                    status: 'confirmed'
+                };
+
+                // Insert into Supabase
+                const { data, error } = await supabase
+                    .from('gas_bookings')
+                    .insert([bookingRecord]);
+
+                if (error) {
+                    console.error('Supabase Error:', error);
+                    throw new Error(error.message);
+                }
+
+                console.log('Booking saved:', data);
+
+                // Show success
+                showLoading(false);
+                document.getElementById('bookingRef').textContent = bookingRef;
+                document.querySelectorAll('.step-content').forEach(content => content.classList.remove('active'));
+                document.getElementById('successState').classList.add('active');
+
+            } catch (err) {
+                showLoading(false);
+                console.error('Error:', err);
+                showError('Error processing booking: ' + err.message);
+            }
+        }
+
+        // Helper Functions
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+            setTimeout(() => errorEl.classList.remove('show'), 5000);
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        function showLoading(show) {
+            const loadingEl = document.getElementById('loadingState');
+            if (show) {
+                loadingEl.classList.add('show');
+            } else {
+                loadingEl.classList.remove('show');
+            }
+        }
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('deliveryDate').setAttribute('min', today);
+    </script>
+</body>
+</html>

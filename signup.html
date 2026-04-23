@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Sign Up - FuelFinder</title>
@@ -23,9 +24,17 @@
         }
 
         @keyframes backgroundShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .signin-box {
@@ -53,8 +62,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         p {
@@ -93,8 +109,8 @@
             pointer-events: none;
         }
 
-        .input-group input:focus ~ label,
-        .input-group input:valid ~ label {
+        .input-group input:focus~label,
+        .input-group input:valid~label {
             top: -10px;
             font-size: 12px;
             color: #ff6b6b;
@@ -167,88 +183,89 @@
 
 <body>
 
-<div class="signin-box">
-    <h2>Sign Up</h2>
-    <p>Create your account to get started</p>
+    <div class="signin-box">
+        <h2>Sign Up</h2>
+        <p>Create your account to get started</p>
 
-    <form id="signupForm">
-        <div class="input-group">
-            <input type="text" id="name" required>
-            <label>Name</label>
+        <form id="signupForm">
+            <div class="input-group">
+                <input type="text" id="name" required>
+                <label>Name</label>
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="email" required>
+                <label>Email</label>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="password" required>
+                <label>Password</label>
+            </div>
+
+            <p id="errorMsg"></p>
+
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <div class="link">
+            <p>Already have an account? <a href="login.html">Sign In</a></p>
         </div>
-
-        <div class="input-group">
-            <input type="email" id="email" required>
-            <label>Email</label>
-        </div>
-
-        <div class="input-group">
-            <input type="password" id="password" required>
-            <label>Password</label>
-        </div>
-
-        <p id="errorMsg"></p>
-
-        <button type="submit">Sign Up</button>
-    </form>
-
-    <div class="link">
-        <p>Already have an account? <a href="login.html">Sign In</a></p>
     </div>
-</div>
 
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <script>
+        const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs";
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-document.getElementById("signupForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+        document.getElementById("signupForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-    const errorEl = document.getElementById("errorMsg");
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const errorEl = document.getElementById("errorMsg");
 
-    errorEl.style.display = "none";
+            errorEl.style.display = "none";
 
-    if (!name || !email || !password) {
-        errorEl.textContent = "Please fill in all fields";
-        errorEl.style.display = "block";
-        return;
-    }
+            if (!name || !email || !password) {
+                errorEl.textContent = "Please fill in all fields";
+                errorEl.style.display = "block";
+                return;
+            }
 
-    try {
-        const { data, error } = await supabaseClient.auth.signUp({
-            email,
-            password,
-            options: {
-                data: {
-                    name: name
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            name: name
+                        }
+                    }
+                });
+
+                if (error) {
+                    errorEl.textContent = "Error signing up: " + error.message;
+                    errorEl.style.display = "block";
+                    return;
                 }
+
+                // Success
+                alert("Sign up successful! Please check your email to confirm.");
+                // Redirect to login
+                window.location.href = "login.html";
+
+            } catch (err) {
+                errorEl.textContent = "An error occurred: " + err.message;
+                errorEl.style.display = "block";
             }
         });
-
-        if (error) {
-            errorEl.textContent = "Error signing up: " + error.message;
-            errorEl.style.display = "block";
-            return;
-        }
-
-        // Success
-        alert("Sign up successful! Please check your email to confirm.");
-        // Redirect to login
-        window.location.href = "login.html";
-
-    } catch (err) {
-        errorEl.textContent = "An error occurred: " + err.message;
-        errorEl.style.display = "block";
-    }
-});
-</script>
+    </script>
 
 </body>
+
 </html>
