@@ -29,8 +29,8 @@
 </head>
 
 <body>
-    <h1>Welcome to FuelFinder!</h1>
-    <button onclick="logout()">Logout</button>
+    <h1 class="welcome">Welcome to FuelFinder!</h1>
+    <button onclick="logout()" class="logout">Logout</button>
     <nav>
         <div class="container nav__container">
 
@@ -41,7 +41,7 @@
             <ul class="nav__menu">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="bookgas.html">Book Gas</a></li>
-                <li><a href="feedback.html">Feedb</a></li>
+                <li><a href="feedback.html">Feedback</a></li>
                 <button class="settings-btn" onclick="toggleSettings()"><i class="fas fa-cog"></i></button>
 
             </ul>
@@ -552,17 +552,8 @@
                     time: "2 days ago",
                     status: "pending"
                 },
-                {
-                    id: 4,
-                    name: "Sneha Patil",
-                    initial: "SP",
-                    color: "#00C853",
-                    category: "suggestion",
-                    service: "CNG Station",
-                    text: "Can we get a waiting area with seating at CNG stations? Sometimes queue is 30+ mins and standing is tiring especially for elderly people.",
-                    time: "4 days ago",
-                    status: "resolved"
-                }
+
+
             ];
 
             // Category Pills
@@ -1777,7 +1768,7 @@
                     time: "2 days ago",
                     status: "pending"
                 },
-               
+
             ];
 
             // Category Pills

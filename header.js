@@ -28,6 +28,7 @@ document.querySelector(".petrol-btn").onclick = () => start("petrol");
 document.querySelector(".diesel-btn").onclick = () => start("Diesel");
 document.querySelector(".cng-btn").onclick = () => start("cng");
 document.querySelector(".electric-btn").onclick = () => start("EV");
+document.querySelector(".lpg-btn").onclick = () => start("LPG")
 
 
 /* ===== MAIN FUNCTION ===== */
@@ -127,45 +128,35 @@ async function start(type) {
 
     });
 }
-
-/* ===== UI ===== */
 function showUI(stations, type) {
-
     const panel = document.getElementById("stationInfoPanel");
+    currentEVData = stations;
 
     panel.innerHTML = `
         <div class="station-title">
             Nearby ${type.toUpperCase()} Stations
         </div>
-
-        ${stations.map(s => `
+        ${stations.map((s, idx) => `
             <div class="station-item">
-
                 <div class="row top">
-                    <h3>${s.Station || '--'}</h3>
-                    <span class="price">₹${s.Price || '--'}</span>
+                    <h3>${s.station || s.Station || '--'}</h3>
+                    <span class="price">₹${s.price || s.Price || '--'}${type === 'EV' ? '/kWh' : ''}</span>
                 </div>
-
-                <div class="address">
-                    📍 ${s.Address || '--'}
-                </div>
-
+                <div class="address">📍 ${s.address || s.Address || '--'}</div>
                 <div class="row info">
-                    <span>⭐ ${s.Rating || '--'}</span>
+                    <span>⭐ ${s.rating || s.Rating || '--'}</span>
                     <span>📍 ${s.dist.toFixed(1)} km</span>
-                    <span>⏱ ${s["Travel Time"] || '--'} min</span>
+                    <span>⏱ ${s.travel_time || s["Travel Time"] || '--'} min</span>
                 </div>
-
                 <div class="actions">
                     <button onclick="viewOnMap(${s.latitude}, ${s.longitude})">View</button>
                     <button onclick="route(${s.latitude}, ${s.longitude})">Route</button>
                 </div>
-
+                ${type === 'EV' ? `<button class="btn-book-ev" onclick="openEVBooking(${idx})">⚡ Book Charging Slot</button>` : ''} 
             </div>
         `).join("")}
     `;
 }
-
 
 /* ===== VIEW ===== */
 function viewOnMap(lat, lng) {
