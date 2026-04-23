@@ -16,498 +16,237 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
 const SUPABASE_URL = "https://zrgvxxbdevcwkpohckwj.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpyZ3Z4eGJkZXZjd2twb2hja3dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NzAwNzgsImV4cCI6MjA5MjI0NjA3OH0.-js43IF_QQk7793-AqP6aSV2VbyWiZWj9SH5tprYjJs";
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let map;
-let userMarker;
-let markers = [];
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-/* ===== BUTTON EVENTS ===== */
-document.querySelector(".petrol-btn").onclick = () => start("petrol");
-document.querySelector(".diesel-btn").onclick = () => start("Diesel");
-document.querySelector(".cng-btn").onclick = () => start("cng");
-document.querySelector(".electric-btn").onclick = () => start("EV");
-document.querySelector(".lpg-btn").onclick = () => start("LPG")
+// हे सगळे variables आधी declare केले
+let bookingData = {
+    provider: null,
+    fullName: null,
+    email: null,
+    mobileNumber: null,
+    consumerId: null,
+    address: null,
+    cylinderType: null, // selectedCylinder नाही - cylinderType आहे
+    deliveryDate: null,
+    paymentMethod: null
+};
 
+let currentStep = 1;
 
-/* ===== MAIN FUNCTION ===== */
-async function start(type) {
+// Page load झाल्यावर run होईल
+window.addEventListener('DOMContentLoaded', function() {
+    setupListeners();
+    setMinDate();
+});
 
-    document.querySelector(".map-section").style.display = "grid";
-
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-
-        const userLat = pos.coords.latitude;
-        const userLng = pos.coords.longitude;
-
-        /* MAP INIT */
-        if (!map) {
-            map = L.map('map').setView([userLat, userLng], 13);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-                .addTo(map);
-        }
-
-        /* USER MARKER */
-        if (userMarker) map.removeLayer(userMarker);
-
-        userMarker = L.marker([userLat, userLng])
-            .addTo(map)
-            .bindPopup("You are here")
-            .openPopup();
-
-        /* REMOVE OLD MARKERS */
-        markers.forEach(m => map.removeLayer(m));
-        markers = [];
-
-        /* ===== FETCH DATA ===== */
-        const { data, error } = await client
-            .from(type)
-            .select("*");
-
-        /* 🔥 DEBUG LOG */
-        console.log("TABLE:", type);
-        console.log("DATA:", data);
-        console.log("ERROR:", error);
-
-        if (error) {
-            document.getElementById("stationInfoPanel").innerHTML =
-                "❌ Error: " + error.message;
-            return;
-        }
-
-        if (!data || data.length === 0) {
-            document.getElementById("stationInfoPanel").innerHTML =
-                "❌ No data found in table: " + type;
-            return;
-        }
-
-        /* ===== PROCESS DATA ===== */
-        const processed = data.map(s => {
-
-            const lat = parseFloat(s.latitude);
-            const lng = parseFloat(s.longitude);
-
-            if (isNaN(lat) || isNaN(lng)) return null;
-
-            return {
-                ...s,
-                latitude: lat,
-                longitude: lng,
-                dist: getDistance(userLat, userLng, lat, lng)
-            };
-
-        }).filter(Boolean);
-
-        if (!processed.length) {
-            document.getElementById("stationInfoPanel").innerHTML =
-                "❌ Invalid latitude/longitude data";
-            return;
-        }
-
-        /* ===== FILTER 30KM ===== */
-        const nearby = processed
-            .filter(s => s.dist <= 30)
-            .sort((a, b) => a.dist - b.dist);
-
-        const finalData = nearby.length ? nearby : processed;
-
-        /* ===== SHOW UI ===== */
-        showUI(finalData.slice(0, 4), type);
-
-        /* ===== ADD MARKERS ===== */
-        finalData.slice(0, 4).forEach(s => {
-
-            const m = L.marker([s.latitude, s.longitude])
-                .addTo(map)
-                .bindPopup(`${s.Station || "Station"} (${s.dist.toFixed(1)} km)`);
-
-            markers.push(m);
+function setupListeners() {
+    // Provider Selection
+    document.querySelectorAll('.provider-option').forEach(el => {
+        el.addEventListener('click', function() {
+            document.querySelectorAll('.provider-option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            bookingData.provider = this.getAttribute('data-provider');
+            hideError();
         });
-
     });
-}
-function showUI(stations, type) {
-    const panel = document.getElementById("stationInfoPanel");
-    currentEVData = stations;
 
-    panel.innerHTML = `
-        <div class="station-title">
-            Nearby ${type.toUpperCase()} Stations
-        </div>
-        ${stations.map((s, idx) => `
-            <div class="station-item">
-                <div class="row top">
-                    <h3>${s.station || s.Station || '--'}</h3>
-                    <span class="price">₹${s.price || s.Price || '--'}${type === 'EV' ? '/kWh' : ''}</span>
-                </div>
-                <div class="address">📍 ${s.address || s.Address || '--'}</div>
-                <div class="row info">
-                    <span>⭐ ${s.rating || s.Rating || '--'}</span>
-                    <span>📍 ${s.dist.toFixed(1)} km</span>
-                    <span>⏱ ${s.travel_time || s["Travel Time"] || '--'} min</span>
-                </div>
-                <div class="actions">
-                    <button onclick="viewOnMap(${s.latitude}, ${s.longitude})">View</button>
-                    <button onclick="route(${s.latitude}, ${s.longitude})">Route</button>
-                </div>
-                ${type === 'EV' ? `<button class="btn-book-ev" onclick="openEVBooking(${idx})">⚡ Book Charging Slot</button>` : ''} 
-            </div>
-        `).join("")}
-    `;
-}
+    // Cylinder Selection
+    document.querySelectorAll('.cylinder-option').forEach(el => {
+        el.addEventListener('click', function() {
+            document.querySelectorAll('.cylinder-option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            bookingData.cylinderType = this.getAttribute('data-type'); // इथे cylinderType use करतो
+            hideError();
+        });
+    });
 
-/* ===== VIEW ===== */
-function viewOnMap(lat, lng) {
-    map.setView([lat, lng], 15);
+    // Payment Selection
+    document.querySelectorAll('.payment-option').forEach(el => {
+        el.addEventListener('click', function() {
+            document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            bookingData.paymentMethod = this.getAttribute('data-payment');
+            hideError();
+        });
+    });
 
-    L.marker([lat, lng]).addTo(map)
-        .bindPopup("Station")
-        .openPopup();
+    // Buttons
+    const step1Btn = document.getElementById('step1Next');
+    const step2Back = document.getElementById('step2Back');
+    const step2Next = document.getElementById('step2Next');
+    const step3Back = document.getElementById('step3Back');
+    const confirmBtn = document.getElementById('confirmBtn');
+
+    if (step1Btn) step1Btn.addEventListener('click', () => nextStep(1));
+    if (step2Back) step2Back.addEventListener('click', () => previousStep());
+    if (step2Next) step2Next.addEventListener('click', () => nextStep(2));
+    if (step3Back) step3Back.addEventListener('click', () => previousStep());
+    if (confirmBtn) confirmBtn.addEventListener('click', confirmBooking);
 }
 
-
-/* ===== ROUTE ===== */
-function route(lat, lng) {
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
-}
-
-
-/* ===== DISTANCE ===== */
-function getDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-
-    const a =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos(lat1 * Math.PI / 180) *
-        Math.cos(lat2 * Math.PI / 180) *
-        Math.sin(dLon / 2) ** 2;
-
-    return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-}
-
-
-let selectedEVStation = null;
-let selectedDate = null;
-let selectedSlot = null;
-let currentEVData = [];
-
-// Update your existing start function for EV
-const originalStart = start;
-start = async function (type) {
-    if (type === "EV") {
-        document.getElementById("evBookingSection").style.display = "none";
-    }
-    await originalStart(type);
-}
-
-// Update showUI to add "Book Slot" button for EV
-function showUI(stations, type) {
-    const panel = document.getElementById("stationInfoPanel");
-    currentEVData = stations; // Store for booking
-
-    panel.innerHTML = `
-        <div class="station-title">
-            Nearby ${type.toUpperCase()} Stations
-        </div>
-        ${stations.map((s, idx) => `
-            <div class="station-item">
-                <div class="row top">
-                    <h3>${s.Station || '--'}</h3>
-                    <span class="price">₹${s.Price || '--'}/kWh</span>
-                </div>
-                <div class="address">📍 ${s.Address || '--'}</div>
-                <div class="row info">
-                    <span>⭐ ${s.Rating || '--'}</span>
-                    <span>📍 ${s.dist.toFixed(1)} km</span>
-                    <span>⏱ ${s["Travel Time"] || '--'} min</span>
-                </div>
-                <div class="actions">
-                    <button onclick="viewOnMap(${s.latitude}, ${s.longitude})">View</button>
-                    <button onclick="route(${s.latitude}, ${s.longitude})">Route</button>
-                </div>
-                ${type === 'EV' ? `<button class="btn-book-ev" onclick="openEVBooking(${idx})">⚡ Book Charging Slot</button>` : ''}
-            </div>
-        `).join("")}
-    `;
-}
-
-// Open EV Booking Panel
-function openEVBooking(stationIndex) {
-    selectedEVStation = currentEVData[stationIndex];
-    selectedDate = null;
-    selectedSlot = null;
-
-    document.getElementById("evBookingSection").style.display = "block";
-    document.getElementById("evStationName").textContent = selectedEVStation.Station;
-    document.getElementById("evStationAddress").textContent = selectedEVStation.Address;
-    document.getElementById("evStationDist").textContent = `• ${selectedEVStation.dist.toFixed(1)} km`;
-    document.getElementById("evStationPrice").textContent = `• ₹${selectedEVStation.Price}/kWh`;
-
-    generateDatePicker();
-    document.getElementById("slotsGrid").innerHTML = '<p style="color:#666;text-align:center;grid-column:1/-1;">Select a date first</p>';
-    updateBookingSummary();
-
-    document.getElementById("evBookingSection").scrollIntoView({ behavior: 'smooth' });
-}
-
-// Generate next 7 days
-function generateDatePicker() {
-    const datePicker = document.getElementById("datePicker");
-    datePicker.innerHTML = '';
-
-    for (let i = 0; i < 7; i++) {
-        const date = new Date();
-        date.setDate(date.getDate() + i);
-
-        const day = date.toLocaleDateString('en-US', { weekday: 'short' });
-        const num = date.getDate();
-        const month = date.toLocaleDateString('en-US', { month: 'short' });
-        const dateStr = date.toISOString().split('T')[0];
-
-        const dateEl = document.createElement('div');
-        dateEl.className = 'date-item';
-        dateEl.dataset.date = dateStr;
-        dateEl.innerHTML = `
-            <div class="date-day">${day}</div>
-            <div class="date-num">${num}</div>
-            <div class="date-month">${month}</div>
-        `;
-        dateEl.onclick = () => selectDate(dateStr, dateEl);
-        datePicker.appendChild(dateEl);
-    }
-}
-
-// Select date and load slots
-async function selectDate(dateStr, el) {
-    document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
-    el.classList.add('active');
-    selectedDate = dateStr;
-    selectedSlot = null;
-
-    await loadSlotsForDate(dateStr);
-    updateBookingSummary();
-}
-
-// Load slots from Supabase
-async function loadSlotsForDate(dateStr) {
-    const slotsGrid = document.getElementById("slotsGrid");
-    slotsGrid.innerHTML = '<p style="color:#666;text-align:center;grid-column:1/-1;">Loading slots...</p>';
-
-    // Fetch latest booking data
-    const { data, error } = await client
-        .from('EV')
-        .select('booked_slots, slot_duration, total_slots')
-        .eq('id', selectedEVStation.id)
-        .single();
-
-    if (error) {
-        slotsGrid.innerHTML = '<p style="color:#ff5722;text-align:center;grid-column:1/-1;">Error loading slots</p>';
-        return;
-    }
-
-    const bookedSlots = data.booked_slots?.[dateStr] || [];
-    const duration = data.slot_duration || 30;
-    const totalSlots = data.total_slots || 12;
-
-    // Generate time slots from 6:00 to 22:00
-    slotsGrid.innerHTML = '';
-    for (let hour = 6; hour < 22; hour++) {
-        for (let min = 0; min < 60; min += duration) {
-            const timeStr = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
-            const isBooked = bookedSlots.includes(timeStr);
-
-            const slotEl = document.createElement('div');
-            slotEl.className = `slot-item ${isBooked ? 'booked' : ''}`;
-            slotEl.textContent = timeStr;
-            slotEl.dataset.time = timeStr;
-
-            if (!isBooked) {
-                slotEl.onclick = () => selectSlot(timeStr, slotEl);
-            }
-
-            slotsGrid.appendChild(slotEl);
+function nextStep(step) {
+    if (step === 1) {
+        if (!bookingData.provider) {
+            showError("Please select a gas provider");
+            return;
         }
+    } else if (step === 2) {
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const mobileNumber = document.getElementById('mobileNumber').value.trim();
+        const consumerId = document.getElementById('consumerId').value.trim();
+        const address = document.getElementById('address').value.trim();
+        const deliveryDate = document.getElementById('deliveryDate').value;
+
+        if (!fullName) { showError("Please enter your full name"); return; }
+        if (!email) { showError("Please enter your email"); return; }
+        if (!mobileNumber) { showError("Please enter mobile number"); return; }
+        if (mobileNumber.length!== 10 ||!/^\d+$/.test(mobileNumber)) {
+            showError("Please enter valid 10-digit mobile number");
+            return;
+        }
+        if (!consumerId) { showError("Please enter consumer ID"); return; }
+        if (!address) { showError("Please enter delivery address"); return; }
+        if (!deliveryDate) { showError("Please select delivery date"); return; }
+        if (!bookingData.cylinderType) { showError("Please select cylinder type"); return; }
+        if (!bookingData.paymentMethod) { showError("Please select payment method"); return; }
+
+        bookingData.fullName = fullName;
+        bookingData.email = email;
+        bookingData.mobileNumber = mobileNumber;
+        bookingData.consumerId = consumerId;
+        bookingData.address = address;
+        bookingData.deliveryDate = deliveryDate;
+        updateSummary();
     }
+
+    currentStep = step + 1;
+    showStep(currentStep);
+    hideError();
 }
 
-function selectSlot(timeStr, el) {
-    document.querySelectorAll('.slot-item.selected').forEach(s => s.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedSlot = timeStr;
-    updateBookingSummary();
+function previousStep() {
+    currentStep--;
+    showStep(currentStep);
 }
 
-function updateBookingSummary() {
-    const summary = document.getElementById("bookingSummary");
-    const btn = document.getElementById("btnBookSlot");
+function showStep(step) {
+    document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
+    const stepEl = document.getElementById('step' + step);
+    if (stepEl) stepEl.classList.add('active');
 
-    if (selectedDate && selectedSlot) {
-        summary.innerHTML = `<strong style="color:#00FFD1">${selectedEVStation.Station}</strong><br>
-                             ${selectedDate} at ${selectedSlot}`;
-        summary.classList.add('active');
-        btn.disabled = false;
-    } else {
-        summary.innerHTML = '<span>Select a slot to continue</span>';
-        summary.classList.remove('active');
-        btn.disabled = true;
-    }
+    document.querySelectorAll('.step-indicator').forEach((ind, i) => {
+        const s = i + 1;
+        if (s < step) {
+            ind.classList.add('completed');
+            ind.classList.remove('active');
+        } else if (s === step) {
+            ind.classList.add('active');
+            ind.classList.remove('completed');
+        } else {
+            ind.classList.remove('active', 'completed');
+        }
+    });
+    window.scrollTo(0, 0);
 }
-async function confirmEVBooking() {
-    if (!selectedDate || !selectedSlot) return;
 
-    const btn = document.getElementById("btnBookSlot");
+function updateSummary() {
+    const provMap = { 'hp': 'HP Gas', 'bharat': 'Bharat Gas', 'indane': 'Indane', 'indian': 'Indian Gas' };
+    const payMap = { 'online': 'Online Payment', 'cod': 'Cash on Delivery' };
+
+    document.getElementById('summaryProvider').textContent = provMap[bookingData.provider] || '-';
+    document.getElementById('summaryName').textContent = bookingData.fullName;
+    document.getElementById('summaryEmail').textContent = bookingData.email;
+    document.getElementById('summaryMobile').textContent = bookingData.mobileNumber;
+    document.getElementById('summaryConsumer').textContent = bookingData.consumerId;
+    document.getElementById('summaryCylinder').textContent = bookingData.cylinderType + ' kg';
+    document.getElementById('summaryDate').textContent = bookingData.deliveryDate;
+    document.getElementById('summaryAddress').textContent = bookingData.address;
+    document.getElementById('summaryPayment').textContent = payMap[bookingData.paymentMethod] || '-';
+}
+
+async function confirmBooking() {
+    const btn = document.getElementById('confirmBtn');
+    if (!btn) return;
+
     btn.disabled = true;
-    btn.textContent = "Booking...";
+    btn.textContent = 'Processing...';
+    showLoading(true);
+    hideError();
 
     try {
-        // STEP 1: Get latest data
-        const { data: current, error: fetchError } = await client
-            .from("EV")
-            .select("booked_slots")
-            .eq("id", selectedEVStation.id)
-            .single();
-
-        if (fetchError) throw fetchError;
-
-        // STEP 2: Safe object
-        let bookedSlots = current?.booked_slots || {};
-
-        if (!bookedSlots[selectedDate]) {
-            bookedSlots[selectedDate] = [];
-        } // ✅ FIX: bracket closed
-
-        // STEP 3: Already booked check
-        if (bookedSlots[selectedDate].includes(selectedSlot)) {
-            alert("❌ Slot already booked, choose another");
-            btn.disabled = false;
-            btn.textContent = "Confirm Booking";
-            return;
+        // Final validation
+        if (!bookingData.provider ||!bookingData.fullName ||!bookingData.email ||
+           !bookingData.mobileNumber ||!bookingData.consumerId ||!bookingData.address ||
+           !bookingData.cylinderType ||!bookingData.deliveryDate ||!bookingData.paymentMethod) {
+            throw new Error('Please fill all required fields');
         }
 
-        // STEP 4: Add slot
-        bookedSlots[selectedDate].push(selectedSlot);
+        const bookingRef = '#FUEL' + Date.now().toString().slice(-8).toUpperCase();
 
-        // STEP 5: Update Supabase
-        const { error: updateError } = await client
-            .from("EV")
-            .update({
-                booked_slots: bookedSlots
-            })
-            .eq("id", selectedEVStation.id);
+        const { data, error } = await client
+         .from('gas_bookings')
+         .insert([{
+                booking_ref: bookingRef,
+                provider: bookingData.provider,
+                full_name: bookingData.fullName,
+                email: bookingData.email,
+                mobile_number: bookingData.mobileNumber,
+                consumer_id: bookingData.consumerId,
+                delivery_address: bookingData.address,
+                cylinder_type: bookingData.cylinderType,
+                delivery_date: bookingData.deliveryDate,
+                payment_method: bookingData.paymentMethod,
+                status: 'confirmed'
+            }])
+         .select();
 
-        if (updateError) throw updateError;
+        if (error) throw error;
 
-        // STEP 6: SUCCESS UI
-        const ref = "#EV" + Math.random().toString(36).substring(2, 8).toUpperCase();
-
-        document.getElementById("evBookingRef").textContent = ref;
-        document.getElementById("evBookingDetails").innerHTML =
-            `${selectedEVStation.Station}<br>${selectedDate} at ${selectedSlot}`;
-
-        document.getElementById("modalOverlay").classList.add("show");
-        document.getElementById("evBookingModal").classList.add("show");
+        showLoading(false);
+        document.getElementById('bookingRef').textContent = bookingRef;
+        document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('successState').classList.add('active');
 
     } catch (err) {
-        console.error("Booking Error:", err);
-        alert("❌ Booking failed: " + err.message);
+        showLoading(false);
+        console.error('Booking Error:', err);
+        showError('Error processing booking: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = 'Confirm Booking';
     }
-
-    btn.disabled = false;
-    btn.textContent = "Confirm Booking";
 }
 
+function showError(msg) {
+    const el = document.getElementById('errorMessage');
+    if (el) {
+        el.textContent = msg;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 5000);
+    }
+}
 
+function hideError() {
+    const el = document.getElementById('errorMessage');
+    if (el) el.classList.remove('show');
+}
 
+function showLoading(show) {
+    const el = document.getElementById('loadingState');
+    if (el) {
+        if (show) el.classList.add('show');
+        else el.classList.remove('show');
+    }
+}
 
-const menu = document.querySelector(".nav__menu");
-const openBtn = document.getElementById("open-menu-btn");
-const closeBtn = document.getElementById("close-menu-btn");
-const setting = document.getElementById("settingbtn")
-
-openBtn.onclick = () => {
-    menu.classList.add("show");
-    openBtn.style.display = "none";
-    closeBtn.style.display = "block";
-
-
-};
-
-closeBtn.onclick = () => {
-    menu.classList.remove("show");
-    openBtn.style.display = "block";
-    closeBtn.style.display = "none";
-};
-
-const elements = document.querySelectorAll(".fade-up");
-
-window.addEventListener("scroll", () => {
-    elements.forEach(el => {
-        const position = el.getBoundingClientRect().top;
-        const screenHeight = window.innerHeight;
-
-        if (position < screenHeight - 100) {
-            el.classList.add("show");
-        }
-    });
-});
-
-const fuelButtons = document.querySelectorAll(".fuel-btn button");
-
-fuelButtons.forEach(button => {
-    button.addEventListener("click", () => {
-
-        // remove active from all
-        fuelButtons.forEach(btn => btn.classList.remove("active"));
-
-        // add active to clicked
-        button.classList.add("active");
-
-    });
-});
-
-// Agency select
-document.querySelectorAll(".agency-box").forEach(box => {
-    box.onclick = () => {
-        document.querySelectorAll(".agency-box").forEach(b => b.classList.remove("active"));
-        box.classList.add("active");
-    };
-});
-
-// Booking click
-const steps = document.querySelectorAll(".step");
-const popup = document.getElementById("popup");
-
-document.getElementById("bookBtn").onclick = () => {
-
-    let i = 0;
-
-    let interval = setInterval(() => {
-        if (i < steps.length) {
-            steps[i].classList.add("active");
-            i++;
-        } else {
-            clearInterval(interval);
-
-            // show popup
-            popup.style.display = "block";
-
-            setTimeout(() => {
-                popup.style.display = "none";
-            }, 3000);
-        }
-    }, 1000);
-};
-
-// Live price update
-setInterval(() => {
-    let price = 880 + Math.floor(Math.random() * 50);
-    document.getElementById("price").innerText = "₹" + price;
-}, 3000);
+function setMinDate() {
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('deliveryDate');
+    if (dateInput) dateInput.setAttribute('min', today);
+}
 
 
 

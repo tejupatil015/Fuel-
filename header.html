@@ -164,7 +164,7 @@
     <div class="modal-overlay" id="modalOverlay" onclick="closeEVModal()"></div>
     <!--                              gasbooking                             -->
 
-   <div class="booking-container">
+    <div class="booking-container">
         <div class="booking-header">
             <h1>Book Gas Cylinder</h1>
             <p>Quick and easy home delivery</p>
@@ -705,8 +705,8 @@
             localStorage.removeItem("rememberUser");
             window.location.replace("sign.html");
         }
-        alert("✅ header.js Connected!");
-        console.log("✅✅✅ header.js file loaded successfully!");
+        //alert("✅ header.js Connected!");
+       // console.log("✅✅✅ header.js file loaded successfully!");
 
         document.addEventListener('DOMContentLoaded', () => {
             console.log("DOM ready");
@@ -730,6 +730,8 @@
         document.querySelector(".diesel-btn").onclick = () => start("Diesel");
         document.querySelector(".cng-btn").onclick = () => start("cng");
         document.querySelector(".electric-btn").onclick = () => start("EV");
+        document.querySelector(".lpg-btn").onclick = () => start("LPG");
+
 
 
         /* ===== MAIN FUNCTION ===== */
@@ -1092,18 +1094,14 @@
                 if (!bookedSlots[selectedDate]) {
                     bookedSlots[selectedDate] = [];
                 }
-                if (!selectedCylinder) {
-                    alert("❌ Please select cylinder type");
-                    return;
-                }
 
-                if (!selectedPayment) {
-                    alert("❌ Please select payment method");
-                    return;
-                }
+                // ❌ DELETE केलं: selectedCylinder आणि selectedPayment check
+                // हे Gas booking साठी आहे, EV साठी नाही
+
                 // STEP 3: Already booked check
                 if (bookedSlots[selectedDate].includes(selectedSlot)) {
                     alert("❌ Slot already booked, choose another");
+                    await loadSlotsForDate(selectedDate); // Refresh
                     btn.disabled = false;
                     btn.textContent = "Confirm Booking";
                     return;
@@ -1140,18 +1138,6 @@
             btn.disabled = false;
             btn.textContent = "Confirm Booking";
         }
-
-        function closeEVModal() {
-            document.getElementById("modalOverlay").classList.remove('show');
-            document.getElementById("evBookingModal").classList.remove('show');
-            document.getElementById("evBookingSection").style.display = "none";
-            selectedEVStation = null;
-            selectedDate = null;
-            selectedSlot = null;
-        }
-
-
-
 
 
 
