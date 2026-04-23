@@ -1355,7 +1355,7 @@
         }
 
 
-
+//settings page content
 
         function showContent(type, event) {
             // Update active menu item
@@ -1369,70 +1369,68 @@
             const contentArea = document.getElementById('contentArea');
             if (!contentArea) return;
 
-            // Get user data from localStorage or use defaults
-            const userData = JSON.parse(localStorage.getItem('userData')) || {
-                mobile: '+91 98765 43210',
-                email: 'user@example.com',
-                name: 'John Doe',
-                profilePic: null
-            };
+             const userName = localStorage.getItem("userName") || localStorage.getItem("userEmail")?.split('@')[0] || 'Guest';
+    const userEmail = localStorage.getItem("userEmail") || 'N/A';
 
-            switch (type) {
-                case 'info':
-                    contentArea.innerHTML = `
-                        <div class="info-section">
-                            <h3>Your Info</h3>
-                            <div class="info-card">
-                                <div class="info-item">
-                                    <span class="info-label">Full Name</span>
-                                    <span class="info-value">${userData.name || 'N/A'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Email Address</span>
-                                    <span class="info-value">${userData.email || 'N/A'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Mobile Number</span>
-                                    <span class="info-value">${userData.mobile || 'N/A'}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    break;
 
-                case 'notifications':
-                    contentArea.innerHTML = `
-                        <div class="notifications-section">
-                            <h3>Notifications</h3>
-                            <div class="notification-list">
-                                <div class="notification-item">
-                                    <div class="notification-icon">⛽</div>
-                                    <div class="notification-content">
-                                        <div class="notification-title">Fuel Price Update</div>
-                                        <div class="notification-text">Petrol prices updated in your area</div>
-                                        <div class="notification-time">2 hours ago</div>
-                                    </div>
-                                </div>
-                                <div class="notification-item">
-                                    <div class="notification-icon">🔋</div>
-                                    <div class="notification-content">
-                                        <div class="notification-title">EV Station Maintenance</div>
-                                        <div class="notification-text">Tata Power station will be closed for maintenance</div>
-                                        <div class="notification-time">1 day ago</div>
-                                    </div>
-                                </div>
-                                <div class="notification-item">
-                                    <div class="notification-icon">🎉</div>
-                                    <div class="notification-content">
-                                        <div class="notification-title">New Feature Available</div>
-                                        <div class="notification-text">Try our new route optimization feature</div>
-                                        <div class="notification-time">3 days ago</div>
-                                    </div>
-                                </div>
-                            </div>
+    switch (type) {
+        case 'info':
+            contentArea.innerHTML = `
+                <div class="info-section">
+                    <h3>Your Info</h3>
+                    <div class="info-card">
+                        <div class="info-item">
+                            <span class="info-label">Full Name</span>
+                            <span class="info-value">${userName}</span>
                         </div>
-                    `;
-                    break;
+                        <div class="info-item">
+                            <span class="info-label">Email Address</span>
+                            <span class="info-value">${userEmail}</span>
+                        </div>
+                       
+                    </div>
+                </div>
+            `;
+            break;
+        case 'Notifications':
+            contentArea.innerHTML = `
+                <div class="notifications-section">
+                    <h3>Notification Settings</h3>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Price Alerts</div>
+                                <div class="setting-description">Get notified about fuel price changes and discounts</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Booking Reminders</div>
+                                <div class="setting-description">Receive reminders for your upcoming gas cylinder bookings</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Promotional Offers</div>
+                                <div class="setting-description">Allow notifications about special offers and promotions</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            `;
+                  
 
                 case 'privacy':
                     contentArea.innerHTML = `
