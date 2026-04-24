@@ -1,32 +1,39 @@
-/* ============================================
-   GLOBAL VARIABLES & RESET
-   ============================================ */
+﻿/* css test */
 :root {
-    --bg-primary: #0F0F0F;
-    --bg-secondary: #1A1A1A;
-    --bg-card: #1E1E;
-    --bg-hover: #242424;
-    --bg-input: #0A0A0A;
-    
-    --text-primary: #FFFFFF;
-    --text-secondary: #AAAAAA;
-    --text-muted: #666666;
-    
-    --accent-orange: #FF6B00;
-    --accent-cyan: #00FFD1;
-    --accent-blue: #4A90D9;
-    --accent-green: #00C853;
-    --accent-yellow: #FFD600;
-    --accent-red: #FF5722;
-    
-    --border: #333333;
-    --border-light: #444444;
-    
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-    --shadow-glow-orange: 0 0 25px rgba(255, 107, 0, 0.4);
-    --shadow-glow-cyan: 0 0 25px rgba(0, 255, 209, 0.4);
+    /* BACKGROUND */
+    --bg-primary: #F9F9F9;       /* soft white */
+    --bg-secondary: #EFEDE8;     /* light beige tone */
+    --bg-card: #FFFFFF;          /* clean white cards */
+    --bg-hover: #E6E1D9;         /* subtle beige hover */
+    --bg-input: #F3F1EC;         /* input background */
+
+    /* TEXT */
+    --text-primary: #333333;     /* charcoal */
+    --text-secondary: #666666;   /* softer dark */
+    --text-muted: #999999;
+
+    /* ACCENTS (minimal luxury style) */
+    --accent-orange: #C8A97E;    /* warm beige accent */
+    --accent-cyan: #BFB8AA;      /* muted neutral */
+    --accent-blue: #A89F91;
+    --accent-green: #9C9485;
+    --accent-purple: #BFA58A;
+    --accent-yellow: #E0D8C8;
+    --accent-red: #BFA58A;
+
+    /* BORDER */
+    --border: #DDD6C8;
+    --border-light: #EAE5DC;
+
+    /* SHADOW (soft, not harsh like dark theme) */
+    --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+    /* GLOW (very subtle, luxury feel) */
+    --shadow-glow-orange: 0 0 15px rgba(200, 169, 126, 0.3);
+    --shadow-glow-cyan: 0 0 15px rgba(180, 175, 160, 0.3);
+
     --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
@@ -159,7 +166,7 @@ nav {
 .settings-btn:hover {
     background: var(--bg-hover);
     border-color: var(--accent-orange);
-    color: var(--accent-orange);
+    color: var(--accent-yellow);
     transform: rotate(180deg) scale(1.1);
 }
 
@@ -1972,22 +1979,6 @@ textarea.form-input {
 
 
 
-        :root {
-            --bg-primary: #0D0F14;
-            --bg-secondary: #151823;
-            --bg-card: #1A1D29;
-            --bg-input: #0F1117;
-            --text-primary: #E8EAF0;
-            --text-secondary: #8B90A0;
-            --text-muted: #5A5F70;
-            --accent-orange: #FF9F43;
-            --accent-cyan: #00D9FF;
-            --accent-green: #00C853;
-            --accent-purple: #7B61FF;
-            --border: #2A2F3F;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -3069,3 +3060,138 @@ body {
     .booking-container { padding: 48px; }
     .provider-grid { grid-template-columns: 1fr 1fr; }
 }
+
+
+
+/* ============================================
+   FUEL TYPE SELECTOR - LUMINA STYLE
+   ============================================ */
+.filter-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.selector-title {
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 2rem 0 1rem;
+    animation: fadeInUp 0.5s ease;
+}
+
+.fuel-type-selector {
+    animation: fadeInUp 0.5s ease;
+}
+
+.fuel-btn {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.fuel-type-btn {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-light);
+    color: var(--text-primary);
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.fuel-type-btn .fuel-icon {
+    font-size: 2rem;
+    transition: var(--transition);
+}
+
+.fuel-type-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: var(--lumina-beige);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+    z-index: 0;
+}
+
+.fuel-type-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.fuel-type-btn:hover {
+    border-color: var(--accent-primary);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.fuel-type-btn:hover .fuel-icon {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.fuel-type-btn.active {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: #FFFFFF;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-4px) scale(1.02);
+}
+
+.fuel-type-btn.active .fuel-icon {
+    transform: scale(1.1);
+}
+
+.fuel-type-btn span {
+    position: relative;
+    z-index: 1;
+}
+
+/* Mobile: 1 column for fuel types */
+@media (max-width: 480px) {
+    .fuel-btn {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 768px) {
+    .fuel-btn {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .fuel-btn {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+
+/* CSS - example.css मध्ये add कर */
+.city-option {
+    padding: 14px 20px;
+    color: #333333;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #E8E8;
+}
+.city-option:last-child { border-bottom: none; }
+.city-option:hover { background: #DCD0C0; transform: translateX(4px); }
+.city-option.selected { background: #333333; color: #FFFFFF; font-weight: 600; }
+#cityBtn.active i { transform: rotate(180deg); }
