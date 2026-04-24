@@ -2548,38 +2548,197 @@ textarea.form-input {
         
 
 
+/* ============================================
+   WELCOME HEADER & LOGOUT BUTTON
+   ============================================ */
+
 .welcome {
-    font-size: clamp(2rem, 5vw, 3rem);
-    font-weight: 700;
-    color: var(--accent-orange);
-    margin: 0;
-    text-align: center;
-    letter-spacing: -0.5px;
-}
-
-.logout {
-    padding: 12px 32px;
-    background: var(--accent-red);
-    border: none;
-    border-radius: 8px;
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    font-weight: 800;
     color: var(--text-primary);
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: 'Inter', sans-serif;
+    margin: 1.5rem 0 0 0;
+    padding: 2rem 1.5rem 1rem;
     text-align: center;
-    
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    position: relative;
+    animation: welcomeSlideIn 0.8s ease;
 }
 
-.logout:hover {
-    background: #c82333;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+@keyframes welcomeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.logout:active {
-    transform: translateY(0);
+.welcome::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--accent-orange) 20%, var(--accent-orange) 80%, transparent);
+    border-radius: 999px;
+    animation: lineExpand 1s ease 0.3s forwards;
+    opacity: 0;
+}
+
+@keyframes lineExpand {
+    from {
+        opacity: 0;
+        width: 0;
+    }
+    to {
+        opacity: 1;
+        width: 120px;
+    }
+}
+
+.welcome::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-orange), rgba(200, 169, 126, 0.3));
+    border-radius: 999px;
+    animation: underlineGrow 1s ease 0.5s forwards;
+    opacity: 0;
+}
+
+@keyframes underlineGrow {
+    from {
+        opacity: 0;
+        width: 0;
+    }
+    to {
+        opacity: 1;
+        width: 80px;
+    }
+}
+
+/* Logout Button Styles - Navbar Integration */
+.logout-navbar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, var(--accent-orange) 0%, rgba(200, 169, 126, 0.9) 100%);
+    border: 1px solid rgba(200, 169, 126, 0.6);
+    border-radius: 20px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 6px 16px rgba(200, 169, 126, 0.2);
+    position: relative;
+    overflow: hidden;
+    animation: navLogoutFadeIn 0.8s ease 0.4s backwards;
+}
+
+@keyframes navLogoutFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.logout-navbar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.logout-navbar:hover::before {
+    opacity: 1;
+}
+
+.logout-navbar i {
+    font-size: 1rem;
+    transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.logout-navbar:hover i {
+    transform: rotate(-15deg) scale(1.1);
+}
+
+.logout-navbar:hover {
+    transform: translateY(-2px) scale(1.06);
+    box-shadow: 0 12px 28px rgba(200, 169, 126, 0.35);
+    background: linear-gradient(135deg, #d4a76e 0%, var(--accent-orange) 100%);
+}
+
+.logout-navbar:active {
+    transform: translateY(0) scale(1.03);
+    box-shadow: 0 4px 12px rgba(200, 169, 126, 0.25);
+}
+
+.logout-navbar:focus {
+    outline: 2px solid rgba(200, 169, 126, 0.5);
+    outline-offset: 2px;
+}
+
+/* Old logout styles - now only for fallback */
+.logout {
+    display: none;
+}
+
+/* Update navbar menu to accommodate logout button */
+.nav__menu {
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* Mobile responsive logout button */
+@media (max-width: 768px) {
+    .logout-navbar {
+        padding: 9px 16px;
+        font-size: 0.85rem;
+        gap: 6px;
+    }
+
+    .logout-navbar i {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .logout-navbar {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+        border-radius: 16px;
+    }
+
+    .nav__menu {
+        gap: 0.8rem;
+    }
+}
+
+/* Tablet responsive */
+@media (min-width: 1024px) {
+    .logout-navbar {
+        margin-left: auto;
+    }
 }
 
 
