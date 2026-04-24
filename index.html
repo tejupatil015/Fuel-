@@ -53,16 +53,7 @@
     setTimeout(() => {
       window.location.replace("sign.html");
     }, 800);
-
-    // Login successful झाल्यावर
-    function handleLogin(email, name, mobile) {
-      localStorage.setItem("loggedIn", "true");
-      localStorage.setItem("userEmail", email);
-      localStorage.setItem("userName", name); // हे महत्वाचं
-      localStorage.setItem("userMobile", mobile); // Mobile पण save कर
-
-      window.location.href = "header.html"; // किंवा main page
-    }
+    
   </script>
 </body>
 
