@@ -3195,3 +3195,119 @@ body {
 .city-option:hover { background: #DCD0C0; transform: translateX(4px); }
 .city-option.selected { background: #333333; color: #FFFFFF; font-weight: 600; }
 #cityBtn.active i { transform: rotate(180deg); }
+
+
+
+
+
+
+
+
+
+
+/* Desktop - Hide buttons */
+#open-menu-btn,
+#close-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: var(--transition);
+}
+
+#open-menu-btn:hover,
+#close-menu-btn:hover {
+    color: var(--accent-orange);
+    transform: scale(1.1);
+}
+
+#close-menu-btn {
+    display: none;
+}
+
+/* Mobile - Show buttons & hide menu */
+@media (max-width: 768px) {
+    #open-menu-btn {
+        display: block;
+    }
+
+    .nav__menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: var(--bg-card);
+        border-left: 1px solid var(--border);
+        box-shadow: var(--shadow-lg);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 5rem 2rem 2rem;
+        gap: 1.5rem;
+        transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        z-index: 1000;
+    }
+
+    .nav__menu.show {
+        right: 0;
+    }
+
+    .nav__menu li {
+        width: 100%;
+    }
+
+    .nav__menu li a {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        transition: var(--transition);
+    }
+
+    .nav__menu li a:hover {
+        background: var(--bg-hover);
+        transform: translateX(5px);
+    }
+
+    /* Overlay */
+    .nav__menu::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+        z-index: -1;
+    }
+
+    .nav__menu.show::before {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+/* Menu items stagger animation */
+@media (max-width: 768px) {
+    .nav__menu li {
+        opacity: 0;
+        transform: translateX(30px);
+        animation: slideInRight 0.4s ease forwards;
+    }
+
+    .nav__menu.show li:nth-child(1) { animation-delay: 0.1s; }
+    .nav__menu.show li:nth-child(2) { animation-delay: 0.2s; }
+    .nav__menu.show li:nth-child(3) { animation-delay: 0.3s; }
+    .nav__menu.show li:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes slideInRight {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+}

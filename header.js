@@ -1246,3 +1246,68 @@ async function handleConfirmBooking(btn) {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('deliveryDate').setAttribute('min', today);
         }
+
+
+        // ============================================
+// MOBILE MENU TOGGLE LOGIC
+// ============================================
+const menu = document.querySelector(".nav__menu");
+const openBtn = document.getElementById("open-menu-btn");
+const closeBtn = document.getElementById("close-menu-btn");
+const menuLinks = document.querySelectorAll(".nav__menu li a");
+
+// Open Menu
+openBtn.onclick = () => {
+    menu.classList.add("show");
+    openBtn.style.display = "none";
+    closeBtn.style.display = "block";
+    document.body.style.overflow = "hidden"; // Scroll lock
+};
+
+// Close Menu Function
+const closeMenu = () => {
+    menu.classList.remove("show");
+    openBtn.style.display = "block";
+    closeBtn.style.display = "none";
+    document.body.style.overflow = "auto"; // Scroll unlock
+};
+
+closeBtn.onclick = closeMenu;
+
+// Close menu when clicking on link
+menuLinks.forEach(link => {
+    link.addEventListener("click", () => {
+        if (window.innerWidth <= 768) {
+            closeMenu();
+        }
+    });
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768 && 
+        menu.classList.contains('show') &&
+        !menu.contains(e.target) && 
+        !openBtn.contains(e.target)) {
+        closeMenu();
+    }
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+        menu.classList.remove("show");
+        openBtn.style.display = "none";
+        closeBtn.style.display = "none";
+        document.body.style.overflow = "auto";
+    } else {
+        openBtn.style.display = "block";
+        closeBtn.style.display = "none";
+    }
+});
+
+// Initial check on page load
+if (window.innerWidth > 768) {
+    openBtn.style.display = "none";
+    closeBtn.style.display = "none";
+}
