@@ -532,6 +532,64 @@
             errorEl.textContent = msg;
             errorEl.style.display = "block";
         }
+
+
+
+
+        // Login Form मध्ये हा code add कर
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) throw error;
+
+        // ✅ FIX: Supabase मधून name घे आणि save कर
+        const userName = data.user?.user_metadata?.full_name || email.split('@')[0];
+
+        localStorage.setItem("loggedIn", "true");
+        localStorage.setItem("userEmail", email);
+        localStorage.setItem("userName", userName); // हे important आहे
+
+        window.location.href = "header.html";
+
+    } catch (err) {
+        showError("loginErrorMsg", err.message);
+    }
+});
+
+// Signup Form मध्ये पण add कर
+document.getElementById("signupFormElement").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = document.getElementById("signupName").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value;
+
+    try {
+        const { data, error } = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: { data: { full_name: name } }
+        });
+
+        if (error) throw error;
+
+        // ✅ FIX: localStorage मध्ये पण save कर
+        localStorage.setItem("userName", name);
+        localStorage.setItem("userEmail", email);
+
+        showError("signupErrorMsg", "Account created! You can now Sign In.");
+
+    } catch (err) {
+        showError("signupErrorMsg", err.message);
+    }
+});
     </script>
 </body>
 
