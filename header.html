@@ -54,19 +54,19 @@
 
 
 
-  <section class="heroo-section container mint-glow">
-    <div class="content">
-        <h1>Find Nearby Fuel Instantly</h1>
-        <p>Easily locate nearby fuel stations and book gas in just a few clicks. Get real-time location tracking and
-            fast, reliable delivery right to your doorstep.</p>
-        <div class="btn-container">
-            <button data-type="bordered-btn" onclick="detectLocation()">Let's Start</button>
+    <section class="heroo-section container mint-glow">
+        <div class="content">
+            <h1>Find Nearby Fuel Instantly</h1>
+            <p>Easily locate nearby fuel stations and book gas in just a few clicks. Get real-time location tracking and
+                fast, reliable delivery right to your doorstep.</p>
+            <div class="btn-container">
+                <button data-type="bordered-btn" onclick="detectLocation()">Let's Start</button>
+            </div>
         </div>
-    </div>
-    <div class="image-container">
-        <img src="images/app 3.jpeg">
-    </div>
-</section>
+        <div class="image-container">
+            <img src="images/app 3.jpeg">
+        </div>
+    </section>
     <section class="fueltypes container">
         <h2>Find your fuel type</h2>
 
@@ -365,6 +365,10 @@
                 <span class="menu-icon">🔔</span>
                 <span class="menu-text">Notifications</span>
             </div>
+            <div class="menu-item" data-type="ev_bookings" onclick="showContent('ev_bookings', event)">
+                <span class="menu-icon">⚡</span>
+                <span class="menu-text">My EV Bookings</span>
+            </div>
             <div class="menu-item" data-type="privacy" onclick="showContent('privacy')">
                 <span class="menu-icon">🔒</span>
                 <span class="menu-text">Privacy & Security</span>
@@ -646,7 +650,7 @@
             window.location.replace("sign.html");
         }
         //alert("✅ header.js Connected!");
-       // console.log("✅✅✅ header.js file loaded successfully!");
+        // console.log("✅✅✅ header.js file loaded successfully!");
 
         document.addEventListener('DOMContentLoaded', () => {
             console.log("DOM ready");
@@ -1019,7 +1023,20 @@
             btn.textContent = "Booking...";
 
             try {
-                // STEP 1: Get latest data
+                // ✅ STEP 1: Current User मिळव
+                const { data: { user }, error: userError } = await client.auth.getUser();
+
+                if (userError || !user) {
+                    alert("❌ Please login first");
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                const userName = user.user_metadata?.full_name || localStorage.getItem("userName") || user.email.split('@')[0];
+                const userEmail = user.email;
+                const userId = user.id;
+
+                // STEP 2: Get latest slot data
                 const { data: current, error: fetchError } = await client
                     .from("EV")
                     .select("booked_slots")
@@ -1028,29 +1045,47 @@
 
                 if (fetchError) throw fetchError;
 
-                // STEP 2: Safe object
                 let bookedSlots = current?.booked_slots || {};
 
                 if (!bookedSlots[selectedDate]) {
                     bookedSlots[selectedDate] = [];
                 }
 
-                // ❌ DELETE केलं: selectedCylinder आणि selectedPayment check
-                // हे Gas booking साठी आहे, EV साठी नाही
-
                 // STEP 3: Already booked check
                 if (bookedSlots[selectedDate].includes(selectedSlot)) {
                     alert("❌ Slot already booked, choose another");
-                    await loadSlotsForDate(selectedDate); // Refresh
+                    await loadSlotsForDate(selectedDate);
                     btn.disabled = false;
                     btn.textContent = "Confirm Booking";
                     return;
                 }
 
-                // STEP 4: Add slot
+                // STEP 4: Generate Booking Reference
+                const ref = "EV" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+                // ✅ STEP 5: Insert into ev_bookings table - User info सह
+                const { error: insertError } = await client
+                    .from("ev_bookings")
+                    .insert({
+                        user_id: userId,
+                        user_name: userName,
+                        user_email: userEmail,
+                        station_id: selectedEVStation.id,
+                        station_name: selectedEVStation.Station,
+                        station_address: selectedEVStation.Address,
+                        booking_date: selectedDate,
+                        booking_slot: selectedSlot,
+                        price_per_kwh: selectedEVStation.Price,
+                        distance_km: selectedEVStation.dist,
+                        booking_ref: ref,
+                        status: 'confirmed'
+                    });
+
+                if (insertError) throw insertError;
+
+                // STEP 6: Update EV table - slot add कर
                 bookedSlots[selectedDate].push(selectedSlot);
 
-                // STEP 5: Update Supabase
                 const { error: updateError } = await client
                     .from("EV")
                     .update({
@@ -1060,15 +1095,19 @@
 
                 if (updateError) throw updateError;
 
-                // STEP 6: SUCCESS UI
-                const ref = "#EV" + Math.random().toString(36).substring(2, 8).toUpperCase();
-
+                // STEP 7: SUCCESS UI
                 document.getElementById("evBookingRef").textContent = ref;
                 document.getElementById("evBookingDetails").innerHTML =
-                    `${selectedEVStation.Station}<br>${selectedDate} at ${selectedSlot}`;
+                    `${selectedEVStation.Station}<br>${selectedDate} at ${selectedSlot}<br>
+             <small>Booked by: ${userName}</small>`;
 
                 document.getElementById("modalOverlay").classList.add("show");
                 document.getElementById("evBookingModal").classList.add("show");
+
+                // Reset selection
+                selectedDate = null;
+                selectedSlot = null;
+                await loadSlotsForDate(selectedDate);
 
             } catch (err) {
                 console.error("Booking Error:", err);
@@ -1078,8 +1117,6 @@
             btn.disabled = false;
             btn.textContent = "Confirm Booking";
         }
-
-
 
         const menu = document.querySelector(".nav__menu");
         const openBtn = document.getElementById("open-menu-btn");
@@ -1295,9 +1332,17 @@
         }
 
 
-//settings page content
+        //settings page content
+        // Settings Panel Toggle
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            const overlay = document.getElementById('overlay');
+            panel.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
 
-        function showContent(type, event) {
+        // ✅ FIX 1: async add कर
+        async function showContent(type, event) {
             // Update active menu item
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.classList.remove('active');
@@ -1309,13 +1354,12 @@
             const contentArea = document.getElementById('contentArea');
             if (!contentArea) return;
 
-             const userName = localStorage.getItem("userName") || localStorage.getItem("userEmail")?.split('@')[0] || 'Guest';
-    const userEmail = localStorage.getItem("userEmail") || 'N/A';
+            const userName = localStorage.getItem("userName") || localStorage.getItem("userEmail")?.split('@')[0] || 'Guest';
+            const userEmail = localStorage.getItem("userEmail") || 'N/A';
 
-
-    switch (type) {
-        case 'info':
-            contentArea.innerHTML = `
+            switch (type) {
+                case 'info':
+                    contentArea.innerHTML = `
                 <div class="info-section">
                     <h3>Your Info</h3>
                     <div class="info-card">
@@ -1327,13 +1371,14 @@
                             <span class="info-label">Email Address</span>
                             <span class="info-value">${userEmail}</span>
                         </div>
-                       
                     </div>
                 </div>
             `;
-            break;
-        case 'Notifications':
-            contentArea.innerHTML = `
+                    break;
+
+                // ✅ FIX 2: 'notifications' lowercase कर
+                case 'notifications':
+                    contentArea.innerHTML = `
                 <div class="notifications-section">
                     <h3>Notification Settings</h3>
                     <div class="settings-list">
@@ -1370,118 +1415,210 @@
                     </div>
                 </div>
             `;
-                  break;
+                    break;
 
                 case 'privacy':
                     contentArea.innerHTML = `
-                        <div class="privacy-section">
-                            <h3>Privacy & Security</h3>
-                            <div class="settings-list">
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <div class="setting-title">Location Services</div>
-                                        <div class="setting-description">Allow access to your location for better station recommendations</div>
-                                    </div>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" checked>
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <div class="setting-title">Data Sharing</div>
-                                        <div class="setting-description">Share anonymous usage data to improve our service</div>
-                                    </div>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                                <div class="setting-item">
-                                    <div class="setting-info">
-                                        <div class="setting-title">Push Notifications</div>
-                                        <div class="setting-description">Receive notifications about fuel prices and station updates</div>
-                                    </div>
-                                    <label class="toggle-switch">
-                                        <input type="checkbox" checked>
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
+                <div class="privacy-section">
+                    <h3>Privacy & Security</h3>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Location Services</div>
+                                <div class="setting-description">Allow access to your location for better station recommendations</div>
                             </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
                         </div>
-                    `;
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Data Sharing</div>
+                                <div class="setting-description">Share anonymous usage data to improve our service</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <div class="setting-title">Push Notifications</div>
+                                <div class="setting-description">Receive notifications about fuel prices and station updates</div>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            `;
                     break;
 
                 case 'about':
                     contentArea.innerHTML = `
-                        <div class="about-section">
-                            <h3>About FuelFinder</h3>
-                            <div class="about-content">
-                                <div class="app-info">
-                                    <div class="app-version">Version 2.1.0</div>
-                                    <div class="app-description">
-                                        FuelFinder helps you find the nearest fuel stations, compare prices, and book gas cylinders in Kolhapur and surrounding areas.
-                                    </div>
-                                </div>
-                                <div class="feature-list">
-                                    <div class="feature-item">
-                                        <span class="feature-icon">🗺️</span>
-                                        <span>Interactive Maps</span>
-                                    </div>
-                                    <div class="feature-item">
-                                        <span class="feature-icon">⛽</span>
-                                        <span>Real-time Fuel Prices</span>
-                                    </div>
-                                    <div class="feature-item">
-                                        <span class="feature-icon">🔋</span>
-                                        <span>EV Charging Stations</span>
-                                    </div>
-                                    <div class="feature-item">
-                                        <span class="feature-icon">📦</span>
-                                        <span>Gas Cylinder Booking</span>
-                                    </div>
-                                </div>
+                <div class="about-section">
+                    <h3>About FuelFinder</h3>
+                    <div class="about-content">
+                        <div class="app-info">
+                            <div class="app-version">Version 2.1.0</div>
+                            <div class="app-description">
+                                FuelFinder helps you find the nearest fuel stations, compare prices, and book gas cylinders in Kolhapur and surrounding areas.
                             </div>
                         </div>
-                    `;
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <span class="feature-icon">🗺️</span>
+                                <span>Interactive Maps</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">⛽</span>
+                                <span>Real-time Fuel Prices</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">🔋</span>
+                                <span>EV Charging Stations</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-icon">📦</span>
+                                <span>Gas Cylinder Booking</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
                     break;
 
                 case 'help':
                     contentArea.innerHTML = `
-                        <div class="help-section">
-                            <h3>Help & Feedback</h3>
-                            <div class="help-content">
-                                <div class="help-item">
-                                    <div class="help-icon">❓</div>
-                                    <div class="help-text">
-                                        <div class="help-title">How to find stations</div>
-                                        <div class="help-description">Use the map or station list to find fuel stations near you</div>
-                                    </div>
-                                </div>
-                                <div class="help-item">
-                                    <div class="help-icon">📞</div>
-                                    <div class="help-text">
-                                        <div class="help-title">Contact Support</div>
-                                        <div class="help-description">support@fuelfinder.com | +91 98765 43210</div>
-                                    </div>
-                                </div>
-                                <div class="help-item">
-                                    <div class="help-icon">💬</div>
-                                    <div class="help-text">
-                                        <div class="help-title">Chat with AI Assistant</div>
-                                        <div class="help-description">Click the chat icon in the bottom right corner</div>
-                                    </div>
-                                </div>
+                <div class="help-section">
+                    <h3>Help & Feedback</h3>
+                    <div class="help-content">
+                        <div class="help-item">
+                            <div class="help-icon">❓</div>
+                            <div class="help-text">
+                                <div class="help-title">How to find stations</div>
+                                <div class="help-description">Use the map or station list to find fuel stations near you</div>
                             </div>
                         </div>
-                    `;
+                        <div class="help-item">
+                            <div class="help-icon">📞</div>
+                            <div class="help-text">
+                                <div class="help-title">Contact Support</div>
+                                <div class="help-description">support@fuelfinder.com | +91 98765 43210</div>
+                            </div>
+                        </div>
+                        <div class="help-item">
+                            <div class="help-icon">💬</div>
+                            <div class="help-text">
+                                <div class="help-title">Chat with AI Assistant</div>
+                                <div class="help-description">Click the chat icon in the bottom right corner</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+                    break;
+
+                case 'ev_bookings':
+                    await loadMyEVBookings();
                     break;
 
                 case 'signout':
                     signOut();
                     break;
             }
+        }
 
+        async function loadMyEVBookings() {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = `<div class="loading">Loading your bookings...</div>`;
+
+            try {
+                console.log('1. Starting to load bookings...'); // Debug
+
+                const { data: { user }, error: userError } = await client.auth.getUser();
+                console.log('2. User:', user, 'Error:', userError); // Debug
+
+                if (!user) {
+                    contentArea.innerHTML = `<p style="padding:2rem;text-align:center;">Please login to view bookings</p>`;
+                    return;
+                }
+
+                console.log('3. Fetching bookings for user_id:', user.id); // Debug
+
+                const { data: bookings, error } = await client
+                    .from("ev_bookings")
+                    .select("*")
+                    .eq("user_id", user.id)
+                    .order("created_at", { ascending: false });
+
+                console.log('4. Bookings data:', bookings, 'Error:', error); // Debug
+
+                if (error) throw error;
+
+                if (!bookings || bookings.length === 0) {
+                    contentArea.innerHTML = `
+                <div class="info-section">
+                    <h3>My EV Bookings</h3>
+                    <p style="text-align:center;color:var(--text-secondary);padding:2rem;">
+                        No bookings yet. Book your first slot!<br>
+                        <small>User ID: ${user.id}</small>
+                    </p>
+                </div>
+            `;
+                    return;
+                }
+
+                let bookingsHTML = `
+            <div class="info-section">
+                <h3>My EV Bookings (${bookings.length})</h3>
+                <div class="bookings-list">
+        `;
+
+                bookings.forEach(booking => {
+                    bookingsHTML += `
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <span class="booking-ref">${booking.booking_ref}</span>
+                        <span class="booking-status ${booking.status}">${booking.status}</span>
+                    </div>
+                    <div class="booking-details">
+                        <div class="detail-item">
+                            <span class="label">Station:</span>
+                            <span class="value">${booking.station_name}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Date:</span>
+                            <span class="value">${booking.booking_date}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Time:</span>
+                            <span class="value">${booking.booking_slot}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Price:</span>
+                            <span class="value">₹${booking.price_per_kwh}/kWh</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+                });
+
+                bookingsHTML += `</div></div>`;
+                contentArea.innerHTML = bookingsHTML;
+
+            } catch (err) {
+                console.error('Error loading bookings:', err);
+                contentArea.innerHTML = `
+            <div class="error-msg" style="padding:2rem;text-align:center;">
+                <strong>Error:</strong> ${err.message}<br>
+                <small>Check console for details</small>
+            </div>
+        `;
+            }
         }
         function toggleSettings() {
             const panel = document.getElementById('settingsPanel');
